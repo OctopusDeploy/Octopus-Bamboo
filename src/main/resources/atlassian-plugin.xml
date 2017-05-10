@@ -1,0 +1,30 @@
+<atlassian-plugin key="${atlassian.plugin.key}" name="${project.name}" plugins-version="2">
+    <plugin-info>
+        <description>${project.description}</description>
+        <version>${project.version}</version>
+        <vendor name="${project.organization.name}" url="${project.organization.url}"/>
+        <param name="plugin-icon">images/pluginIcon.png</param>
+        <param name="plugin-logo">images/pluginLogo.png</param>
+    </plugin-info>
+
+    <!-- add our i18n resource -->
+    <resource type="i18n" name="i18n" location="OctopusBamboo"/>
+
+    <!-- add our web resources -->
+    <web-resource key="OctopusBamboo-resources" name="OctopusBamboo Web Resources">
+        <dependency>com.atlassian.auiplugin:ajs</dependency>
+
+        <resource type="download" name="OctopusBamboo.css" location="/css/OctopusBamboo.css"/>
+        <resource type="download" name="OctopusBamboo.js" location="/js/OctopusBamboo.js"/>
+        <resource type="download" name="images/" location="/images"/>
+
+        <context>OctopusBamboo</context>
+    </web-resource>
+
+    <taskType key="task.builder.maven" name="Octopus  Deploy"
+              class="com.octopus.bamboo.plugins.task.deploy.OctopusDeployTask">
+        <description>Deploy the artifact(s) to Octopus Deploy</description>
+        <category name="deployment"/>
+    </taskType>
+
+</atlassian-plugin>
