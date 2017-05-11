@@ -5,15 +5,11 @@ import com.atlassian.bamboo.build.logger.NullBuildLogger;
 import com.atlassian.bamboo.configuration.ConfigurationMap;
 import com.atlassian.bamboo.configuration.ConfigurationMapImpl;
 import com.atlassian.bamboo.serialization.WhitelistedSerializable;
-import com.atlassian.bamboo.task.TaskContext;
-import com.atlassian.bamboo.task.TaskException;
-import com.atlassian.bamboo.task.TaskResult;
-import com.atlassian.bamboo.task.TaskState;
+import com.atlassian.bamboo.task.*;
 import com.atlassian.bamboo.v2.build.BuildContext;
 import com.atlassian.bamboo.v2.build.CommonContext;
 import com.atlassian.plugins.osgi.test.AtlassianPluginsTestRunner;
 import com.google.common.io.Files;
-import com.octopus.bamboo.plugins.task.deploy.OctopusDeployTask;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.Assert;
@@ -22,6 +18,8 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Tests for the OctopusDeployTask class
@@ -29,10 +27,18 @@ import java.util.Map;
 @RunWith(AtlassianPluginsTestRunner.class)
 public class OctopusDeployTaskTest {
 
-    private OctopusDeployTask octopusDeployTask;
+    private static final Logger LOGGER = Logger.getLogger(OctopusDeployTaskTest.class.toString());
 
-    public OctopusDeployTaskTest(final OctopusDeployTask octopusDeployTask) {
+    private TaskType octopusDeployTask;
+
+    public OctopusDeployTaskTest(final TaskType octopusDeployTask) {
+        LOGGER.log(Level.INFO, "Starting OctopusDeployTaskTest");
         this.octopusDeployTask = octopusDeployTask;
+    }
+
+    @Test
+    public void alwaysPass() {
+        Assert.assertTrue(true);
     }
 
     @Test

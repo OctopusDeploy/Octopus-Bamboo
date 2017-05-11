@@ -34,7 +34,7 @@ public class ResourceServiceImpl implements ResourceService {
         checkArgument(StringUtils.isNotBlank(dest));
 
         try {
-            final File tempArchive = File.createTempFile("OctopusTools.4.15.2", ".portable.tar.gz");
+            final File tempArchive = File.createTempFile("OctopusTools", ".portable.tar.gz");
             final File destination = new File(System.getProperty("user.home") + File.separator + dest);
 
             if (destination.exists() && skipIfExists) {
