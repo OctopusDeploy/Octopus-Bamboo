@@ -22,7 +22,7 @@
     </web-resource>
 
     <taskType key="task.builder.maven" name="Octopus Deploy"
-              class="com.octopus.bamboo.plugins.task.deploy.OctopusDeployTask">
+              class="com.octopus.bamboo.plugins.task.deploy.OctopusDeployTaskImpl">
         <description>Deploy the artifact(s) to Octopus Deploy</description>
         <category name="deployment"/>
     </taskType>

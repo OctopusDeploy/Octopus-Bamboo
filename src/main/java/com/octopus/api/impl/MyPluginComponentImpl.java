@@ -1,4 +1,4 @@
-package com.octopus.impl;
+package com.octopus.api.impl;
 
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;

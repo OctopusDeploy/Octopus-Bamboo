@@ -4,6 +4,7 @@ import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.process.ExternalProcessBuilder;
 import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.*;
+import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.utils.process.ExternalProcess;
 import com.octopus.services.DotNetExeService;
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +25,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * The Bamboo Task that is used to deploy artifacts to Octopus Deploy
  */
 @Component
-public class OctopusDeployTask implements TaskType {
+@ExportAsService({TaskType.class})
+@Named("octopusDeployTask")
+public class OctopusDeployTaskImpl implements TaskType {
 
     private static final String OCTO_CLIENT_RESOURCE = "/octopus/OctopusTools.4.15.2.portable.tar.gz";
     private static final String OCTO_CLIENT_DEST = ".octopus/OctopusTools.4.15.2/core";
@@ -41,7 +45,7 @@ public class OctopusDeployTask implements TaskType {
     private ProcessService processService;
 
     @Inject
-    public OctopusDeployTask(@NotNull final ProcessService processService) {
+    public OctopusDeployTaskImpl(@NotNull final ProcessService processService) {
         this.processService = processService;
     }
 

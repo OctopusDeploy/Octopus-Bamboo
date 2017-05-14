@@ -54,7 +54,11 @@
         <bamboo.version>5.13.2</bamboo.version>
         <bamboo.data.version>5.13.2</bamboo.data.version>
         <amps.version>6.2.11</amps.version>
-        <plugin.testrunner.version>1.2.3</plugin.testrunner.version>
+        <!--
+            The default version has a bug that prevents integration tests from working
+            https://ecosystem.atlassian.net/browse/AMPS-1358
+        -->
+        <plugin.testrunner.version>1.2.3-bamboo-5</plugin.testrunner.version>
         <atlassian.spring.scanner.version>1.2.13</atlassian.spring.scanner.version>
         <!-- This key is used to keep the consistency between the key in atlassian-plugin.xml and the key to generate bundle. -->
         <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
@@ -154,7 +158,6 @@
                             <encoding>UTF-8</encoding>
                             <consoleOutput>true</consoleOutput>
                             <failsOnError>true</failsOnError>
-                            <linkXRef>false</linkXRef>
                         </configuration>
                         <goals>
                             <goal>check</goal>
