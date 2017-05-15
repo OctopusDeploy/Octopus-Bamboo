@@ -15,11 +15,11 @@ import javax.validation.constraints.NotNull;
  * Integration tests for the deployment task
  */
 @RunWith(AtlassianPluginsTestRunner.class)
-public class OctopusDeployTaskImplTest {
+public class OctopusDeployTaskTest {
     private static final MockObjectService MOCK_OBJECT_SERVICE = new MockObjectServiceImpl();
     private TaskType octopusDeployTask;
 
-    public OctopusDeployTaskImplTest(@NotNull final TaskType octopusDeployTask) {
+    public OctopusDeployTaskTest(@NotNull final TaskType octopusDeployTask) {
         this.octopusDeployTask = octopusDeployTask;
     }
 

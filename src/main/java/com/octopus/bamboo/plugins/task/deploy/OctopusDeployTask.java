@@ -28,7 +28,7 @@ import static com.google.common.base.Preconditions.checkState;
 @Component
 @ExportAsService({TaskType.class})
 @Named("octopusDeployTask")
-public class OctopusDeployTaskImpl implements TaskType {
+public class OctopusDeployTask implements TaskType {
 
     private static final String OCTO_CLIENT_RESOURCE = "/octopus/OctopusTools.4.15.2.portable.tar.gz";
     private static final String OCTO_CLIENT_DEST = ".octopus/OctopusTools.4.15.2/core";
@@ -47,7 +47,7 @@ public class OctopusDeployTaskImpl implements TaskType {
 
     @SuppressWarnings("CdiInjectionPointsInspection")
     @Inject
-    public OctopusDeployTaskImpl(@NotNull final ProcessService processService) {
+    public OctopusDeployTask(@NotNull final ProcessService processService) {
         this.processService = processService;
     }
 
