@@ -27,6 +27,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Named("taskConfigurator")
 public class TaskConfigurator extends AbstractTaskConfigurator {
     private static final String SERVER_URL = "serverUrl";
+    private static final String API_KEY = "apiKey";
     private static final String SERVER_URL_ERROR_KEY = "octopus.serverUrl.error";
     @ComponentImport
     private final TextProvider textProvider;
@@ -44,6 +45,7 @@ public class TaskConfigurator extends AbstractTaskConfigurator {
 
         final Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
         config.put(SERVER_URL, params.getString(SERVER_URL));
+        config.put(API_KEY, params.getString(API_KEY));
         return config;
     }
 
@@ -56,6 +58,7 @@ public class TaskConfigurator extends AbstractTaskConfigurator {
         super.populateContextForEdit(context, taskDefinition);
 
         context.put(SERVER_URL, taskDefinition.getConfiguration().get(SERVER_URL));
+        context.put(API_KEY, taskDefinition.getConfiguration().get(API_KEY));
     }
 
     @Override
