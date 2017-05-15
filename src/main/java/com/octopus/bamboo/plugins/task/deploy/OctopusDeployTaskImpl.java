@@ -58,8 +58,6 @@ public class OctopusDeployTaskImpl implements TaskType {
 
         final BuildLogger buildLogger = taskContext.getBuildLogger();
 
-        buildLogger.addBuildLogEntry("Starting OctopusDeployTask");
-
         final File octoToolsDir = RESOURCE_SERVICE.extractGZToHomeDir(
                 OCTO_CLIENT_RESOURCE,
                 OCTO_CLIENT_DEST,
@@ -73,6 +71,8 @@ public class OctopusDeployTaskImpl implements TaskType {
                 new ExternalProcessBuilder()
                         .command(commands)
                         .workingDirectory(octoToolsDir));
+
+        process.execute();
 
         return TaskResultBuilder.newBuilder(taskContext)
                 .checkReturnCode(process, EXPECTED_RETURN_CODE)
