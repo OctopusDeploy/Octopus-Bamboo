@@ -13,7 +13,7 @@ import java.util.List;
 public class DotNetExeServiceImpl implements DotNetExeService {
     private static final List<String> OCTO_EXECUTE_CMD = Arrays.asList(
             "/usr/bin/dotnet",
-            "C:/Program Files/dotnet");
+            "C:/Program Files/dotnet/dotnet.exe");
 
     public String getDotnetExe() {
         for (final String dotNetExec : OCTO_EXECUTE_CMD) {

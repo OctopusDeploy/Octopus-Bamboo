@@ -5,6 +5,7 @@ import com.atlassian.bamboo.task.TaskType;
 import com.atlassian.plugins.osgi.test.AtlassianPluginsTestRunner;
 import com.octopus.services.MockObjectService;
 import com.octopus.services.impl.MockObjectServiceImpl;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -24,7 +25,9 @@ public class OctopusDeployTaskImplTest {
 
     @Test
     public void test1() throws TaskException {
-        //octopusDeployTask.execute(MOCK_OBJECT_SERVICE.getTaskContext());
+        Assert.assertNotNull(octopusDeployTask);
+
+        octopusDeployTask.execute(MOCK_OBJECT_SERVICE.getTaskContext());
     }
 
 }

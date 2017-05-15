@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * The Bamboo Task that is used to deploy artifacts to Octopus Deploy
@@ -44,6 +45,7 @@ public class OctopusDeployTaskImpl implements TaskType {
     @ComponentImport
     private ProcessService processService;
 
+    @SuppressWarnings("CdiInjectionPointsInspection")
     @Inject
     public OctopusDeployTaskImpl(@NotNull final ProcessService processService) {
         this.processService = processService;
@@ -51,7 +53,8 @@ public class OctopusDeployTaskImpl implements TaskType {
 
     @NotNull
     public TaskResult execute(@NotNull final TaskContext taskContext) throws TaskException {
-        checkNotNull(taskContext, "taskContext can not be null");
+        checkNotNull(taskContext, "taskContext cannot be null");
+        checkState(processService != null, "processService cannot be null");
 
         final BuildLogger buildLogger = taskContext.getBuildLogger();
 
