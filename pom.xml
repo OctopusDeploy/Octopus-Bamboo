@@ -91,22 +91,10 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.zafarkhaja</groupId>
-            <artifactId>java-semver</artifactId>
-            <version>0.9.0</version>
-        </dependency>
-
-        <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>1.1.0.Final</version>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-archiver</artifactId>
-            <version>3.4</version>
         </dependency>
 
         <dependency>
@@ -220,12 +208,14 @@
 
                         <!-- Add package to export here -->
                         <Export-Package>
-                            com.octopus.api,
-                            com.octopus.bamboo.plugins.task.deploy,
-                            com.jcraft.jzlib,
+                            com.octopus.bamboo.plugins.task.push,
+                            com.octopus.bamboo.plugins.task.deploy
                         </Export-Package>
 
-                        <!-- Add package import here -->
+                        <!--
+                            We list out all the packages that can't be loaded
+                            and were never needed for our plugin here.
+                         -->
                         <Import-Package>
                             org.springframework.osgi.*;resolution:="optional",
                             org.eclipse.gemini.blueprint.*;resolution:="optional",
@@ -234,6 +224,12 @@
                             !org.apache.hadoop.io.compress,
                             !com.sun.jndi.ldap,
                             !sun.misc,
+                            !android.util,
+                            !org.eclipse.core.runtime,
+                            !org.eclipse.jdt.core.dom,
+                            !org.eclipse.jdt.core.dom.rewrite,
+                            !org.eclipse.jdt.internal.core.dom.rewrite,
+                            !org.eclipse.jdt.internal.corext.refactoring.structure,
                             *
                         </Import-Package>
 
