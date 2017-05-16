@@ -248,6 +248,10 @@
                             *
                         </Import-Package>
 
+                        <DynamicImport-Package>
+                            *
+                        </DynamicImport-Package>
+
                         <!-- Ensure plugin is spring powered -->
                         <Spring-Context>*</Spring-Context>
                     </instructions>

@@ -7,6 +7,7 @@ import com.octopus.services.FeignService;
 import com.octopus.services.FileService;
 import com.octopus.services.MockObjectService;
 import feign.Response;
+import feign.okhttp.OkHttpClient;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -21,7 +22,7 @@ import static com.google.common.base.Preconditions.checkState;
  */
 public class FeignServiceImplTest {
 
-    private static final FeignService FEIGN_SERVICE = new FeignServiceImpl();
+    private static final FeignService FEIGN_SERVICE = new FeignServiceImpl(new OkHttpClient());
     private static final MockObjectService MOCK_OBJECT_SERVICE = new MockObjectServiceImpl();
     private static final FileService FILE_SERVICE = new FileServiceImpl();
 
