@@ -23,7 +23,9 @@ import com.atlassian.bamboo.v2.build.CurrentResult;
 import com.atlassian.bamboo.v2.build.trigger.TriggerReason;
 import com.atlassian.bamboo.variable.VariableContext;
 import com.octopus.constants.OctoConstants;
+import com.octopus.constants.OctoTestConstants;
 import com.octopus.services.MockObjectService;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,15 +33,11 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import static com.google.common.base.Preconditions.checkState;
-
 /**
  * Implementation of the MockObjectService
  */
 @SuppressWarnings("ConstantConditions")
 public class MockObjectServiceImpl implements MockObjectService {
-    private static final String API_KEY_SYSTEM_PROP = "API_KEY";
-
     public TaskContext getTaskContext() {
         final MockObjectService me = this;
 
@@ -83,23 +81,24 @@ public class MockObjectServiceImpl implements MockObjectService {
 
             @org.jetbrains.annotations.NotNull
             public File getRootDirectory() {
-                return new File(System.getProperty("java.io.tmpdir"));
+                return new File(".");
             }
 
             @org.jetbrains.annotations.NotNull
             public File getWorkingDirectory() {
-                return new File(System.getProperty("java.io.tmpdir"));
+                return new File(".");
             }
 
             @org.jetbrains.annotations.NotNull
             public ConfigurationMap getConfigurationMap() {
-                checkState(System.getProperty(API_KEY_SYSTEM_PROP) != null,
-                        "You need to run tests with an " + API_KEY_SYSTEM_PROP
-                                + " value set to the api key of a local instance of Octopus Deploy.");
+                final String apiKey = StringUtils.defaultIfBlank(
+                        System.getProperty(OctoTestConstants.API_KEY_SYSTEM_PROP),
+                        OctoTestConstants.DUMMY_API_KEY);
 
                 final ConfigurationMap retValue = new ConfigurationMapImpl();
                 retValue.put(OctoConstants.SERVER_URL, "http://localhost:8065");
-                retValue.put(OctoConstants.API_KEY, System.getProperty(API_KEY_SYSTEM_PROP));
+                retValue.put(OctoConstants.API_KEY, apiKey);
+                retValue.put(OctoConstants.PUSH_PATTERN, "**/resources/test.0.0.1.zip");
                 return retValue;
             }
 

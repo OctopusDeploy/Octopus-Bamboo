@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * An implementation of the file service using Spring utils
  */
+@Component
 public class FileServiceImpl implements FileService {
     @NotNull
     @Override

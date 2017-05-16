@@ -12,22 +12,32 @@ import feign.form.FormEncoder;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import feign.okhttp.OkHttpClient;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * Implementation of the Feign Service.
  */
+@Component
 public class FeignServiceImpl implements FeignService {
-
 
     @Override
     @NotNull
     public RestAPI createClient(@NotNull final TaskContext taskContext) {
+        checkNotNull(taskContext);
+
         final Logger buildLogger = new BambooFeignLogger(taskContext.getBuildLogger());
 
         final String serverUrl = taskContext.getConfigurationMap().get(OctoConstants.SERVER_URL);
         final String apiKey = taskContext.getConfigurationMap().get(OctoConstants.API_KEY);
+
+        checkState(StringUtils.isNotBlank(serverUrl));
+        checkState(StringUtils.isNotBlank(apiKey));
 
         /*
             See https://howtoprogram.xyz/2016/12/29/file-uploading-open-feign/

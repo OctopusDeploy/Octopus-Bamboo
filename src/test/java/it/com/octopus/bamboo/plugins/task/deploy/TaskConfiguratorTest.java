@@ -2,6 +2,8 @@ package it.com.octopus.bamboo.plugins.task.deploy;
 
 import com.atlassian.bamboo.task.TaskConfigurator;
 import com.atlassian.plugins.osgi.test.AtlassianPluginsTestRunner;
+import org.junit.Assert;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.validation.constraints.NotNull;
@@ -15,5 +17,10 @@ public class TaskConfiguratorTest {
 
     public TaskConfiguratorTest(@NotNull final TaskConfigurator taskConfigurator) {
         this.taskConfigurator = taskConfigurator;
+    }
+
+    @Test
+    public void testServiceExists() {
+        Assert.assertNotNull(taskConfigurator);
     }
 }
