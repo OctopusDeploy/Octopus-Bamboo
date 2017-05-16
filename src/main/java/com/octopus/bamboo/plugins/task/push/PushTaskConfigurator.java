@@ -41,7 +41,6 @@ public class PushTaskConfigurator extends AbstractTaskConfigurator {
     public Map<String, String> generateTaskConfigMap(@NotNull final ActionParametersMap params,
                                                      @Nullable final TaskDefinition previousTaskDefinition) {
         checkNotNull(params);
-        checkNotNull(previousTaskDefinition);
 
         final Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
         config.put(OctoConstants.SERVER_URL, params.getString(OctoConstants.SERVER_URL));

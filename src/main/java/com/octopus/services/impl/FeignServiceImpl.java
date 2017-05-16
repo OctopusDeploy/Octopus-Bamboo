@@ -49,7 +49,7 @@ public class FeignServiceImpl implements FeignService {
                 .encoder(new FormEncoder(new GsonEncoder()))
                 .decoder(new GsonDecoder())
                 .logger(buildLogger)
-                .logLevel(Logger.Level.FULL)
+                .logLevel(Logger.Level.BASIC)
                 .requestInterceptor(new RequestInterceptor() {
                     @Override
                     public void apply(final RequestTemplate template) {
