@@ -69,6 +69,13 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.marvinformatics.feign</groupId>
+            <artifactId>feign-mock</artifactId>
+            <version>0.5</version>
+        </dependency>
+
         <dependency>
             <groupId>io.github.openfeign</groupId>
             <artifactId>feign-okhttp</artifactId>
@@ -217,8 +224,16 @@
                             and were never needed for our plugin here.
                          -->
                         <Import-Package>
-                            org.springframework.osgi.*;resolution:="optional",
                             org.eclipse.gemini.blueprint.*;resolution:="optional",
+                            org.springframework.osgi.*;resolution:="optional",
+                            org.springframework.beans.*,
+                            org.springframework.util.*,
+                            org.springframework.context.*,
+                            org.springframework.cglib.*,
+                            org.apache.commons.*,
+                            org.w3c.*,
+                            com.google.common.*,
+                            org.osgi.*,
                             !com.sun.jdmk.comm,
                             !com.ibm.uvm.tools,
                             !org.apache.hadoop.io.compress,
@@ -229,7 +244,7 @@
                             !org.eclipse.jdt.core.dom,
                             !org.eclipse.jdt.core.dom.rewrite,
                             !org.eclipse.jdt.internal.core.dom.rewrite,
-                            !org.eclipse.jdt.internal.corext.refactoring.structure,
+                            !org.eclipse.jdt.internal.corext.refactoring.structure
                             *
                         </Import-Package>
 

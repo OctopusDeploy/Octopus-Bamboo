@@ -4,15 +4,12 @@ import com.atlassian.bamboo.task.TaskContext;
 import com.octopus.api.RestAPI;
 import com.octopus.constants.OctoConstants;
 import com.octopus.services.FeignService;
-import feign.Feign;
-import feign.Logger;
-import feign.RequestInterceptor;
-import feign.RequestTemplate;
+import feign.*;
 import feign.form.FormEncoder;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
-import feign.okhttp.OkHttpClient;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
@@ -25,6 +22,13 @@ import static com.google.common.base.Preconditions.checkState;
  */
 @Component
 public class FeignServiceImpl implements FeignService {
+
+    private final Client client;
+
+    @Autowired
+    public FeignServiceImpl(@NotNull final Client client) {
+        this.client = client;
+    }
 
     @Override
     @NotNull
@@ -44,7 +48,7 @@ public class FeignServiceImpl implements FeignService {
             for details on uploading files through feign
          */
         return Feign.builder()
-                .client(new OkHttpClient())
+                .client(client)
                 .encoder(new GsonEncoder())
                 .encoder(new FormEncoder(new GsonEncoder()))
                 .decoder(new GsonDecoder())

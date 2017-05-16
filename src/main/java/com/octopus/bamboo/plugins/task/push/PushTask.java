@@ -28,12 +28,14 @@ import static com.google.common.base.Preconditions.checkState;
 @Named("pushTask")
 public class PushTask implements TaskType {
 
-    private static final String OCTO_CLIENT_RESOURCE = "/octopus/OctopusTools.4.15.2.portable.tar.gz";
-    private static final String OCTO_CLIENT_DEST = ".octopus/OctopusTools.4.15.2/core";
+    private final FeignService feignService;
+    private final FileService fileService;
+
     @Autowired
-    private FeignService feignService;
-    @Autowired
-    private FileService fileService;
+    public PushTask(@NotNull final FeignService feignService, @NotNull final FileService fileService) {
+        this.feignService = feignService;
+        this.fileService = fileService;
+    }
 
     @NotNull
     public TaskResult execute(@NotNull final TaskContext taskContext) throws TaskException {
