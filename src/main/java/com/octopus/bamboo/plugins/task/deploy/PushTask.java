@@ -1,22 +1,21 @@
 package com.octopus.bamboo.plugins.task.deploy;
 
-import com.atlassian.bamboo.build.logger.BuildLogger;
-import com.atlassian.bamboo.process.ExternalProcessBuilder;
 import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.*;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.atlassian.utils.process.ExternalProcess;
-import com.octopus.services.DotNetExeService;
-import com.octopus.services.impl.DotNetExeServiceImpl;
-import com.octopus.services.impl.ResourceServiceImpl;
+import com.octopus.api.RestAPI;
+import com.octopus.constants.OctoConstants;
+import com.octopus.services.FeignService;
+import com.octopus.services.FileService;
+import com.octopus.services.impl.FeignServiceImpl;
+import com.octopus.services.impl.FileServiceImpl;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -27,14 +26,13 @@ import static com.google.common.base.Preconditions.checkState;
  */
 @Component
 @ExportAsService({TaskType.class})
-@Named("octopusDeployTask")
-public class OctopusDeployTask implements TaskType {
+@Named("pushTask")
+public class PushTask implements TaskType {
 
     private static final String OCTO_CLIENT_RESOURCE = "/octopus/OctopusTools.4.15.2.portable.tar.gz";
     private static final String OCTO_CLIENT_DEST = ".octopus/OctopusTools.4.15.2/core";
-    private static final int EXPECTED_RETURN_CODE = 0;
-    private static final ResourceServiceImpl RESOURCE_SERVICE = new ResourceServiceImpl();
-    private static final DotNetExeService DOT_NET_EXE_SERVICE = new DotNetExeServiceImpl();
+    private static final FeignService FEIGN_SERVICE = new FeignServiceImpl();
+    private static final FileService FILE_SERVICE = new FileServiceImpl();
 
     /**
      * The service we use to execute the Octopus Deploy client.
@@ -47,7 +45,7 @@ public class OctopusDeployTask implements TaskType {
 
     @SuppressWarnings("CdiInjectionPointsInspection")
     @Inject
-    public OctopusDeployTask(@NotNull final ProcessService processService) {
+    public PushTask(@NotNull final ProcessService processService) {
         this.processService = processService;
     }
 
@@ -56,26 +54,38 @@ public class OctopusDeployTask implements TaskType {
         checkNotNull(taskContext, "taskContext cannot be null");
         checkState(processService != null, "processService cannot be null");
 
-        final BuildLogger buildLogger = taskContext.getBuildLogger();
+        /*
+            Create the API client that we will use to call the Octopus REST API
+         */
+        final RestAPI restAPI = FEIGN_SERVICE.createClient(taskContext);
 
-        final File octoToolsDir = RESOURCE_SERVICE.extractGZToHomeDir(
-                OCTO_CLIENT_RESOURCE,
-                OCTO_CLIENT_DEST,
-                true);
+        /*
+            Get the list of matching files that need to be uploaded
+         */
+        final String pattern = taskContext.getConfigurationMap().get(OctoConstants.PUSH_PATTERN);
+        final List<File> files = FILE_SERVICE.getMatchingFile(taskContext.getWorkingDirectory(), pattern);
 
-        final List<String> commands = Arrays.asList(
-                DOT_NET_EXE_SERVICE.getDotnetExe(),
-                octoToolsDir.toString() + File.separator + "Octo.dll");
+        /*
+            Contact the API to upload the files
+         */
+        try {
+            for (final File file : files) {
+                restAPI.packagesRaw(false, file);
+            }
+        } catch (final Exception ex) {
+            /*
+                Any upload errors mean this task has failed.
+             */
+            return TaskResultBuilder.newBuilder(taskContext)
+                    .failed()
+                    .build();
+        }
 
-        final ExternalProcess process = processService.createProcess(taskContext,
-                new ExternalProcessBuilder()
-                        .command(commands)
-                        .workingDirectory(octoToolsDir));
-
-        process.execute();
-
+        /*
+            We're all good, so let bamboo know that the task was a success.
+         */
         return TaskResultBuilder.newBuilder(taskContext)
-                .checkReturnCode(process, EXPECTED_RETURN_CODE)
+                .success()
                 .build();
     }
 }

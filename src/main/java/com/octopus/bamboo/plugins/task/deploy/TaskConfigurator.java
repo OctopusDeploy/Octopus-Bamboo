@@ -7,6 +7,7 @@ import com.atlassian.bamboo.utils.error.ErrorCollection;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.struts.TextProvider;
+import com.octopus.constants.OctoConstants;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,8 +27,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @ExportAsService({com.atlassian.bamboo.task.TaskConfigurator.class})
 @Named("taskConfigurator")
 public class TaskConfigurator extends AbstractTaskConfigurator {
-    private static final String SERVER_URL = "serverUrl";
-    private static final String API_KEY = "apiKey";
     private static final String SERVER_URL_ERROR_KEY = "octopus.serverUrl.error";
     @ComponentImport
     private final TextProvider textProvider;
@@ -44,8 +43,8 @@ public class TaskConfigurator extends AbstractTaskConfigurator {
         checkNotNull(previousTaskDefinition);
 
         final Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
-        config.put(SERVER_URL, params.getString(SERVER_URL));
-        config.put(API_KEY, params.getString(API_KEY));
+        config.put(OctoConstants.SERVER_URL, params.getString(OctoConstants.SERVER_URL));
+        config.put(OctoConstants.API_KEY, params.getString(OctoConstants.API_KEY));
         return config;
     }
 
@@ -57,8 +56,8 @@ public class TaskConfigurator extends AbstractTaskConfigurator {
 
         super.populateContextForEdit(context, taskDefinition);
 
-        context.put(SERVER_URL, taskDefinition.getConfiguration().get(SERVER_URL));
-        context.put(API_KEY, taskDefinition.getConfiguration().get(API_KEY));
+        context.put(OctoConstants.SERVER_URL, taskDefinition.getConfiguration().get(OctoConstants.SERVER_URL));
+        context.put(OctoConstants.API_KEY, taskDefinition.getConfiguration().get(OctoConstants.API_KEY));
     }
 
     @Override
@@ -69,9 +68,9 @@ public class TaskConfigurator extends AbstractTaskConfigurator {
 
         super.validate(params, errorCollection);
 
-        final String sayValue = params.getString(SERVER_URL);
+        final String sayValue = params.getString(OctoConstants.SERVER_URL);
         if (StringUtils.isEmpty(sayValue)) {
-            errorCollection.addError(SERVER_URL, textProvider.getText(SERVER_URL_ERROR_KEY));
+            errorCollection.addError(OctoConstants.SERVER_URL, textProvider.getText(SERVER_URL_ERROR_KEY));
         }
     }
 }
