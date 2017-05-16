@@ -14,5 +14,5 @@ public interface FeignService {
      * @return A fiegn client that can be used to access the Octopus Deploy API
      */
     @NotNull
-    RestAPI createClient(@NotNull final TaskContext taskContext);
+    RestAPI createClient(@NotNull TaskContext taskContext);
 }

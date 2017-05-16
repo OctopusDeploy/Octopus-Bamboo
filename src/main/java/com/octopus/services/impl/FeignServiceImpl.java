@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 public class FeignServiceImpl implements FeignService {
     @Override
     @NotNull
-    public RestAPI createClient(@NotNull TaskContext taskContext) {
+    public RestAPI createClient(@NotNull final TaskContext taskContext) {
         final Logger buildLogger = new BambooFeignLogger(taskContext.getBuildLogger());
 
         final String serverUrl = taskContext.getConfigurationMap().get(OctoConstants.SERVER_URL);

@@ -22,7 +22,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class FileServiceImpl implements FileService {
     @NotNull
     @Override
-    public List<File> getMatchingFile(@NotNull File workingDir, @NotNull String pattern) {
+    public List<File> getMatchingFile(@NotNull final File workingDir, @NotNull final String pattern) {
         checkNotNull(workingDir);
         checkArgument(StringUtils.isNotBlank(pattern));
 
