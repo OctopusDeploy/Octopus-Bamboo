@@ -1,4 +1,4 @@
-package com.octopus.bamboo.plugins.task.deploy;
+package com.octopus.bamboo.plugins.task.push;
 
 import com.atlassian.bamboo.collections.ActionParametersMap;
 import com.atlassian.bamboo.task.AbstractTaskConfigurator;
@@ -26,13 +26,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Component
 @ExportAsService({com.atlassian.bamboo.task.TaskConfigurator.class})
 @Named("taskConfigurator")
-public class TaskConfigurator extends AbstractTaskConfigurator {
+public class PushTaskConfigurator extends AbstractTaskConfigurator {
     private static final String SERVER_URL_ERROR_KEY = "octopus.serverUrl.error";
+    private static final String PUSH_PATTERN_ERROR_KEY = "octopus.pushPattern.error";
     @ComponentImport
     private final TextProvider textProvider;
 
     @Inject
-    public TaskConfigurator(@NotNull final TextProvider textProvider) {
+    public PushTaskConfigurator(@NotNull final TextProvider textProvider) {
         this.textProvider = textProvider;
     }
 
@@ -45,6 +46,7 @@ public class TaskConfigurator extends AbstractTaskConfigurator {
         final Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
         config.put(OctoConstants.SERVER_URL, params.getString(OctoConstants.SERVER_URL));
         config.put(OctoConstants.API_KEY, params.getString(OctoConstants.API_KEY));
+        config.put(OctoConstants.PUSH_PATTERN, params.getString(OctoConstants.PUSH_PATTERN));
         return config;
     }
 
@@ -58,6 +60,7 @@ public class TaskConfigurator extends AbstractTaskConfigurator {
 
         context.put(OctoConstants.SERVER_URL, taskDefinition.getConfiguration().get(OctoConstants.SERVER_URL));
         context.put(OctoConstants.API_KEY, taskDefinition.getConfiguration().get(OctoConstants.API_KEY));
+        context.put(OctoConstants.PUSH_PATTERN, taskDefinition.getConfiguration().get(OctoConstants.PUSH_PATTERN));
     }
 
     @Override
@@ -71,6 +74,11 @@ public class TaskConfigurator extends AbstractTaskConfigurator {
         final String sayValue = params.getString(OctoConstants.SERVER_URL);
         if (StringUtils.isEmpty(sayValue)) {
             errorCollection.addError(OctoConstants.SERVER_URL, textProvider.getText(SERVER_URL_ERROR_KEY));
+        }
+
+        final String pushPattern = params.getString(OctoConstants.PUSH_PATTERN);
+        if (StringUtils.isEmpty(pushPattern)) {
+            errorCollection.addError(OctoConstants.PUSH_PATTERN, textProvider.getText(PUSH_PATTERN_ERROR_KEY));
         }
     }
 }

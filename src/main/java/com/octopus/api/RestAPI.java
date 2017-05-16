@@ -3,6 +3,7 @@ package com.octopus.api;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
+import feign.Response;
 
 import java.io.File;
 
@@ -19,5 +20,7 @@ public interface RestAPI {
      */
     @RequestLine("POST /packages/raw")
     @Headers("Content-Type: multipart/form-data")
-    void packagesRaw(@Param("replace") Boolean replace, @Param("file") File file);
+    Response packagesRaw(@Param("replace") Boolean replace,
+                         @Param("name") String filename,
+                         @Param("file") File file);
 }

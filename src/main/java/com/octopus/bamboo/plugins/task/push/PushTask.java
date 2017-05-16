@@ -1,4 +1,4 @@
-package com.octopus.bamboo.plugins.task.deploy;
+package com.octopus.bamboo.plugins.task.push;
 
 import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.*;
@@ -70,7 +70,7 @@ public class PushTask implements TaskType {
          */
         try {
             for (final File file : files) {
-                restAPI.packagesRaw(false, file);
+                restAPI.packagesRaw(false, file.getName(), file);
             }
         } catch (final Exception ex) {
             /*

@@ -22,6 +22,7 @@ import com.atlassian.bamboo.v2.build.CommonContext;
 import com.atlassian.bamboo.v2.build.CurrentResult;
 import com.atlassian.bamboo.v2.build.trigger.TriggerReason;
 import com.atlassian.bamboo.variable.VariableContext;
+import com.octopus.constants.OctoConstants;
 import com.octopus.services.MockObjectService;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,11 +31,15 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import static com.google.common.base.Preconditions.checkState;
+
 /**
  * Implementation of the MockObjectService
  */
 @SuppressWarnings("ConstantConditions")
 public class MockObjectServiceImpl implements MockObjectService {
+    private static final String API_KEY_SYSTEM_PROP = "API_KEY";
+
     public TaskContext getTaskContext() {
         final MockObjectService me = this;
 
@@ -88,7 +93,14 @@ public class MockObjectServiceImpl implements MockObjectService {
 
             @org.jetbrains.annotations.NotNull
             public ConfigurationMap getConfigurationMap() {
-                return new ConfigurationMapImpl();
+                checkState(System.getProperty(API_KEY_SYSTEM_PROP) != null,
+                        "You need to run tests with an " + API_KEY_SYSTEM_PROP
+                                + " value set to the api key of a local instance of Octopus Deploy.");
+
+                final ConfigurationMap retValue = new ConfigurationMapImpl();
+                retValue.put(OctoConstants.SERVER_URL, "http://localhost:8065");
+                retValue.put(OctoConstants.API_KEY, System.getProperty(API_KEY_SYSTEM_PROP));
+                return retValue;
             }
 
             @Nullable
