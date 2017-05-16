@@ -31,7 +31,6 @@ public class FeignServiceImplTest {
 
         final Response response = restAPI.packagesRaw(
                 true,
-                uploadFile.get(0).getName(),
                 uploadFile.get(0));
 
         Assert.assertEquals(201, response.status());

@@ -18,9 +18,8 @@ public interface RestAPI {
      * @param replace Replace an existing package
      * @param file    The file to be uploaded
      */
-    @RequestLine("POST /packages/raw")
+    @RequestLine("POST /packages/raw?replace={replace}")
     @Headers("Content-Type: multipart/form-data")
     Response packagesRaw(@Param("replace") Boolean replace,
-                         @Param("name") String filename,
                          @Param("file") File file);
 }

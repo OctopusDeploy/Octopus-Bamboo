@@ -70,7 +70,7 @@ public class PushTask implements TaskType {
          */
         try {
             for (final File file : files) {
-                restAPI.packagesRaw(false, file.getName(), file);
+                restAPI.packagesRaw(false, file);
             }
         } catch (final Exception ex) {
             /*
