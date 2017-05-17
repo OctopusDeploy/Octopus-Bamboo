@@ -74,7 +74,6 @@
             <groupId>com.marvinformatics.feign</groupId>
             <artifactId>feign-mock</artifactId>
             <version>0.5</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
