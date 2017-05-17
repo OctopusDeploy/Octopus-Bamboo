@@ -2,6 +2,7 @@ package com.octopus.services.impl;
 
 import com.atlassian.bamboo.build.logger.BuildLogger;
 import feign.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.constraints.NotNull;
 
@@ -12,6 +13,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * logger service.
  */
 public class BambooFeignLogger extends Logger {
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BambooFeignLogger.class);
     private final BuildLogger buildLogger;
 
     public BambooFeignLogger(@NotNull final BuildLogger buildLogger) {
@@ -26,6 +28,14 @@ public class BambooFeignLogger extends Logger {
         checkNotNull(format);
         checkNotNull(args);
 
-        buildLogger.addBuildLogEntry(String.format(methodTag(configKey) + format, args));
+        final String entry = String.format(methodTag(configKey) + format, args);
+        /*
+            This is the message that the user sees in the build log
+         */
+        buildLogger.addBuildLogEntry(entry);
+        /*
+            This is so integration tests can also see the output
+         */
+        LOGGER.info(entry);
     }
 }

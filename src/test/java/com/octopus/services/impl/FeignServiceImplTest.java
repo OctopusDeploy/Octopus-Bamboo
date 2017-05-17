@@ -8,6 +8,7 @@ import com.octopus.services.FileService;
 import com.octopus.services.MockObjectService;
 import feign.Response;
 import feign.okhttp.OkHttpClient;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,11 +30,11 @@ public class FeignServiceImplTest {
     @Test
     @Ignore("Needs an instance of Octopus Deploy running")
     public void doFileUpload() {
-        checkState(!OctoTestConstants.DUMMY_API_KEY.equals(System.getProperty(OctoTestConstants.API_KEY_SYSTEM_PROP)),
+        checkState(StringUtils.isNotBlank(System.getProperty(OctoTestConstants.API_KEY_SYSTEM_PROP)),
                 "You need to run tests with an " + OctoTestConstants.API_KEY_SYSTEM_PROP
                         + " value set to the api key of a local instance of Octopus Deploy.");
 
-        final TaskContext taskContext = MOCK_OBJECT_SERVICE.getTaskContext();
+        final TaskContext taskContext = MOCK_OBJECT_SERVICE.getTaskContext(new File("."));
         final RestAPI restAPI = FEIGN_SERVICE.createClient(taskContext);
         final List<File> uploadFile = FILE_SERVICE.getMatchingFile(
                 new File("."),

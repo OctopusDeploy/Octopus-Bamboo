@@ -10,6 +10,8 @@ import com.octopus.services.FileService;
 import feign.Response;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +29,7 @@ import static com.google.common.base.Preconditions.checkState;
 @ExportAsService({TaskType.class})
 @Named("pushTask")
 public class PushTask implements TaskType {
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(PushTask.class);
     private final FeignService feignService;
     private final FileService fileService;
 
@@ -37,11 +39,21 @@ public class PushTask implements TaskType {
         this.fileService = fileService;
     }
 
+    private void logInfo(@NotNull final TaskContext taskContext, @NotNull final String message) {
+        LOGGER.info(message);
+        taskContext.getBuildLogger().addBuildLogEntry(message);
+    }
+
+    private void logError(@NotNull final TaskContext taskContext, @NotNull final String message) {
+        LOGGER.error(message);
+        taskContext.getBuildLogger().addErrorLogEntry(message);
+    }
+
     @NotNull
     public TaskResult execute(@NotNull final TaskContext taskContext) throws TaskException {
         checkNotNull(taskContext, "taskContext cannot be null");
 
-        taskContext.getBuildLogger().addBuildLogEntry("Starting PushTask.execute()");
+        logInfo(taskContext, "Starting PushTask.execute()");
 
         /*
             Create the API client that we will use to call the Octopus REST API
@@ -60,7 +72,7 @@ public class PushTask implements TaskType {
             Fail if no files were matched
          */
         if (files.isEmpty()) {
-            taskContext.getBuildLogger().addErrorLogEntry("The pattern " + pattern
+            logError(taskContext, "The pattern " + pattern
                     + " failed to match any files");
             return TaskResultBuilder.newBuilder(taskContext)
                     .failed()
@@ -72,7 +84,7 @@ public class PushTask implements TaskType {
          */
         try {
             for (final File file : files) {
-                final Response result = restAPI.packagesRaw(false, file);
+                final Response result = restAPI.packagesRaw(true, file);
                 final String body = IOUtils.toString(result.body().asInputStream());
                 taskContext.getBuildLogger().addBuildLogEntry(body);
             }
@@ -80,7 +92,7 @@ public class PushTask implements TaskType {
             /*
                 Any upload errors mean this task has failed.
              */
-            taskContext.getBuildLogger().addErrorLogEntry(ex.toString());
+            logError(taskContext, ex.toString());
             return TaskResultBuilder.newBuilder(taskContext)
                     .failed()
                     .build();

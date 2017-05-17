@@ -28,17 +28,25 @@ import com.octopus.services.MockObjectService;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Implementation of the MockObjectService
  */
 @SuppressWarnings("ConstantConditions")
 public class MockObjectServiceImpl implements MockObjectService {
-    public TaskContext getTaskContext() {
+    public static final Logger LOGGER = LoggerFactory.getLogger(MockObjectServiceImpl.class);
+
+    public TaskContext getTaskContext(@NotNull final File workingDir) {
+        checkNotNull(workingDir);
+
         final MockObjectService me = this;
 
         return new TaskContext() {
@@ -81,12 +89,12 @@ public class MockObjectServiceImpl implements MockObjectService {
 
             @org.jetbrains.annotations.NotNull
             public File getRootDirectory() {
-                return new File(".");
+                return workingDir;
             }
 
             @org.jetbrains.annotations.NotNull
             public File getWorkingDirectory() {
-                return new File(".");
+                return workingDir;
             }
 
             @org.jetbrains.annotations.NotNull
@@ -98,7 +106,7 @@ public class MockObjectServiceImpl implements MockObjectService {
                 final ConfigurationMap retValue = new ConfigurationMapImpl();
                 retValue.put(OctoConstants.SERVER_URL, "http://localhost:8065");
                 retValue.put(OctoConstants.API_KEY, apiKey);
-                retValue.put(OctoConstants.PUSH_PATTERN, "**/resources/test.0.0.1.zip");
+                retValue.put(OctoConstants.PUSH_PATTERN, "**/test.0.0.1.zip");
                 return retValue;
             }
 
