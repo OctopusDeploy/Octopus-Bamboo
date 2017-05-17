@@ -85,8 +85,13 @@ public class PushTask implements TaskType {
         try {
             for (final File file : files) {
                 final Response result = restAPI.packagesRaw(true, file);
-                final String body = IOUtils.toString(result.body().asInputStream());
-                taskContext.getBuildLogger().addBuildLogEntry(body);
+                /*
+                    Mocked responses have no body
+                 */
+                if (result.body() != null) {
+                    final String body = IOUtils.toString(result.body().asInputStream());
+                    taskContext.getBuildLogger().addBuildLogEntry(body);
+                }
             }
         } catch (final Exception ex) {
             /*

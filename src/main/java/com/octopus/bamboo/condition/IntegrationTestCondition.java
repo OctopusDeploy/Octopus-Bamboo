@@ -1,5 +1,6 @@
 package com.octopus.bamboo.condition;
 
+import com.octopus.constants.OctoConstants;
 import org.springframework.context.annotation.Condition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
@@ -11,8 +12,8 @@ import java.util.Arrays;
  */
 public class IntegrationTestCondition implements Condition {
     @Override
-    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+    public boolean matches(final ConditionContext context, final AnnotatedTypeMetadata metadata) {
         return Arrays.asList(context.getEnvironment().getActiveProfiles())
-                .contains("test");
+                .contains(OctoConstants.TEST_PROFILE);
     }
 }

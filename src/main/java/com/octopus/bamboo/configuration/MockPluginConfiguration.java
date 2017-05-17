@@ -1,6 +1,7 @@
 package com.octopus.bamboo.configuration;
 
 import com.octopus.bamboo.condition.IntegrationTestCondition;
+import com.octopus.constants.OctoConstants;
 import feign.Client;
 import feign.mock.HttpMethod;
 import feign.mock.MockClient;
@@ -35,7 +36,9 @@ public class MockPluginConfiguration {
             during the integration test. This means we can test the plugin
             without any actual HTTP server to connect to.
          */
-        mockClient.noContent(HttpMethod.POST, "/api/packages/raw");
+        mockClient.noContent(HttpMethod.POST, OctoConstants.LOCAL_OCTOPUS_INSTANCE + "/api/packages/raw?replace=true");
+        mockClient.noContent(HttpMethod.POST, OctoConstants.LOCAL_OCTOPUS_INSTANCE + "/api/packages/raw?replace=false");
+        mockClient.noContent(HttpMethod.POST, OctoConstants.LOCAL_OCTOPUS_INSTANCE + "/api/packages/raw");
         return mockClient;
     }
 }

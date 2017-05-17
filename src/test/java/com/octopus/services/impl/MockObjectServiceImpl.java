@@ -104,7 +104,7 @@ public class MockObjectServiceImpl implements MockObjectService {
                         OctoTestConstants.DUMMY_API_KEY);
 
                 final ConfigurationMap retValue = new ConfigurationMapImpl();
-                retValue.put(OctoConstants.SERVER_URL, "http://localhost:8065");
+                retValue.put(OctoConstants.SERVER_URL, OctoConstants.LOCAL_OCTOPUS_INSTANCE);
                 retValue.put(OctoConstants.API_KEY, apiKey);
                 retValue.put(OctoConstants.PUSH_PATTERN, "**/test.0.0.1.zip");
                 return retValue;
