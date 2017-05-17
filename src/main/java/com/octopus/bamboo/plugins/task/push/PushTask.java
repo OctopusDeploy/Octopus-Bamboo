@@ -9,12 +9,13 @@ import com.octopus.services.FeignService;
 import com.octopus.services.FileService;
 import feign.Response;
 import org.apache.commons.lang.StringUtils;
+import org.apache.http.HttpStatus;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
 import java.util.List;
@@ -30,10 +31,12 @@ import static com.google.common.base.Preconditions.checkState;
 @Named("pushTask")
 public class PushTask implements TaskType {
     private static final Logger LOGGER = LoggerFactory.getLogger(PushTask.class);
+    private static final int START_HTTP_OK_RANGE = 200;
+    private static final int END_HTTP_OK_RANGE = 299;
     private final FeignService feignService;
     private final FileService fileService;
 
-    @Autowired
+    @Inject
     public PushTask(@NotNull final FeignService feignService, @NotNull final FileService fileService) {
         this.feignService = feignService;
         this.fileService = fileService;
@@ -85,12 +88,28 @@ public class PushTask implements TaskType {
         try {
             for (final File file : files) {
                 final Response result = restAPI.packagesRaw(true, file);
+
                 /*
                     Mocked responses have no body
                  */
                 if (result.body() != null) {
                     final String body = IOUtils.toString(result.body().asInputStream());
                     taskContext.getBuildLogger().addBuildLogEntry(body);
+                }
+
+                /*
+                    Make sure the response code indicates success
+                 */
+                if (result.status() < START_HTTP_OK_RANGE || result.status() > END_HTTP_OK_RANGE) {
+                    if (result.status() == HttpStatus.SC_UNAUTHORIZED) {
+                        logError(taskContext, "Status code " + result.status() + " indicates an authorization error! Make sure the API key is correct.");
+                    } else {
+                        logError(taskContext, "Status code " + result.status() + " indicates an error!");
+                    }
+
+                    return TaskResultBuilder.newBuilder(taskContext)
+                            .failed()
+                            .build();
                 }
             }
         } catch (final Exception ex) {
