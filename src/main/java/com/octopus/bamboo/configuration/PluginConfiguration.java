@@ -1,4 +1,4 @@
-package com.octopus.configuration;
+package com.octopus.bamboo.configuration;
 
 import feign.Client;
 

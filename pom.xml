@@ -74,6 +74,7 @@
             <groupId>com.marvinformatics.feign</groupId>
             <artifactId>feign-mock</artifactId>
             <version>0.5</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -90,6 +91,12 @@
             <groupId>io.github.openfeign</groupId>
             <artifactId>feign-slf4j</artifactId>
             <version>${feign.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.github.openfeign.form</groupId>
@@ -226,14 +233,6 @@
                         <Import-Package>
                             org.eclipse.gemini.blueprint.*;resolution:="optional",
                             org.springframework.osgi.*;resolution:="optional",
-                            org.springframework.beans.*,
-                            org.springframework.util.*,
-                            org.springframework.context.*,
-                            org.springframework.cglib.*,
-                            org.apache.commons.*,
-                            org.w3c.*,
-                            com.google.common.*,
-                            org.osgi.*,
                             !com.sun.jdmk.comm,
                             !com.ibm.uvm.tools,
                             !org.apache.hadoop.io.compress,
