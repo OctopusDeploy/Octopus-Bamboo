@@ -135,6 +135,8 @@ public class PushTask implements TaskType {
                 if (result.status() < START_HTTP_OK_RANGE || result.status() > END_HTTP_OK_RANGE) {
                     if (result.status() == HttpStatus.SC_UNAUTHORIZED) {
                         logError(taskContext, "OCTOPUS-BAMBOO-ERROR-0001: Status code " + result.status() + " indicates an authorization error! Make sure the API key is correct.");
+                    } else if (result.status() == HttpStatus.SC_CONFLICT) {
+                        logError(taskContext, "OCTOPUS-BAMBOO-ERROR-0005: Status code " + result.status() + " most likely means you are trying to push a file that already exists, and you have not enabled the \"Force the package upload\" option!");
                     } else {
                         logError(taskContext, "OCTOPUS-BAMBOO-ERROR-0002: Status code " + result.status() + " indicates an error!");
                     }
