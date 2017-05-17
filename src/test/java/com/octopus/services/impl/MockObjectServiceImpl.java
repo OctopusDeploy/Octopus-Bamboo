@@ -3,7 +3,6 @@ package com.octopus.services.impl;
 import com.atlassian.bamboo.Key;
 import com.atlassian.bamboo.ResultKey;
 import com.atlassian.bamboo.build.logger.BuildLogger;
-import com.atlassian.bamboo.build.logger.NullBuildLogger;
 import com.atlassian.bamboo.chains.ChainStorageTag;
 import com.atlassian.bamboo.configuration.ConfigurationMap;
 import com.atlassian.bamboo.configuration.ConfigurationMapImpl;
@@ -44,6 +43,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class MockObjectServiceImpl implements MockObjectService {
     public static final Logger LOGGER = LoggerFactory.getLogger(MockObjectServiceImpl.class);
 
+    public String getApiKey() {
+        return StringUtils.defaultIfBlank(
+                System.getProperty(OctoTestConstants.API_KEY_SYSTEM_PROP),
+                OctoTestConstants.DUMMY_API_KEY);
+    }
+
     public TaskContext getTaskContext(@NotNull final File workingDir) {
         return getTaskContext(workingDir, false, "**/test.0.0.1.zip");
     }
@@ -55,11 +60,22 @@ public class MockObjectServiceImpl implements MockObjectService {
     public TaskContext getTaskContext(@NotNull final File workingDir,
                                       final boolean forceUpload,
                                       @NotNull final String pattern) {
+        return getTaskContext(workingDir, forceUpload, pattern, getApiKey());
+    }
+
+    public TaskContext getTaskContext(@NotNull final File workingDir,
+                                      final boolean forceUpload,
+                                      @NotNull final String pattern,
+                                      @NotNull final String apiKey) {
         checkNotNull(workingDir);
+        checkNotNull(pattern);
+        checkNotNull(apiKey);
 
         final MockObjectService me = this;
 
         return new TaskContext() {
+            private RecordingBuildLogger logger = new RecordingBuildLogger();
+
             public long getId() {
                 return 0;
             }
@@ -94,7 +110,7 @@ public class MockObjectServiceImpl implements MockObjectService {
 
             @org.jetbrains.annotations.NotNull
             public BuildLogger getBuildLogger() {
-                return new NullBuildLogger();
+                return logger;
             }
 
             @org.jetbrains.annotations.NotNull
@@ -109,10 +125,6 @@ public class MockObjectServiceImpl implements MockObjectService {
 
             @org.jetbrains.annotations.NotNull
             public ConfigurationMap getConfigurationMap() {
-                final String apiKey = StringUtils.defaultIfBlank(
-                        System.getProperty(OctoTestConstants.API_KEY_SYSTEM_PROP),
-                        OctoTestConstants.DUMMY_API_KEY);
-
                 final ConfigurationMap retValue = new ConfigurationMapImpl();
                 retValue.put(OctoConstants.SERVER_URL, OctoConstants.LOCAL_OCTOPUS_INSTANCE);
                 retValue.put(OctoConstants.API_KEY, apiKey);

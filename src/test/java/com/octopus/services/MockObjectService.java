@@ -11,6 +11,11 @@ import java.io.File;
  */
 public interface MockObjectService {
     /**
+     * @return The api key that is used to authentication with the rest api
+     */
+    public String getApiKey();
+
+    /**
      * @param workingDir The directory to use as the working dir
      * @return A mock TaskContext
      */
@@ -30,6 +35,19 @@ public interface MockObjectService {
      * @return A mock TaskContext
      */
     TaskContext getTaskContext(@NotNull File workingDir, boolean forceUpload, @NotNull String pattern);
+
+    /**
+     * @param workingDir  The directory to use as the working dir
+     * @param forceUpload true if package uploads should be forced
+     * @param pattern     The file matching pattern
+     * @param apiKey      The api key to use with the rest server
+     * @return A mock TaskContext
+     */
+    TaskContext getTaskContext(
+            @NotNull File workingDir,
+            boolean forceUpload,
+            @NotNull String pattern,
+            @NotNull String apiKey);
 
     /**
      *

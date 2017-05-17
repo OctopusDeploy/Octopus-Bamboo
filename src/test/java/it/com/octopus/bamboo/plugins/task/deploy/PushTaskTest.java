@@ -1,9 +1,14 @@
 package it.com.octopus.bamboo.plugins.task.deploy;
 
+import com.atlassian.bamboo.build.LogEntry;
+import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.task.*;
 import com.atlassian.plugins.osgi.test.AtlassianPluginsTestRunner;
+import com.octopus.constants.OctoTestConstants;
 import com.octopus.services.MockObjectService;
 import com.octopus.services.impl.MockObjectServiceImpl;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -18,6 +23,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.octopus.constants.OctoConstants.TEST_PROFILE;
 import static com.octopus.constants.OctoTestConstants.SPRING_PROFILE_SYSTEM_PROP;
@@ -69,27 +76,60 @@ public class PushTaskTest {
                 "**/test.0.0.1.zip");
         final TaskResult taskResult = octopusDeployTask.execute(taskContext);
 
-        Assert.assertEquals(usingTestProfile ? TaskState.SUCCESS : TaskState.FAILED, taskResult.getTaskState());
+        /*
+            If we are not using the mock rest server and no api key
+            has been supplied, this will fail
+        */
+        final boolean shouldFail = !usingTestProfile
+                && OctoTestConstants.DUMMY_API_KEY.equals(MOCK_OBJECT_SERVICE.getApiKey());
+
+        Assert.assertEquals(shouldFail ? TaskState.FAILED : TaskState.SUCCESS, taskResult.getTaskState());
     }
 
     @Test
     public void testFailedPush() throws TaskException {
         Assert.assertNotNull(octopusDeployTask);
 
-        final TaskContext taskContext = MOCK_OBJECT_SERVICE.getTaskContext(
-                workingDir.toFile(),
-                true,
-                "**/this.does.not.match.anything.zip");
-        final TaskResult taskResult = octopusDeployTask.execute(taskContext);
+        /*
+            This test is only valid if we are not using the mock server and
+            if a valid api key has been supplied
+        */
+        final boolean shouldFail = !usingTestProfile
+                && !OctoTestConstants.DUMMY_API_KEY.equals(MOCK_OBJECT_SERVICE.getApiKey());
 
-        Assert.assertEquals(TaskState.FAILED, taskResult.getTaskState());
+        if (shouldFail) {
+            final TaskContext taskContext = MOCK_OBJECT_SERVICE.getTaskContext(
+                    workingDir.toFile(),
+                    true,
+                    "**/this.does.not.match.anything.zip");
+            final TaskResult taskResult = octopusDeployTask.execute(taskContext);
+
+            Assert.assertEquals(TaskState.FAILED, taskResult.getTaskState());
+
+            Assert.assertFalse(taskContext.getBuildLogger().getErrorLog().isEmpty());
+
+            /*
+                Make sure the appropriate error was displayed
+            */
+            final int errorCount = findErrorLogs(taskContext.getBuildLogger(),
+                    "OCTOPUS-BAMBOO-ERROR-0003").size();
+
+            Assert.assertEquals(1, errorCount);
+        }
     }
 
     @Test
     public void testUnforcedPush() throws TaskException {
         Assert.assertNotNull(octopusDeployTask);
 
-        if (usingTestProfile) {
+        /*
+            This test is only valid if we are not using the mock server and
+            if a valid api key has been supplied
+        */
+        final boolean shouldFail = !usingTestProfile
+                && !OctoTestConstants.DUMMY_API_KEY.equals(MOCK_OBJECT_SERVICE.getApiKey());
+
+        if (shouldFail) {
             /*
                 Do the initial push, forced because we need to ensure that this
                 file exists
@@ -110,6 +150,68 @@ public class PushTaskTest {
             final TaskResult taskResult = octopusDeployTask.execute(taskContext);
 
             Assert.assertEquals(TaskState.FAILED, taskResult.getTaskState());
+
+            Assert.assertFalse(taskContext.getBuildLogger().getErrorLog().isEmpty());
+
+            /*
+                Make sure the appropriate error was displayed
+             */
+            final int errorCount = findErrorLogs(taskContext.getBuildLogger(),
+                    "OCTOPUS-BAMBOO-ERROR-0005").size();
+
+            Assert.assertEquals(1, errorCount);
         }
+    }
+
+    @Test
+    public void testBadAPIKey() throws TaskException {
+        Assert.assertNotNull(octopusDeployTask);
+
+        /*
+            This test is only valid if we are not using the mock server and
+            if a valid api key has been supplied
+        */
+        final boolean shouldFail = !usingTestProfile
+                && !OctoTestConstants.DUMMY_API_KEY.equals(MOCK_OBJECT_SERVICE.getApiKey());
+
+        if (shouldFail) {
+            /*
+                Everything was supplied that we expect to find for a successful
+                API call. So now we send a dummy api key to test the auth failure.
+             */
+            final TaskContext taskContext = MOCK_OBJECT_SERVICE.getTaskContext(
+                    workingDir.toFile(),
+                    true,
+                    "**/test.0.0.1.zip",
+                    OctoTestConstants.DUMMY_API_KEY);
+            final TaskResult taskResult = octopusDeployTask.execute(taskContext);
+
+            Assert.assertEquals(TaskState.FAILED, taskResult.getTaskState());
+
+            Assert.assertFalse(taskContext.getBuildLogger().getErrorLog().isEmpty());
+
+            /*
+                Make sure the appropriate error was displayed
+            */
+            final int errorCount = findErrorLogs(taskContext.getBuildLogger(),
+                    "OCTOPUS-BAMBOO-ERROR-0001").size();
+
+            Assert.assertEquals(1, errorCount);
+        }
+    }
+
+    private List<LogEntry> findErrorLogs(@NotNull final BuildLogger logger, @NotNull final String message) {
+        final List<LogEntry> retValue = new ArrayList<>(logger.getErrorLog());
+
+        CollectionUtils.filter(
+                retValue,
+                new Predicate() {
+                    @Override
+                    public boolean evaluate(Object o) {
+                        return ((LogEntry) o).toString().contains(message);
+                    }
+                });
+
+        return retValue;
     }
 }
