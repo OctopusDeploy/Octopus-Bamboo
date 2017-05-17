@@ -11,8 +11,9 @@ import javax.validation.constraints.NotNull;
 public interface FeignService {
     /**
      * @param taskContext The Bamboo task context
+     * @param enableRetry set to true to allow the client to retry the request
      * @return A fiegn client that can be used to access the Octopus Deploy API
      */
     @NotNull
-    RestAPI createClient(@NotNull TaskContext taskContext);
+    RestAPI createClient(@NotNull TaskContext taskContext, boolean enableRetry);
 }

@@ -28,6 +28,10 @@ public class OctoConstants {
      * The configuration key for the ant pattern used to find files to upload
      */
     public static final String PUSH_PATTERN = "pushPattern";
+    /**
+     * The configuration key for the force upload option
+     */
+    public static final String FORCE = "force";
 
     private OctoConstants() {
 

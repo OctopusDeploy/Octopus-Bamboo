@@ -32,7 +32,7 @@ public class FeignServiceImpl implements FeignService {
 
     @Override
     @NotNull
-    public RestAPI createClient(@NotNull final TaskContext taskContext) {
+    public RestAPI createClient(@NotNull final TaskContext taskContext, final boolean enableRetry) {
         checkNotNull(taskContext);
 
         final Logger buildLogger = new BambooFeignLogger(taskContext.getBuildLogger());
@@ -41,7 +41,9 @@ public class FeignServiceImpl implements FeignService {
         final String apiKey = taskContext.getConfigurationMap().get(OctoConstants.API_KEY);
 
         checkState(StringUtils.isNotBlank(serverUrl));
-        checkState(StringUtils.isNotBlank(apiKey));
+        checkState(StringUtils.isNotBlank(apiKey),
+                "OCTOPUS-BAMBOO-ERROR-0004: The API key was blank. "
+                        + "Make sure the task has the API key configured correctly.");
 
         /*
             See https://howtoprogram.xyz/2016/12/29/file-uploading-open-feign/
@@ -49,6 +51,7 @@ public class FeignServiceImpl implements FeignService {
          */
         return Feign.builder()
                 .client(client)
+                .retryer(enableRetry ? new Retryer.Default() : Retryer.NEVER_RETRY)
                 .encoder(new GsonEncoder())
                 .encoder(new FormEncoder(new GsonEncoder()))
                 .decoder(new GsonDecoder())

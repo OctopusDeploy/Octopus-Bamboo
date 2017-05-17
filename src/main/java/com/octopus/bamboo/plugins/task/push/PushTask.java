@@ -8,6 +8,7 @@ import com.octopus.constants.OctoConstants;
 import com.octopus.services.FeignService;
 import com.octopus.services.FileService;
 import feign.Response;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpStatus;
 import org.jetbrains.annotations.NotNull;
@@ -36,32 +37,65 @@ public class PushTask implements TaskType {
     private final FeignService feignService;
     private final FileService fileService;
 
+    /**
+     * Constructor. Params are injected by Spring under normal usage.
+     *
+     * @param feignService The service that is used to create feign clients
+     * @param fileService  The service that is used to find files to upload
+     */
     @Inject
     public PushTask(@NotNull final FeignService feignService, @NotNull final FileService fileService) {
         this.feignService = feignService;
         this.fileService = fileService;
     }
 
+    /**
+     * Log an info message
+     * @param taskContext The Bamboo task context
+     * @param message The message to be logged
+     */
     private void logInfo(@NotNull final TaskContext taskContext, @NotNull final String message) {
         LOGGER.info(message);
         taskContext.getBuildLogger().addBuildLogEntry(message);
     }
 
+    /**
+     * Log an error message
+     * @param taskContext The Bamboo task context
+     * @param message The message to be logged
+     */
     private void logError(@NotNull final TaskContext taskContext, @NotNull final String message) {
         LOGGER.error(message);
         taskContext.getBuildLogger().addErrorLogEntry(message);
+    }
+
+    private TaskResult buildResult(@NotNull final TaskContext taskContext, final boolean success) {
+        final TaskResultBuilder builder = TaskResultBuilder.newBuilder(taskContext);
+        if (success) {
+            builder.success();
+        } else {
+            builder.failed();
+        }
+
+        return builder.build();
     }
 
     @NotNull
     public TaskResult execute(@NotNull final TaskContext taskContext) throws TaskException {
         checkNotNull(taskContext, "taskContext cannot be null");
 
-        logInfo(taskContext, "Starting PushTask.execute()");
+        /*
+            Get the value for forcing the upload
+         */
+        final Boolean forceUpload = BooleanUtils.toBoolean(
+                taskContext.getConfigurationMap().get(OctoConstants.FORCE));
 
         /*
-            Create the API client that we will use to call the Octopus REST API
+            Create the API client that we will use to call the Octopus REST API.
+            We allow any request that is forced to be retried, as this request
+            is essentially idempotent.
          */
-        final RestAPI restAPI = feignService.createClient(taskContext);
+        final RestAPI restAPI = feignService.createClient(taskContext, forceUpload);
 
         /*
             Get the list of matching files that need to be uploaded
@@ -75,11 +109,9 @@ public class PushTask implements TaskType {
             Fail if no files were matched
          */
         if (files.isEmpty()) {
-            logError(taskContext, "The pattern " + pattern
+            logError(taskContext, "OCTOPUS-BAMBOO-ERROR-0003: The pattern " + pattern
                     + " failed to match any files");
-            return TaskResultBuilder.newBuilder(taskContext)
-                    .failed()
-                    .build();
+            return buildResult(taskContext, false);
         }
 
         /*
@@ -87,7 +119,7 @@ public class PushTask implements TaskType {
          */
         try {
             for (final File file : files) {
-                final Response result = restAPI.packagesRaw(true, file);
+                final Response result = restAPI.packagesRaw(forceUpload, file);
 
                 /*
                     Mocked responses have no body
@@ -102,14 +134,12 @@ public class PushTask implements TaskType {
                  */
                 if (result.status() < START_HTTP_OK_RANGE || result.status() > END_HTTP_OK_RANGE) {
                     if (result.status() == HttpStatus.SC_UNAUTHORIZED) {
-                        logError(taskContext, "Status code " + result.status() + " indicates an authorization error! Make sure the API key is correct.");
+                        logError(taskContext, "OCTOPUS-BAMBOO-ERROR-0001: Status code " + result.status() + " indicates an authorization error! Make sure the API key is correct.");
                     } else {
-                        logError(taskContext, "Status code " + result.status() + " indicates an error!");
+                        logError(taskContext, "OCTOPUS-BAMBOO-ERROR-0002: Status code " + result.status() + " indicates an error!");
                     }
 
-                    return TaskResultBuilder.newBuilder(taskContext)
-                            .failed()
-                            .build();
+                    return buildResult(taskContext, false);
                 }
             }
         } catch (final Exception ex) {
@@ -117,16 +147,12 @@ public class PushTask implements TaskType {
                 Any upload errors mean this task has failed.
              */
             logError(taskContext, ex.toString());
-            return TaskResultBuilder.newBuilder(taskContext)
-                    .failed()
-                    .build();
+            return buildResult(taskContext, false);
         }
 
         /*
             We're all good, so let bamboo know that the task was a success.
          */
-        return TaskResultBuilder.newBuilder(taskContext)
-                .success()
-                .build();
+        return buildResult(taskContext, true);
     }
 }

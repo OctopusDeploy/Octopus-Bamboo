@@ -46,6 +46,7 @@ public class PushTaskConfigurator extends AbstractTaskConfigurator {
         config.put(OctoConstants.SERVER_URL, params.getString(OctoConstants.SERVER_URL));
         config.put(OctoConstants.API_KEY, params.getString(OctoConstants.API_KEY));
         config.put(OctoConstants.PUSH_PATTERN, params.getString(OctoConstants.PUSH_PATTERN));
+        config.put(OctoConstants.FORCE, params.getBoolean(OctoConstants.FORCE) + "");
         return config;
     }
 
@@ -60,6 +61,7 @@ public class PushTaskConfigurator extends AbstractTaskConfigurator {
         context.put(OctoConstants.SERVER_URL, taskDefinition.getConfiguration().get(OctoConstants.SERVER_URL));
         context.put(OctoConstants.API_KEY, taskDefinition.getConfiguration().get(OctoConstants.API_KEY));
         context.put(OctoConstants.PUSH_PATTERN, taskDefinition.getConfiguration().get(OctoConstants.PUSH_PATTERN));
+        context.put(OctoConstants.FORCE, taskDefinition.getConfiguration().get(OctoConstants.FORCE));
     }
 
     @Override

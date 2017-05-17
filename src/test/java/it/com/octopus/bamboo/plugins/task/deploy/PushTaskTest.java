@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import static com.octopus.constants.OctoConstants.TEST_PROFILE;
+import static com.octopus.constants.OctoTestConstants.SPRING_PROFILE_SYSTEM_PROP;
+
 /**
  * Integration tests for the deployment task
  */
@@ -27,10 +30,12 @@ public class PushTaskTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(PushTaskTest.class);
     private static final MockObjectService MOCK_OBJECT_SERVICE = new MockObjectServiceImpl();
     private final TaskType octopusDeployTask;
+    private final boolean usingTestProfile;
     private Path workingDir;
 
     public PushTaskTest(@NotNull final TaskType octopusDeployTask) {
         this.octopusDeployTask = octopusDeployTask;
+        usingTestProfile = TEST_PROFILE.equals(System.getProperty(SPRING_PROFILE_SYSTEM_PROP));
     }
 
     /**
@@ -58,9 +63,53 @@ public class PushTaskTest {
     public void testPush() throws TaskException {
         Assert.assertNotNull(octopusDeployTask);
 
-        final TaskContext taskContext = MOCK_OBJECT_SERVICE.getTaskContext(workingDir.toFile());
+        final TaskContext taskContext = MOCK_OBJECT_SERVICE.getTaskContext(
+                workingDir.toFile(),
+                true,
+                "**/test.0.0.1.zip");
         final TaskResult taskResult = octopusDeployTask.execute(taskContext);
 
-        Assert.assertEquals(TaskState.SUCCESS, taskResult.getTaskState());
+        Assert.assertEquals(usingTestProfile ? TaskState.SUCCESS : TaskState.FAILED, taskResult.getTaskState());
+    }
+
+    @Test
+    public void testFailedPush() throws TaskException {
+        Assert.assertNotNull(octopusDeployTask);
+
+        final TaskContext taskContext = MOCK_OBJECT_SERVICE.getTaskContext(
+                workingDir.toFile(),
+                true,
+                "**/this.does.not.match.anything.zip");
+        final TaskResult taskResult = octopusDeployTask.execute(taskContext);
+
+        Assert.assertEquals(TaskState.FAILED, taskResult.getTaskState());
+    }
+
+    @Test
+    public void testUnforcedPush() throws TaskException {
+        Assert.assertNotNull(octopusDeployTask);
+
+        if (usingTestProfile) {
+            /*
+                Do the initial push, forced because we need to ensure that this
+                file exists
+            */
+            final TaskContext taskContextForce = MOCK_OBJECT_SERVICE.getTaskContext(
+                    workingDir.toFile(),
+                    true,
+                    "**/test.0.0.1.zip");
+            octopusDeployTask.execute(taskContextForce);
+
+            /*
+                Try again with an unforced push. This must fail
+            */
+            final TaskContext taskContext = MOCK_OBJECT_SERVICE.getTaskContext(
+                    workingDir.toFile(),
+                    false,
+                    "**/test.0.0.1.zip");
+            final TaskResult taskResult = octopusDeployTask.execute(taskContext);
+
+            Assert.assertEquals(TaskState.FAILED, taskResult.getTaskState());
+        }
     }
 }

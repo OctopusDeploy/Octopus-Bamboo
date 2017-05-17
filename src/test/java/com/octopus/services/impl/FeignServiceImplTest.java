@@ -35,7 +35,7 @@ public class FeignServiceImplTest {
                         + " value set to the api key of a local instance of Octopus Deploy.");
 
         final TaskContext taskContext = MOCK_OBJECT_SERVICE.getTaskContext(new File("."));
-        final RestAPI restAPI = FEIGN_SERVICE.createClient(taskContext);
+        final RestAPI restAPI = FEIGN_SERVICE.createClient(taskContext, true);
         final List<File> uploadFile = FILE_SERVICE.getMatchingFile(
                 new File("."),
                 "**/resources/test.0.0.1.zip");

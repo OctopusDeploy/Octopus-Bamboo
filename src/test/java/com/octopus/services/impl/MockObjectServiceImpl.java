@@ -45,6 +45,16 @@ public class MockObjectServiceImpl implements MockObjectService {
     public static final Logger LOGGER = LoggerFactory.getLogger(MockObjectServiceImpl.class);
 
     public TaskContext getTaskContext(@NotNull final File workingDir) {
+        return getTaskContext(workingDir, false, "**/test.0.0.1.zip");
+    }
+
+    public TaskContext getTaskContext(@NotNull final File workingDir, final boolean forceUpload) {
+        return getTaskContext(workingDir, forceUpload, "**/test.0.0.1.zip");
+    }
+
+    public TaskContext getTaskContext(@NotNull final File workingDir,
+                                      final boolean forceUpload,
+                                      @NotNull final String pattern) {
         checkNotNull(workingDir);
 
         final MockObjectService me = this;
@@ -106,7 +116,8 @@ public class MockObjectServiceImpl implements MockObjectService {
                 final ConfigurationMap retValue = new ConfigurationMapImpl();
                 retValue.put(OctoConstants.SERVER_URL, OctoConstants.LOCAL_OCTOPUS_INSTANCE);
                 retValue.put(OctoConstants.API_KEY, apiKey);
-                retValue.put(OctoConstants.PUSH_PATTERN, "**/test.0.0.1.zip");
+                retValue.put(OctoConstants.FORCE, forceUpload + "");
+                retValue.put(OctoConstants.PUSH_PATTERN, pattern);
                 return retValue;
             }
 
