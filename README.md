@@ -38,3 +38,4 @@ Run the command `atlas-run` to start an instance of Bamboo with the plugin deplo
 | OCTOPUS-BAMBOO-ERROR-0003 | No matching files could be found to push to Octopus Deploy. Check that the file pattern matches a file in the Bamboo working directory |
 | OCTOPUS-BAMBOO-ERROR-0004 | The API key setting was not found when running the package push |
 | OCTOPUS-BAMBOO-ERROR-0005 | A file that already exists was attempted to be pushed again without the force option enabled |
+| OCTOPUS-BAMBOO-ERROR-0006 | The list of packages was not found while attempting to match a step package with a version |

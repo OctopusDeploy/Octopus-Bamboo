@@ -3,6 +3,7 @@ package it.com.octopus.bamboo.plugins.task.deploy;
 import com.atlassian.bamboo.build.LogEntry;
 import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.task.*;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.plugins.osgi.test.AtlassianPluginsTestRunner;
 import com.octopus.constants.OctoTestConstants;
 import com.octopus.services.MockObjectService;
@@ -18,6 +19,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +42,8 @@ public class PushTaskTest {
     private final boolean usingTestProfile;
     private Path workingDir;
 
-    public PushTaskTest(@NotNull final TaskType octopusDeployTask) {
+    @Inject
+    public PushTaskTest(@ComponentImport("pushTask") @NotNull final TaskType octopusDeployTask) {
         this.octopusDeployTask = octopusDeployTask;
         usingTestProfile = TEST_PROFILE.equals(System.getProperty(SPRING_PROFILE_SYSTEM_PROP));
     }

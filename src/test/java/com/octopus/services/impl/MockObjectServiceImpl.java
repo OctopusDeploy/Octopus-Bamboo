@@ -49,6 +49,10 @@ public class MockObjectServiceImpl implements MockObjectService {
                 OctoTestConstants.DUMMY_API_KEY);
     }
 
+    public TaskContext getTaskContext() {
+        return getTaskContext(new File("."), false, "**/first-bamboo-int.0.0.1.zip");
+    }
+
     public TaskContext getTaskContext(@NotNull final File workingDir) {
         return getTaskContext(workingDir, false, "**/first-bamboo-int.0.0.1.zip");
     }
@@ -130,6 +134,7 @@ public class MockObjectServiceImpl implements MockObjectService {
                 retValue.put(OctoConstants.API_KEY, apiKey);
                 retValue.put(OctoConstants.FORCE, forceUpload + "");
                 retValue.put(OctoConstants.PUSH_PATTERN, pattern);
+                retValue.put(OctoConstants.PROJECT_NAME, OctoTestConstants.TEST_PROJECT);
                 return retValue;
             }
 

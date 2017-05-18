@@ -1,10 +1,14 @@
 package com.octopus.bamboo.plugins.task.push;
 
 import com.amazonaws.util.IOUtils;
-import com.atlassian.bamboo.task.*;
+import com.atlassian.bamboo.task.TaskContext;
+import com.atlassian.bamboo.task.TaskException;
+import com.atlassian.bamboo.task.TaskResult;
+import com.atlassian.bamboo.task.TaskType;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.octopus.api.RestAPI;
 import com.octopus.constants.OctoConstants;
+import com.octopus.services.CommonTaskService;
 import com.octopus.services.FeignService;
 import com.octopus.services.FileService;
 import feign.Response;
@@ -32,52 +36,28 @@ import static com.google.common.base.Preconditions.checkState;
 @Named("pushTask")
 public class PushTask implements TaskType {
     private static final Logger LOGGER = LoggerFactory.getLogger(PushTask.class);
-    private static final int START_HTTP_OK_RANGE = 200;
-    private static final int END_HTTP_OK_RANGE = 299;
     private final FeignService feignService;
     private final FileService fileService;
+    private final CommonTaskService commonTaskService;
 
     /**
      * Constructor. Params are injected by Spring under normal usage.
      *
      * @param feignService The service that is used to create feign clients
      * @param fileService  The service that is used to find files to upload
+     * @param commonTaskService The service used for common task operations
      */
     @Inject
-    public PushTask(@NotNull final FeignService feignService, @NotNull final FileService fileService) {
+    public PushTask(@NotNull final FeignService feignService,
+                    @NotNull final FileService fileService,
+                    @NotNull final CommonTaskService commonTaskService) {
+        checkNotNull(feignService, "feignService cannot be null");
+        checkNotNull(fileService, "fileService cannot be null");
+        checkNotNull(commonTaskService, "commonTaskService cannot be null");
+
         this.feignService = feignService;
         this.fileService = fileService;
-    }
-
-    /**
-     * Log an info message
-     * @param taskContext The Bamboo task context
-     * @param message The message to be logged
-     */
-    private void logInfo(@NotNull final TaskContext taskContext, @NotNull final String message) {
-        LOGGER.info(message);
-        taskContext.getBuildLogger().addBuildLogEntry(message);
-    }
-
-    /**
-     * Log an error message
-     * @param taskContext The Bamboo task context
-     * @param message The message to be logged
-     */
-    private void logError(@NotNull final TaskContext taskContext, @NotNull final String message) {
-        LOGGER.error(message);
-        taskContext.getBuildLogger().addErrorLogEntry(message);
-    }
-
-    private TaskResult buildResult(@NotNull final TaskContext taskContext, final boolean success) {
-        final TaskResultBuilder builder = TaskResultBuilder.newBuilder(taskContext);
-        if (success) {
-            builder.success();
-        } else {
-            builder.failed();
-        }
-
-        return builder.build();
+        this.commonTaskService = commonTaskService;
     }
 
     @NotNull
@@ -109,9 +89,9 @@ public class PushTask implements TaskType {
             Fail if no files were matched
          */
         if (files.isEmpty()) {
-            logError(taskContext, "OCTOPUS-BAMBOO-ERROR-0003: The pattern " + pattern
+            commonTaskService.logError(taskContext, "OCTOPUS-BAMBOO-ERROR-0003: The pattern " + pattern
                     + " failed to match any files");
-            return buildResult(taskContext, false);
+            return commonTaskService.buildResult(taskContext, false);
         }
 
         /*
@@ -132,36 +112,36 @@ public class PushTask implements TaskType {
                 /*
                     Make sure the response code indicates success
                  */
-                if (result.status() < START_HTTP_OK_RANGE || result.status() > END_HTTP_OK_RANGE) {
+                if (result.status() < OctoConstants.START_HTTP_OK_RANGE || result.status() > OctoConstants.END_HTTP_OK_RANGE) {
                     if (result.status() == HttpStatus.SC_UNAUTHORIZED) {
-                        logError(taskContext, "OCTOPUS-BAMBOO-ERROR-0001: Status code "
+                        commonTaskService.logError(taskContext, "OCTOPUS-BAMBOO-ERROR-0001: Status code "
                                 + result.status()
                                 + " indicates an authorization error! Make sure the API key is correct.");
                     } else if (result.status() == HttpStatus.SC_CONFLICT) {
-                        logError(taskContext, "OCTOPUS-BAMBOO-ERROR-0005: Status code "
+                        commonTaskService.logError(taskContext, "OCTOPUS-BAMBOO-ERROR-0005: Status code "
                                 + result.status()
                                 + " most likely means you are trying to push a file that already exists, "
                                 + " and you have not enabled the \"Force the package upload\" option!");
                     } else {
-                        logError(taskContext, "OCTOPUS-BAMBOO-ERROR-0002: Status code "
+                        commonTaskService.logError(taskContext, "OCTOPUS-BAMBOO-ERROR-0002: Status code "
                                 + result.status()
                                 + " indicates an error!");
                     }
 
-                    return buildResult(taskContext, false);
+                    return commonTaskService.buildResult(taskContext, false);
                 }
             }
         } catch (final Exception ex) {
             /*
                 Any upload errors mean this task has failed.
              */
-            logError(taskContext, ex.toString());
-            return buildResult(taskContext, false);
+            commonTaskService.logError(taskContext, ex.toString());
+            return commonTaskService.buildResult(taskContext, false);
         }
 
         /*
             We're all good, so let bamboo know that the task was a success.
          */
-        return buildResult(taskContext, true);
+        return commonTaskService.buildResult(taskContext, true);
     }
 }

@@ -26,6 +26,15 @@
         <description>Deploy the artifact(s) to Octopus Deploy</description>
         <category name="deployment"/>
         <configuration class="com.octopus.bamboo.plugins.task.push.PushTaskConfigurator"/>
+        <resource type="freemarker" name="edit" location="freemarker/push.ftl"/>
+        <resource type="download" name="icon" location="images/pluginLogo.png"/>
+    </taskType>
+
+    <taskType key="task.builder.maven" name="Octopus Deploy: Create Release"
+              class="com.octopus.bamboo.plugins.task.createrelease.CreateReleaseTask">
+        <description>Create a release within an Octopus Deploy project</description>
+        <category name="deployment"/>
+        <configuration class="com.octopus.bamboo.plugins.task.push.PushTaskConfigurator"/>
         <resource type="freemarker" name="edit" location="freemarker/configuration.ftl"/>
         <resource type="download" name="icon" location="images/pluginLogo.png"/>
     </taskType>

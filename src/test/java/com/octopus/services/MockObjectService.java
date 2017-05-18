@@ -16,6 +16,11 @@ public interface MockObjectService {
     public String getApiKey();
 
     /**
+     * @return A mock TaskContext
+     */
+    TaskContext getTaskContext();
+
+    /**
      * @param workingDir The directory to use as the working dir
      * @return A mock TaskContext
      */

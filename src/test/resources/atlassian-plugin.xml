@@ -9,6 +9,8 @@
     <component-import key="octopusDeployTask" interface="com.atlassian.bamboo.task.TaskType"/>
     <component-import key="taskConfigurator" interface="com.atlassian.bamboo.task.TaskConfigurator"/>
 
+    <component-import key="createReleaseTask" interface="com.atlassian.bamboo.task.TaskType"/>
+
     <!-- from the product container -->
     <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties"/>
 
