@@ -25,7 +25,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @Component
 @ExportAsService({com.atlassian.bamboo.task.TaskConfigurator.class})
-@Named("taskConfigurator")
+@Named("pushTaskConfigurator")
 public class PushTaskConfigurator extends AbstractTaskConfigurator {
     private static final String SERVER_URL_ERROR_KEY = "octopus.serverUrl.error";
     private static final String PUSH_PATTERN_ERROR_KEY = "octopus.pushPattern.error";

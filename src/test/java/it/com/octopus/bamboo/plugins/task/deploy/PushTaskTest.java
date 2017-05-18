@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
@@ -43,7 +44,7 @@ public class PushTaskTest {
     private Path workingDir;
 
     @Inject
-    public PushTaskTest(@ComponentImport("pushTask") @NotNull final TaskType octopusDeployTask) {
+    public PushTaskTest(@ComponentImport @Qualifier("pushTask") @NotNull final TaskType octopusDeployTask) {
         this.octopusDeployTask = octopusDeployTask;
         usingTestProfile = TEST_PROFILE.equals(System.getProperty(SPRING_PROFILE_SYSTEM_PROP));
     }

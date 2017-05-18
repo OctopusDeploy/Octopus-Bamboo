@@ -92,8 +92,14 @@ public class CreateReleaseTask implements TaskType {
          */
         populateSelectedPackages(taskContext, release, project);
 
+        /*
+            Create the release
+         */
         restAPI.createRelease(false, release);
 
+        /*
+            All went well, so return a successful result
+         */
         return commonTaskService.buildResult(taskContext, true);
     }
 

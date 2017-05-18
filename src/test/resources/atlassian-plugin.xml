@@ -6,8 +6,8 @@
     </plugin-info>
 
     <!-- from our base plugin -->
-    <component-import key="octopusDeployTask" interface="com.atlassian.bamboo.task.TaskType"/>
-    <component-import key="taskConfigurator" interface="com.atlassian.bamboo.task.TaskConfigurator"/>
+    <component-import key="pushTask" interface="com.atlassian.bamboo.task.TaskType"/>
+    <component-import key="pushTaskConfigurator" interface="com.atlassian.bamboo.task.TaskConfigurator"/>
 
     <component-import key="createReleaseTask" interface="com.atlassian.bamboo.task.TaskType"/>
 
