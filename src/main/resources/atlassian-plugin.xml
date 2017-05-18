@@ -21,12 +21,13 @@
         <context>OctopusBamboo</context>
     </web-resource>
 
-    <taskType key="task.builder.maven" name="Octopus Deploy"
+    <taskType key="task.builder.maven" name="Octopus Deploy: Push Packages"
               class="com.octopus.bamboo.plugins.task.push.PushTask">
         <description>Deploy the artifact(s) to Octopus Deploy</description>
         <category name="deployment"/>
         <configuration class="com.octopus.bamboo.plugins.task.push.PushTaskConfigurator"/>
         <resource type="freemarker" name="edit" location="freemarker/configuration.ftl"/>
+        <resource type="download" name="icon" location="images/pluginLogo.png"/>
     </taskType>
 
 </atlassian-plugin>
