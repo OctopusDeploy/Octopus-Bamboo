@@ -38,7 +38,7 @@ public class FeignServiceImplTest {
         final RestAPI restAPI = FEIGN_SERVICE.createClient(taskContext, true);
         final List<File> uploadFile = FILE_SERVICE.getMatchingFile(
                 new File("."),
-                "**/resources/test.0.0.1.zip");
+                "**/resources/first-bamboo-int.0.0.1.zip");
 
         Assert.assertTrue(uploadFile.size() == 1);
 

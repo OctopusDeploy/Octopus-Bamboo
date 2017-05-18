@@ -54,8 +54,10 @@ public class PushTaskTest {
     @Before
     public void setupWorkingDir() throws IOException {
         workingDir = Files.createTempDirectory("bambooIntTest");
-        FileUtils.copyURLToFile(getClass().getResource("/test.0.0.1.zip"),
-                new File(workingDir.toFile().getAbsolutePath() + File.separator + "test.0.0.1.zip"));
+        FileUtils.copyURLToFile(getClass().getResource("/first-bamboo-int.0.0.1.zip"),
+                new File(workingDir.toFile().getAbsolutePath() + File.separator + "first-bamboo-int.0.0.1.zip"));
+        FileUtils.copyURLToFile(getClass().getResource("/first-bamboo-int.0.0.1.zip"),
+                new File(workingDir.toFile().getAbsolutePath() + File.separator + "second-bamboo-int.0.0.1.zip"));
     }
 
     /**
@@ -73,7 +75,27 @@ public class PushTaskTest {
         final TaskContext taskContext = MOCK_OBJECT_SERVICE.getTaskContext(
                 workingDir.toFile(),
                 true,
-                "**/test.0.0.1.zip");
+                "**/first-bamboo-int.0.0.1.zip");
+        final TaskResult taskResult = octopusDeployTask.execute(taskContext);
+
+        /*
+            If we are not using the mock rest server and no api key
+            has been supplied, this will fail
+        */
+        final boolean shouldFail = !usingTestProfile
+                && OctoTestConstants.DUMMY_API_KEY.equals(MOCK_OBJECT_SERVICE.getApiKey());
+
+        Assert.assertEquals(shouldFail ? TaskState.FAILED : TaskState.SUCCESS, taskResult.getTaskState());
+    }
+
+    @Test
+    public void testPushMultiple() throws TaskException {
+        Assert.assertNotNull(octopusDeployTask);
+
+        final TaskContext taskContext = MOCK_OBJECT_SERVICE.getTaskContext(
+                workingDir.toFile(),
+                true,
+                "**/*-bamboo-int.0.0.1.zip");
         final TaskResult taskResult = octopusDeployTask.execute(taskContext);
 
         /*
@@ -137,7 +159,7 @@ public class PushTaskTest {
             final TaskContext taskContextForce = MOCK_OBJECT_SERVICE.getTaskContext(
                     workingDir.toFile(),
                     true,
-                    "**/test.0.0.1.zip");
+                    "**/first-bamboo-int.0.0.1.zip");
             octopusDeployTask.execute(taskContextForce);
 
             /*
@@ -146,7 +168,7 @@ public class PushTaskTest {
             final TaskContext taskContext = MOCK_OBJECT_SERVICE.getTaskContext(
                     workingDir.toFile(),
                     false,
-                    "**/test.0.0.1.zip");
+                    "**/first-bamboo-int.0.0.1.zip");
             final TaskResult taskResult = octopusDeployTask.execute(taskContext);
 
             Assert.assertEquals(TaskState.FAILED, taskResult.getTaskState());
@@ -182,7 +204,7 @@ public class PushTaskTest {
             final TaskContext taskContext = MOCK_OBJECT_SERVICE.getTaskContext(
                     workingDir.toFile(),
                     true,
-                    "**/test.0.0.1.zip",
+                    "**/first-bamboo-int.0.0.1.zip",
                     OctoTestConstants.DUMMY_API_KEY);
             final TaskResult taskResult = octopusDeployTask.execute(taskContext);
 
@@ -200,6 +222,13 @@ public class PushTaskTest {
         }
     }
 
+    /**
+     * Filter out the error logs to return those with the specific code
+     *
+     * @param logger  The logger
+     * @param message The message to find
+     * @return A list of the matching messages
+     */
     private List<LogEntry> findErrorLogs(@NotNull final BuildLogger logger, @NotNull final String message) {
         final List<LogEntry> retValue = new ArrayList<>(logger.getErrorLog());
 

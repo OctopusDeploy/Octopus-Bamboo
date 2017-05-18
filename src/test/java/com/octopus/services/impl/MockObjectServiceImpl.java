@@ -50,11 +50,11 @@ public class MockObjectServiceImpl implements MockObjectService {
     }
 
     public TaskContext getTaskContext(@NotNull final File workingDir) {
-        return getTaskContext(workingDir, false, "**/test.0.0.1.zip");
+        return getTaskContext(workingDir, false, "**/first-bamboo-int.0.0.1.zip");
     }
 
     public TaskContext getTaskContext(@NotNull final File workingDir, final boolean forceUpload) {
-        return getTaskContext(workingDir, forceUpload, "**/test.0.0.1.zip");
+        return getTaskContext(workingDir, forceUpload, "**/first-bamboo-int.0.0.1.zip");
     }
 
     public TaskContext getTaskContext(@NotNull final File workingDir,
