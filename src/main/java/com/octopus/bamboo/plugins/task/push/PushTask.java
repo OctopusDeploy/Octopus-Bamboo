@@ -32,7 +32,7 @@ import static com.google.common.base.Preconditions.checkState;
  * The Bamboo Task that is used to deploy artifacts to Octopus Deploy
  */
 @Component
-@ExportAsService({TaskType.class})
+@ExportAsService({PushTask.class})
 @Named("pushTask")
 public class PushTask implements TaskType {
     private static final Logger LOGGER = LoggerFactory.getLogger(PushTask.class);
@@ -63,6 +63,8 @@ public class PushTask implements TaskType {
     @NotNull
     public TaskResult execute(@NotNull final TaskContext taskContext) throws TaskException {
         checkNotNull(taskContext, "taskContext cannot be null");
+
+        LOGGER.info("PushTask.execute() Start");
 
         /*
             Get the value for forcing the upload

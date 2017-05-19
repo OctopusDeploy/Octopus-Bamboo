@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -35,7 +36,7 @@ import static com.google.common.base.Preconditions.*;
  * The Bamboo Task that is used to create releases in Octopus Deploy
  */
 @Component
-@ExportAsService({TaskType.class})
+@ExportAsService({CreateReleaseTask.class})
 @Named("createReleaseTask")
 public class CreateReleaseTask implements TaskType {
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateReleaseTask.class);
@@ -180,20 +181,20 @@ public class CreateReleaseTask implements TaskType {
 
         final Optional<Project> project = getProjectID(taskContext, projectName);
         if (!project.isPresent()) {
-            throw new ConfigurationException();
+            throw new ConfigurationException("Project named " + projectName + " was not found");
         }
         release.setProjectId(project.get().getId());
 
         if (StringUtils.isNotBlank(channelName)) {
             final Optional<String> channelId = getChannelID(taskContext, project.get(), channelName);
             if (!channelId.isPresent()) {
-                throw new ConfigurationException();
+                throw new ConfigurationException("Channel named " + channelName + " was not found");
             }
             release.setChannelId(channelId.get());
         } else {
             final Optional<String> channelId = getDefaultChannelID(taskContext, project.get());
             if (!channelId.isPresent()) {
-                throw new ConfigurationException();
+                throw new ConfigurationException("Default channel ID was not found");
             }
             release.setChannelId(channelId.get());
         }
@@ -213,12 +214,13 @@ public class CreateReleaseTask implements TaskType {
         checkArgument(StringUtils.isNotBlank(projectName));
 
         final RestAPI restAPI = feignService.createClient(taskContext, true);
-        final List<Project> projects = restAPI.getProjects();
+        final List<Project> projects = Arrays.asList(restAPI.getProjects());
 
         CollectionUtils.filter(projects, new Predicate<Project>() {
             @Override
             public boolean evaluate(final Project item) {
-                return projectName.equals(Project.class.cast(item).getName());
+                LOGGER.info("Filtering project " + item.getName());
+                return projectName.equals(item.getName());
             }
         });
 

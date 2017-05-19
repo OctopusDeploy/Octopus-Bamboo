@@ -1,6 +1,8 @@
 package com.octopus.services.impl;
 
 import com.atlassian.bamboo.task.TaskContext;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.GsonBuilder;
 import com.octopus.api.RestAPI;
 import com.octopus.constants.OctoConstants;
 import com.octopus.services.FeignService;
@@ -52,9 +54,13 @@ public class FeignServiceImpl implements FeignService {
         return Feign.builder()
                 .client(client)
                 .retryer(enableRetry ? new Retryer.Default() : Retryer.NEVER_RETRY)
-                .encoder(new GsonEncoder())
+                .encoder(new GsonEncoder(new GsonBuilder()
+                        .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
+                        .create()))
                 .encoder(new FormEncoder(new GsonEncoder()))
-                .decoder(new GsonDecoder())
+                .decoder(new GsonDecoder(new GsonBuilder()
+                        .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
+                        .create()))
                 .logger(buildLogger)
                 .logLevel(Logger.Level.BASIC)
                 .requestInterceptor(new RequestInterceptor() {

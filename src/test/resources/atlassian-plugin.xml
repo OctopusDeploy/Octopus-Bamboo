@@ -6,10 +6,11 @@
     </plugin-info>
 
     <!-- from our base plugin -->
-    <component-import key="pushTask" interface="com.atlassian.bamboo.task.TaskType"/>
+    <component-import key="pushTask" interface="com.octopus.bamboo.plugins.task.push.PushTask"/>
     <component-import key="pushTaskConfigurator" interface="com.atlassian.bamboo.task.TaskConfigurator"/>
 
-    <component-import key="createReleaseTask" interface="com.atlassian.bamboo.task.TaskType"/>
+    <component-import key="createReleaseTask"
+                      interface="com.octopus.bamboo.plugins.task.createrelease.CreateReleaseTask"/>
 
     <!-- from the product container -->
     <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties"/>

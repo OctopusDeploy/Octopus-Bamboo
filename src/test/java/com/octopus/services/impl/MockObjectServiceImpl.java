@@ -71,6 +71,14 @@ public class MockObjectServiceImpl implements MockObjectService {
                                       final boolean forceUpload,
                                       @NotNull final String pattern,
                                       @NotNull final String apiKey) {
+        return getTaskContext(workingDir, forceUpload, pattern, apiKey, OctoConstants.LOCAL_OCTOPUS_INSTANCE);
+    }
+
+    public TaskContext getTaskContext(@NotNull final File workingDir,
+                                      final boolean forceUpload,
+                                      @NotNull final String pattern,
+                                      @NotNull final String apiKey,
+                                      @NotNull final String octopusUrl) {
         checkNotNull(workingDir);
         checkNotNull(pattern);
         checkNotNull(apiKey);
@@ -130,7 +138,7 @@ public class MockObjectServiceImpl implements MockObjectService {
             @org.jetbrains.annotations.NotNull
             public ConfigurationMap getConfigurationMap() {
                 final ConfigurationMap retValue = new ConfigurationMapImpl();
-                retValue.put(OctoConstants.SERVER_URL, OctoConstants.LOCAL_OCTOPUS_INSTANCE);
+                retValue.put(OctoConstants.SERVER_URL, octopusUrl);
                 retValue.put(OctoConstants.API_KEY, apiKey);
                 retValue.put(OctoConstants.FORCE, forceUpload + "");
                 retValue.put(OctoConstants.PUSH_PATTERN, pattern);
