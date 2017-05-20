@@ -57,7 +57,7 @@ public interface RestAPI {
      * @param deploymentProcessesId The deployment process ID
      * @return The details of the deployment process
      */
-    @RequestLine("GET /deploymentprocesses/{deploymentProcessesId")
+    @RequestLine("GET /deploymentprocesses/{deploymentProcessesId}")
     DeploymentProcess getDeploymentProcess(@Param("deploymentProcessesId") String deploymentProcessesId);
 
     /**

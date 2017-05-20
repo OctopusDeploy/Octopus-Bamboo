@@ -10,7 +10,7 @@ public class DeploymentProcess {
 
     private String id;
 
-    private String version;
+    private Integer version;
 
     private String lastSnapshotId;
 
@@ -32,11 +32,11 @@ public class DeploymentProcess {
         this.id = id;
     }
 
-    public String getVersion() {
+    public Integer getVersion() {
         return version;
     }
 
-    public void setVersion(final String version) {
+    public void setVersion(final Integer version) {
         this.version = version;
     }
 

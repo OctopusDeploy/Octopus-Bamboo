@@ -17,7 +17,7 @@ public class Step {
 
     private String id;
 
-    private String requiresPackagesToBeAcquired;
+    private Boolean requiresPackagesToBeAcquired;
 
     private Map<String, String> properties;
 
@@ -61,11 +61,11 @@ public class Step {
         this.id = id;
     }
 
-    public String getRequiresPackagesToBeAcquired() {
+    public Boolean getRequiresPackagesToBeAcquired() {
         return requiresPackagesToBeAcquired;
     }
 
-    public void setRequiresPackagesToBeAcquired(final String requiresPackagesToBeAcquired) {
+    public void setRequiresPackagesToBeAcquired(final Boolean requiresPackagesToBeAcquired) {
         this.requiresPackagesToBeAcquired = requiresPackagesToBeAcquired;
     }
 
