@@ -1,5 +1,7 @@
 package com.octopus.domain;
 
+import java.util.List;
+
 /**
  * https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/Channels
  */
@@ -14,11 +16,11 @@ public class Channel {
 
     private String id;
 
-    //private String[] rules;
+    //private List<String> rules;
 
     private String projectId;
 
-    private String[] tenantTags;
+    private List<String> tenantTags;
 
     public String getName() {
         return name;
@@ -60,11 +62,11 @@ public class Channel {
         this.id = id;
     }
 
-    /*public String[] getRules() {
+    /*public List<String> getRules() {
         return rules;
     }
 
-    public void setRules(final String[] rules) {
+    public void setRules(final List<String> rules) {
         this.rules = rules;
     }*/
 
@@ -76,11 +78,11 @@ public class Channel {
         this.projectId = projectId;
     }
 
-    public String[] getTenantTags() {
+    public List<String> getTenantTags() {
         return tenantTags;
     }
 
-    public void setTenantTags(final String[] tenantTags) {
+    public void setTenantTags(final List<String> tenantTags) {
         this.tenantTags = tenantTags;
     }
 }

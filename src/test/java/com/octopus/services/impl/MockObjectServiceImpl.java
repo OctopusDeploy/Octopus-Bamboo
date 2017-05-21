@@ -152,7 +152,7 @@ public class MockObjectServiceImpl implements MockObjectService {
                 retValue.put(OctoConstants.PUSH_PATTERN, pattern);
                 retValue.put(OctoConstants.PROJECT_NAME, OctoTestConstants.TEST_PROJECT);
                 retValue.put(OctoConstants.RELEASE_VERSION, releaseVersion);
-                retValue.put(OctoConstants.DETAILED_LOGGING, "true");
+                retValue.put(OctoConstants.VERBOSE_LOGGING, "true");
                 return retValue;
             }
 

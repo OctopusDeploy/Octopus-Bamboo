@@ -7,6 +7,7 @@ import feign.RequestLine;
 import feign.Response;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * A small subset of the Octopus Delpoy REST API that this plugin will
@@ -30,7 +31,7 @@ public interface RestAPI {
      * @return The details of the projects
      */
     @RequestLine("GET /projects/all")
-    Project[] getProjects();
+    List<Project> getProjects();
 
     /**
      * https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/Channels

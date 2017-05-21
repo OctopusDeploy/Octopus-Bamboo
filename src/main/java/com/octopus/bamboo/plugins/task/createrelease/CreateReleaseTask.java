@@ -27,7 +27,6 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -84,7 +83,7 @@ public class CreateReleaseTask implements TaskType {
             We allow any request that includes a version number to be retried, as this request
             is essentially idempotent.
          */
-        final RestAPI restAPI = feignService.createClient(taskContext, StringUtils.isNotBlank(release.getVersion()));
+        final RestAPI restAPI = feignService.createClient(taskContext, false);
 
         try {
             /*
@@ -227,7 +226,7 @@ public class CreateReleaseTask implements TaskType {
         checkArgument(StringUtils.isNotBlank(projectName));
 
         final RestAPI restAPI = feignService.createClient(taskContext, true);
-        final List<Project> projects = Arrays.asList(restAPI.getProjects());
+        final List<Project> projects = restAPI.getProjects();
 
         CollectionUtils.filter(projects, new Predicate<Project>() {
             @Override

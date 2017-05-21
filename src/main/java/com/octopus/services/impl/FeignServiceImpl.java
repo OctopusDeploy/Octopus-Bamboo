@@ -42,7 +42,7 @@ public class FeignServiceImpl implements FeignService {
 
         final String serverUrl = taskContext.getConfigurationMap().get(OctoConstants.SERVER_URL);
         final String apiKey = taskContext.getConfigurationMap().get(OctoConstants.API_KEY);
-        final String loggingLevel = taskContext.getConfigurationMap().get(OctoConstants.DETAILED_LOGGING);
+        final String loggingLevel = taskContext.getConfigurationMap().get(OctoConstants.VERBOSE_LOGGING);
 
         checkState(StringUtils.isNotBlank(serverUrl));
         checkState(StringUtils.isNotBlank(apiKey),

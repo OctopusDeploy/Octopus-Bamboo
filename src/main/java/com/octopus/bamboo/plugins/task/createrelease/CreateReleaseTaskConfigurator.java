@@ -27,8 +27,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @ExportAsService({com.atlassian.bamboo.task.TaskConfigurator.class})
 @Named("createReleaseTaskConfigurator")
 public class CreateReleaseTaskConfigurator extends AbstractTaskConfigurator {
+    private static final String API_KEY_ERROR_KEY = "octopus.apiKey.error";
     private static final String SERVER_URL_ERROR_KEY = "octopus.serverUrl.error";
     private static final String PUSH_PATTERN_ERROR_KEY = "octopus.pushPattern.error";
+    private static final String PROJECT_NAME_ERROR_KEY = "octopus.projectName.error";
+    private static final String RELEASE_VERSION_ERROR_KEY = "octopus.releaseVersion.error";
     @ComponentImport
     private final TextProvider textProvider;
 
@@ -45,6 +48,10 @@ public class CreateReleaseTaskConfigurator extends AbstractTaskConfigurator {
         final Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
         config.put(OctoConstants.SERVER_URL, params.getString(OctoConstants.SERVER_URL));
         config.put(OctoConstants.API_KEY, params.getString(OctoConstants.API_KEY));
+        config.put(OctoConstants.PROJECT_NAME, params.getString(OctoConstants.PROJECT_NAME));
+        config.put(OctoConstants.CHANNEL_NAME, params.getString(OctoConstants.CHANNEL_NAME));
+        config.put(OctoConstants.VERBOSE_LOGGING, params.getString(OctoConstants.VERBOSE_LOGGING));
+        config.put(OctoConstants.RELEASE_VERSION, params.getString(OctoConstants.RELEASE_VERSION));
         return config;
     }
 
@@ -58,6 +65,10 @@ public class CreateReleaseTaskConfigurator extends AbstractTaskConfigurator {
 
         context.put(OctoConstants.SERVER_URL, taskDefinition.getConfiguration().get(OctoConstants.SERVER_URL));
         context.put(OctoConstants.API_KEY, taskDefinition.getConfiguration().get(OctoConstants.API_KEY));
+        context.put(OctoConstants.PROJECT_NAME, taskDefinition.getConfiguration().get(OctoConstants.PROJECT_NAME));
+        context.put(OctoConstants.CHANNEL_NAME, taskDefinition.getConfiguration().get(OctoConstants.CHANNEL_NAME));
+        context.put(OctoConstants.VERBOSE_LOGGING, taskDefinition.getConfiguration().get(OctoConstants.VERBOSE_LOGGING));
+        context.put(OctoConstants.RELEASE_VERSION, taskDefinition.getConfiguration().get(OctoConstants.RELEASE_VERSION));
     }
 
     @Override
@@ -71,6 +82,21 @@ public class CreateReleaseTaskConfigurator extends AbstractTaskConfigurator {
         final String sayValue = params.getString(OctoConstants.SERVER_URL);
         if (StringUtils.isEmpty(sayValue)) {
             errorCollection.addError(OctoConstants.SERVER_URL, textProvider.getText(SERVER_URL_ERROR_KEY));
+        }
+
+        final String apiKey = params.getString(OctoConstants.API_KEY);
+        if (StringUtils.isEmpty(apiKey)) {
+            errorCollection.addError(OctoConstants.API_KEY, textProvider.getText(API_KEY_ERROR_KEY));
+        }
+
+        final String projectValue = params.getString(OctoConstants.SERVER_URL);
+        if (StringUtils.isEmpty(projectValue)) {
+            errorCollection.addError(OctoConstants.PROJECT_NAME, textProvider.getText(PROJECT_NAME_ERROR_KEY));
+        }
+
+        final String releaseValue = params.getString(OctoConstants.RELEASE_VERSION);
+        if (StringUtils.isEmpty(releaseValue)) {
+            errorCollection.addError(OctoConstants.RELEASE_VERSION, textProvider.getText(RELEASE_VERSION_ERROR_KEY));
         }
     }
 }

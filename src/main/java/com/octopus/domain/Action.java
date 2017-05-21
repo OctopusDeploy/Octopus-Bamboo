@@ -1,16 +1,17 @@
 package com.octopus.domain;
 
+import java.util.List;
 import java.util.Map;
 
 /**
  * https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/DeploymentSteps
  */
 public class Action {
-    private String[] channels;
+    private List<String> channels;
 
     private String name;
 
-    private String[] environments;
+    private List<String> environments;
 
     private String actionType;
 
@@ -18,17 +19,17 @@ public class Action {
 
     private String id;
 
-    private String[] excludedEnvironments;
+    private List<String> excludedEnvironments;
 
     private Map<String, String> properties;
 
-    private String[] tenantTags;
+    private List<String> tenantTags;
 
-    public String[] getChannels() {
+    public List<String> getChannels() {
         return channels;
     }
 
-    public void setChannels(final String[] channels) {
+    public void setChannels(final List<String> channels) {
         this.channels = channels;
     }
 
@@ -40,11 +41,11 @@ public class Action {
         this.name = name;
     }
 
-    public String[] getEnvironments() {
+    public List<String> getEnvironments() {
         return environments;
     }
 
-    public void setEnvironments(final String[] environments) {
+    public void setEnvironments(final List<String> environments) {
         this.environments = environments;
     }
 
@@ -72,11 +73,11 @@ public class Action {
         this.id = id;
     }
 
-    public String[] getExcludedEnvironments() {
+    public List<String> getExcludedEnvironments() {
         return excludedEnvironments;
     }
 
-    public void setExcludedEnvironments(final String[] excludedEnvironments) {
+    public void setExcludedEnvironments(final List<String> excludedEnvironments) {
         this.excludedEnvironments = excludedEnvironments;
     }
 
@@ -88,11 +89,11 @@ public class Action {
         this.properties = properties;
     }
 
-    public String[] getTenantTags() {
+    public List<String> getTenantTags() {
         return tenantTags;
     }
 
-    public void setTenantTags(final String[] tenantTags) {
+    public void setTenantTags(final List<String> tenantTags) {
         this.tenantTags = tenantTags;
     }
 }

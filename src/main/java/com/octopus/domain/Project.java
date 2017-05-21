@@ -1,10 +1,12 @@
 package com.octopus.domain;
 
+import java.util.List;
+
 /**
  * https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/Projects
  */
 public class Project {
-    private String[] includedLibraryVariableSetIds;
+    private List<String> includedLibraryVariableSetIds;
 
     private String description;
 
@@ -16,9 +18,9 @@ public class Project {
 
     private String tenantedDeploymentMode;
 
-    private String[] autoDeployReleaseOverrides;
+    private List<String> autoDeployReleaseOverrides;
 
-    private String[] templates;
+    private List<String> templates;
 
     private String slug;
 
@@ -36,11 +38,11 @@ public class Project {
 
     private Boolean autoCreateRelease;
 
-    public String[] getIncludedLibraryVariableSetIds() {
+    public List<String> getIncludedLibraryVariableSetIds() {
         return includedLibraryVariableSetIds;
     }
 
-    public void setIncludedLibraryVariableSetIds(final String[] includedLibraryVariableSetIds) {
+    public void setIncludedLibraryVariableSetIds(final List<String> includedLibraryVariableSetIds) {
         this.includedLibraryVariableSetIds = includedLibraryVariableSetIds;
     }
 
@@ -84,19 +86,19 @@ public class Project {
         this.tenantedDeploymentMode = tenantedDeploymentMode;
     }
 
-    public String[] getAutoDeployReleaseOverrides() {
+    public List<String> getAutoDeployReleaseOverrides() {
         return autoDeployReleaseOverrides;
     }
 
-    public void setAutoDeployReleaseOverrides(final String[] autoDeployReleaseOverrides) {
+    public void setAutoDeployReleaseOverrides(final List<String> autoDeployReleaseOverrides) {
         this.autoDeployReleaseOverrides = autoDeployReleaseOverrides;
     }
 
-    public String[] getTemplates() {
+    public List<String> getTemplates() {
         return templates;
     }
 
-    public void setTemplates(final String[] templates) {
+    public void setTemplates(final List<String> templates) {
         this.templates = templates;
     }
 

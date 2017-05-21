@@ -34,7 +34,7 @@
               class="com.octopus.bamboo.plugins.task.createrelease.CreateReleaseTask">
         <description>Create a release within an Octopus Deploy project</description>
         <category name="deployment"/>
-        <configuration class="com.octopus.bamboo.plugins.task.push.PushTaskConfigurator"/>
+        <configuration class="com.octopus.bamboo.plugins.task.createrelease.CreateReleaseTaskConfigurator"/>
         <resource type="freemarker" name="edit" location="freemarker/createrelease.ftl"/>
         <resource type="download" name="icon" location="images/pluginLogo.png"/>
     </taskType>

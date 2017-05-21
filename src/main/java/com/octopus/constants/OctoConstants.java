@@ -33,7 +33,7 @@ public class OctoConstants {
     /**
      * The configuration key for the Feign logging level
      */
-    public static final String DETAILED_LOGGING = "detailedLogging";
+    public static final String VERBOSE_LOGGING = "verboseLogging";
     /**
      * The configuration key for the ant pattern used to find files to upload
      */
