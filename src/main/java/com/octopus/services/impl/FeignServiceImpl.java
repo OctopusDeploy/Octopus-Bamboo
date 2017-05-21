@@ -11,6 +11,7 @@ import feign.form.FormEncoder;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,6 +42,7 @@ public class FeignServiceImpl implements FeignService {
 
         final String serverUrl = taskContext.getConfigurationMap().get(OctoConstants.SERVER_URL);
         final String apiKey = taskContext.getConfigurationMap().get(OctoConstants.API_KEY);
+        final String loggingLevel = taskContext.getConfigurationMap().get(OctoConstants.DETAILED_LOGGING);
 
         checkState(StringUtils.isNotBlank(serverUrl));
         checkState(StringUtils.isNotBlank(apiKey),
@@ -61,7 +63,9 @@ public class FeignServiceImpl implements FeignService {
                         .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
                         .create()))
                 .logger(buildLogger)
-                .logLevel(Logger.Level.FULL)
+                .logLevel(BooleanUtils.toBooleanDefaultIfNull(BooleanUtils.toBooleanObject(loggingLevel), false)
+                        ? Logger.Level.FULL
+                        : Logger.Level.NONE)
                 .requestInterceptor(new RequestInterceptor() {
                     @Override
                     public void apply(final RequestTemplate template) {

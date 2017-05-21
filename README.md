@@ -39,3 +39,7 @@ Run the command `atlas-run` to start an instance of Bamboo with the plugin deplo
 | OCTOPUS-BAMBOO-ERROR-0004 | The API key setting was not found when running the package push |
 | OCTOPUS-BAMBOO-ERROR-0005 | A file that already exists was attempted to be pushed again without the force option enabled |
 | OCTOPUS-BAMBOO-ERROR-0006 | The list of packages was not found while attempting to match a step package with a version |
+| OCTOPUS-BAMBOO-INPUT-ERROR-0001 | The project name could not be found |
+| OCTOPUS-BAMBOO-INPUT-ERROR-0002 | The channel name could not be found |
+| OCTOPUS-BAMBOO-INPUT-ERROR-0003 | The default channel could not be found |
+| OCTOPUS-BAMBOO-INPUT-ERROR-0004 | The release could not be created |

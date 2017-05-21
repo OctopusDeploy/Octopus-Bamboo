@@ -5,6 +5,8 @@ import com.atlassian.bamboo.build.SimpleLogEntry;
 import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.build.logger.LogInterceptorStack;
 import com.atlassian.bamboo.build.logger.LogMutatorStack;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -13,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Mock logging implementation
  */
@@ -20,6 +24,23 @@ public class RecordingBuildLogger implements BuildLogger {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecordingBuildLogger.class);
     private final List<LogEntry> buildlogs = new ArrayList<>();
     private final List<LogEntry> errorlogs = new ArrayList<>();
+
+    public List<LogEntry> findErrorLogs(@NotNull final String message) {
+        checkNotNull(message);
+
+        final List<LogEntry> retValue = new ArrayList<>(this.getErrorLog());
+
+        CollectionUtils.filter(
+                retValue,
+                new Predicate() {
+                    @Override
+                    public boolean evaluate(Object o) {
+                        return ((LogEntry) o).toString().contains(message);
+                    }
+                });
+
+        return retValue;
+    }
 
     @NotNull
     @Override

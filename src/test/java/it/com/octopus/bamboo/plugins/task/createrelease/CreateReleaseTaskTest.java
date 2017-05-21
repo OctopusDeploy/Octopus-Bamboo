@@ -1,7 +1,5 @@
 package it.com.octopus.bamboo.plugins.task.createrelease;
 
-import com.atlassian.bamboo.build.LogEntry;
-import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.task.TaskContext;
 import com.atlassian.bamboo.task.TaskException;
 import com.atlassian.bamboo.task.TaskResult;
@@ -13,8 +11,7 @@ import com.octopus.constants.OctoConstants;
 import com.octopus.constants.OctoTestConstants;
 import com.octopus.services.MockObjectService;
 import com.octopus.services.impl.MockObjectServiceImpl;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
+import com.octopus.services.impl.RecordingBuildLogger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,9 +22,7 @@ import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import static com.octopus.constants.OctoConstants.TEST_PROFILE;
 import static com.octopus.constants.OctoTestConstants.SPRING_PROFILE_SYSTEM_PROP;
@@ -39,6 +34,9 @@ import static com.octopus.constants.OctoTestConstants.SPRING_PROFILE_SYSTEM_PROP
 public class CreateReleaseTaskTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateReleaseTaskTest.class);
     private static final MockObjectService MOCK_OBJECT_SERVICE = new MockObjectServiceImpl();
+    /**
+     * Create a semver from a date and time
+     */
     private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy.MM.ddHHmmss");
     private final CreateReleaseTask createReleaseTask;
     private final boolean usingTestProfile;
@@ -73,26 +71,37 @@ public class CreateReleaseTaskTest {
         Assert.assertEquals(shouldFail ? TaskState.FAILED : TaskState.SUCCESS, taskResult.getTaskState());
     }
 
+    @Test
+    public void testBadSemver() throws TaskException {
+        Assert.assertNotNull(createReleaseTask);
 
-    /**
-     * Filter out the error logs to return those with the specific code
-     *
-     * @param logger  The logger
-     * @param message The message to find
-     * @return A list of the matching messages
-     */
-    private List<LogEntry> findErrorLogs(@NotNull final BuildLogger logger, @NotNull final String message) {
-        final List<LogEntry> retValue = new ArrayList<>(logger.getErrorLog());
+        /*
+            If we are not using the mock rest server and no api key
+            has been supplied, this will fail
+        */
+        final boolean shouldFail = !usingTestProfile
+                && OctoTestConstants.DUMMY_API_KEY.equals(MOCK_OBJECT_SERVICE.getApiKey());
 
-        CollectionUtils.filter(
-                retValue,
-                new Predicate() {
-                    @Override
-                    public boolean evaluate(Object o) {
-                        return ((LogEntry) o).toString().contains(message);
-                    }
-                });
+        if (shouldFail) {
+            final TaskContext taskContext = MOCK_OBJECT_SERVICE.getTaskContext(
+                    new File("."),
+                    true,
+                    "**/*.zip",
+                    MOCK_OBJECT_SERVICE.getApiKey(),
+                    OctoConstants.LOCAL_OCTOPUS_INSTANCE,
+                    "notsemver"
+            );
+            final TaskResult taskResult = createReleaseTask.execute(taskContext);
 
-        return retValue;
+            Assert.assertEquals(TaskState.FAILED, taskResult.getTaskState());
+
+            /*
+                Make sure the appropriate error was displayed
+            */
+            final int errorCount = ((RecordingBuildLogger) taskContext.getBuildLogger())
+                    .findErrorLogs("OCTOPUS-BAMBOO-INPUT-ERROR-0004").size();
+
+            Assert.assertEquals(1, errorCount);
+        }
     }
 }

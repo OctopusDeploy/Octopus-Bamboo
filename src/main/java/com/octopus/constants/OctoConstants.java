@@ -31,6 +31,10 @@ public class OctoConstants {
      */
     public static final String API_KEY = "apiKey";
     /**
+     * The configuration key for the Feign logging level
+     */
+    public static final String DETAILED_LOGGING = "detailedLogging";
+    /**
      * The configuration key for the ant pattern used to find files to upload
      */
     public static final String PUSH_PATTERN = "pushPattern";

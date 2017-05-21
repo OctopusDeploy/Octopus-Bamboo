@@ -1,9 +1,6 @@
 package com.octopus.domain;
 
-import com.octopus.constants.OctoConstants;
-
 import java.util.List;
-import java.util.Map;
 
 /**
  * https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/Releases
@@ -35,10 +32,6 @@ public class Release {
 
     public Release() {
 
-    }
-
-    public Release(final Map<String, String> configuration) {
-        this.version = configuration.get(OctoConstants.RELEASE_VERSION);
     }
 
     public String getProjectDeploymentProcessSnapshotId() {

@@ -1,7 +1,5 @@
 package it.com.octopus.bamboo.plugins.task.deploy;
 
-import com.atlassian.bamboo.build.LogEntry;
-import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.task.TaskContext;
 import com.atlassian.bamboo.task.TaskException;
 import com.atlassian.bamboo.task.TaskResult;
@@ -12,8 +10,7 @@ import com.octopus.bamboo.plugins.task.push.PushTask;
 import com.octopus.constants.OctoTestConstants;
 import com.octopus.services.MockObjectService;
 import com.octopus.services.impl.MockObjectServiceImpl;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
+import com.octopus.services.impl.RecordingBuildLogger;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -29,8 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.octopus.constants.OctoConstants.TEST_PROFILE;
 import static com.octopus.constants.OctoTestConstants.SPRING_PROFILE_SYSTEM_PROP;
@@ -140,8 +135,8 @@ public class PushTaskTest {
             /*
                 Make sure the appropriate error was displayed
             */
-            final int errorCount = findErrorLogs(taskContext.getBuildLogger(),
-                    "OCTOPUS-BAMBOO-ERROR-0003").size();
+            final int errorCount = ((RecordingBuildLogger) taskContext.getBuildLogger())
+                    .findErrorLogs("OCTOPUS-BAMBOO-ERROR-0003").size();
 
             Assert.assertEquals(1, errorCount);
         }
@@ -185,8 +180,8 @@ public class PushTaskTest {
             /*
                 Make sure the appropriate error was displayed
              */
-            final int errorCount = findErrorLogs(taskContext.getBuildLogger(),
-                    "OCTOPUS-BAMBOO-ERROR-0005").size();
+            final int errorCount = ((RecordingBuildLogger) taskContext.getBuildLogger())
+                    .findErrorLogs("OCTOPUS-BAMBOO-ERROR-0005").size();
 
             Assert.assertEquals(1, errorCount);
         }
@@ -222,32 +217,10 @@ public class PushTaskTest {
             /*
                 Make sure the appropriate error was displayed
             */
-            final int errorCount = findErrorLogs(taskContext.getBuildLogger(),
-                    "OCTOPUS-BAMBOO-ERROR-0001").size();
+            final int errorCount = ((RecordingBuildLogger) taskContext.getBuildLogger())
+                    .findErrorLogs("OCTOPUS-BAMBOO-ERROR-0001").size();
 
             Assert.assertEquals(1, errorCount);
         }
-    }
-
-    /**
-     * Filter out the error logs to return those with the specific code
-     *
-     * @param logger  The logger
-     * @param message The message to find
-     * @return A list of the matching messages
-     */
-    private List<LogEntry> findErrorLogs(@NotNull final BuildLogger logger, @NotNull final String message) {
-        final List<LogEntry> retValue = new ArrayList<>(logger.getErrorLog());
-
-        CollectionUtils.filter(
-                retValue,
-                new Predicate() {
-                    @Override
-                    public boolean evaluate(Object o) {
-                        return ((LogEntry) o).toString().contains(message);
-                    }
-                });
-
-        return retValue;
     }
 }

@@ -14,6 +14,7 @@ import com.octopus.domain.Package;
 import com.octopus.exception.ConfigurationException;
 import com.octopus.services.CommonTaskService;
 import com.octopus.services.FeignService;
+import feign.FeignException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.Predicate;
@@ -66,13 +67,15 @@ public class CreateReleaseTask implements TaskType {
 
         final String projectName = taskContext.getConfigurationMap().get(OctoConstants.PROJECT_NAME);
         final String channelName = taskContext.getConfigurationMap().get(OctoConstants.CHANNEL_NAME);
+        final String releaseVersion = taskContext.getConfigurationMap().get(OctoConstants.RELEASE_VERSION);
 
         checkState(StringUtils.isNotBlank(projectName));
 
         /*
             Build up the release info
          */
-        final Release release = new Release(taskContext.getConfigurationMap());
+        final Release release = new Release();
+        release.setVersion(releaseVersion);
         final List<SelectedPackages> selectedPackages = new ArrayList<SelectedPackages>();
         release.setSelectedPackages(selectedPackages);
 
@@ -83,25 +86,35 @@ public class CreateReleaseTask implements TaskType {
          */
         final RestAPI restAPI = feignService.createClient(taskContext, StringUtils.isNotBlank(release.getVersion()));
 
-        /*
-            Find the project and channel ids that we need to create a release
-         */
-        final Project project = populateProjectAndChannelID(taskContext, release, projectName, channelName);
+        try {
+            /*
+                Find the project and channel ids that we need to create a release
+             */
+            final Project project = populateProjectAndChannelID(taskContext, release, projectName, channelName);
 
-        /*
-            Set the package versions for the steps associated with the project
-         */
-        populateSelectedPackages(taskContext, release, project);
+            /*
+                Set the package versions for the steps associated with the project
+             */
+            populateSelectedPackages(taskContext, release, project);
 
-        /*
-            Create the release
-         */
-        restAPI.createRelease(false, release);
+            /*
+                Create the release
+             */
+            restAPI.createRelease(false, release);
 
-        /*
-            All went well, so return a successful result
-         */
-        return commonTaskService.buildResult(taskContext, true);
+            /*
+                All went well, so return a successful result
+             */
+            return commonTaskService.buildResult(taskContext, true);
+        } catch (final ConfigurationException | IllegalStateException ex) {
+            taskContext.getBuildLogger().addErrorLogEntry(ex.getMessage());
+            return commonTaskService.buildResult(taskContext, false);
+        } catch (final FeignException ex) {
+            taskContext.getBuildLogger().addErrorLogEntry(
+                    "OCTOPUS-BAMBOO-INPUT-ERROR-0004: The release could not be created. "
+                            + "Make sure the release version number of \"" + releaseVersion + "\" is a valid semver version string");
+            return commonTaskService.buildResult(taskContext, false);
+        }
     }
 
     private void populateSelectedPackages(@NotNull final TaskContext taskContext,
@@ -181,20 +194,20 @@ public class CreateReleaseTask implements TaskType {
 
         final Optional<Project> project = getProjectID(taskContext, projectName);
         if (!project.isPresent()) {
-            throw new ConfigurationException("Project named " + projectName + " was not found");
+            throw new ConfigurationException("OCTOPUS-BAMBOO-INPUT-ERROR-0001: Project named " + projectName + " was not found");
         }
         release.setProjectId(project.get().getId());
 
         if (StringUtils.isNotBlank(channelName)) {
             final Optional<String> channelId = getChannelID(taskContext, project.get(), channelName);
             if (!channelId.isPresent()) {
-                throw new ConfigurationException("Channel named " + channelName + " was not found");
+                throw new ConfigurationException("OCTOPUS-BAMBOO-INPUT-ERROR-0002: Channel named " + channelName + " was not found");
             }
             release.setChannelId(channelId.get());
         } else {
             final Optional<String> channelId = getDefaultChannelID(taskContext, project.get());
             if (!channelId.isPresent()) {
-                throw new ConfigurationException("Default channel ID was not found");
+                throw new ConfigurationException("OCTOPUS-BAMBOO-INPUT-ERROR-0003: Default channel ID was not found");
             }
             release.setChannelId(channelId.get());
         }

@@ -2,7 +2,6 @@ package com.octopus.services.impl;
 
 import com.atlassian.bamboo.Key;
 import com.atlassian.bamboo.ResultKey;
-import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.chains.ChainStorageTag;
 import com.atlassian.bamboo.configuration.ConfigurationMap;
 import com.atlassian.bamboo.configuration.ConfigurationMapImpl;
@@ -130,7 +129,7 @@ public class MockObjectServiceImpl implements MockObjectService {
             }
 
             @org.jetbrains.annotations.NotNull
-            public BuildLogger getBuildLogger() {
+            public RecordingBuildLogger getBuildLogger() {
                 return logger;
             }
 
@@ -153,6 +152,7 @@ public class MockObjectServiceImpl implements MockObjectService {
                 retValue.put(OctoConstants.PUSH_PATTERN, pattern);
                 retValue.put(OctoConstants.PROJECT_NAME, OctoTestConstants.TEST_PROJECT);
                 retValue.put(OctoConstants.RELEASE_VERSION, releaseVersion);
+                retValue.put(OctoConstants.DETAILED_LOGGING, "true");
                 return retValue;
             }
 
