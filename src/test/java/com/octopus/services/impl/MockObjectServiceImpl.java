@@ -79,6 +79,15 @@ public class MockObjectServiceImpl implements MockObjectService {
                                       @NotNull final String pattern,
                                       @NotNull final String apiKey,
                                       @NotNull final String octopusUrl) {
+        return getTaskContext(workingDir, forceUpload, pattern, apiKey, OctoConstants.LOCAL_OCTOPUS_INSTANCE, "0.0.1");
+    }
+
+    public TaskContext getTaskContext(@NotNull final File workingDir,
+                                      final boolean forceUpload,
+                                      @NotNull final String pattern,
+                                      @NotNull final String apiKey,
+                                      @NotNull final String octopusUrl,
+                                      @NotNull final String releaseVersion) {
         checkNotNull(workingDir);
         checkNotNull(pattern);
         checkNotNull(apiKey);
@@ -143,6 +152,7 @@ public class MockObjectServiceImpl implements MockObjectService {
                 retValue.put(OctoConstants.FORCE, forceUpload + "");
                 retValue.put(OctoConstants.PUSH_PATTERN, pattern);
                 retValue.put(OctoConstants.PROJECT_NAME, OctoTestConstants.TEST_PROJECT);
+                retValue.put(OctoConstants.RELEASE_VERSION, releaseVersion);
                 return retValue;
             }
 

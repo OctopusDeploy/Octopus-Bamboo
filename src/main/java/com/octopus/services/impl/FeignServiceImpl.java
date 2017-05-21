@@ -54,15 +54,14 @@ public class FeignServiceImpl implements FeignService {
         return Feign.builder()
                 .client(client)
                 .retryer(enableRetry ? new Retryer.Default() : Retryer.NEVER_RETRY)
-                .encoder(new GsonEncoder(new GsonBuilder()
+                .encoder(new FormEncoder(new GsonEncoder(new GsonBuilder()
                         .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
-                        .create()))
-                .encoder(new FormEncoder(new GsonEncoder()))
+                        .create())))
                 .decoder(new GsonDecoder(new GsonBuilder()
                         .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
                         .create()))
                 .logger(buildLogger)
-                .logLevel(Logger.Level.BASIC)
+                .logLevel(Logger.Level.FULL)
                 .requestInterceptor(new RequestInterceptor() {
                     @Override
                     public void apply(final RequestTemplate template) {

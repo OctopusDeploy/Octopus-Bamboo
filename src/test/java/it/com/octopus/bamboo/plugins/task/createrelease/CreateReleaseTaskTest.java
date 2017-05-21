@@ -9,6 +9,7 @@ import com.atlassian.bamboo.task.TaskState;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.plugins.osgi.test.AtlassianPluginsTestRunner;
 import com.octopus.bamboo.plugins.task.createrelease.CreateReleaseTask;
+import com.octopus.constants.OctoConstants;
 import com.octopus.constants.OctoTestConstants;
 import com.octopus.services.MockObjectService;
 import com.octopus.services.impl.MockObjectServiceImpl;
@@ -22,7 +23,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.validation.constraints.NotNull;
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.octopus.constants.OctoConstants.TEST_PROFILE;
@@ -35,6 +39,7 @@ import static com.octopus.constants.OctoTestConstants.SPRING_PROFILE_SYSTEM_PROP
 public class CreateReleaseTaskTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateReleaseTaskTest.class);
     private static final MockObjectService MOCK_OBJECT_SERVICE = new MockObjectServiceImpl();
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy.MM.ddHHmmss");
     private final CreateReleaseTask createReleaseTask;
     private final boolean usingTestProfile;
 
@@ -48,7 +53,14 @@ public class CreateReleaseTaskTest {
     public void testCreateRelease() throws TaskException {
         Assert.assertNotNull(createReleaseTask);
 
-        final TaskContext taskContext = MOCK_OBJECT_SERVICE.getTaskContext();
+        final TaskContext taskContext = MOCK_OBJECT_SERVICE.getTaskContext(
+                new File("."),
+                true,
+                "**/*.zip",
+                MOCK_OBJECT_SERVICE.getApiKey(),
+                OctoConstants.LOCAL_OCTOPUS_INSTANCE,
+                SIMPLE_DATE_FORMAT.format(new Date())
+        );
         final TaskResult taskResult = createReleaseTask.execute(taskContext);
 
         /*

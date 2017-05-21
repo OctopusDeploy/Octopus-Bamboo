@@ -45,14 +45,44 @@ public interface MockObjectService {
      * @param workingDir  The directory to use as the working dir
      * @param forceUpload true if package uploads should be forced
      * @param pattern     The file matching pattern
-     * @param apiKey      The api key to use with the rest server
-     * @return A mock TaskContext
+     * @param apiKey      The octopus api key
+     * @return
      */
-    TaskContext getTaskContext(
-            @NotNull File workingDir,
-            boolean forceUpload,
-            @NotNull String pattern,
-            @NotNull String apiKey);
+    TaskContext getTaskContext(@NotNull final File workingDir,
+                               final boolean forceUpload,
+                               @NotNull final String pattern,
+                               @NotNull final String apiKey);
+
+    /**
+     * @param workingDir  The directory to use as the working dir
+     * @param forceUpload true if package uploads should be forced
+     * @param pattern     The file matching pattern
+     * @param apiKey      The octopus api key
+     * @param octopusUrl  The octopus URL
+     * @return
+     */
+    TaskContext getTaskContext(@NotNull final File workingDir,
+                               final boolean forceUpload,
+                               @NotNull final String pattern,
+                               @NotNull final String apiKey,
+                               @NotNull final String octopusUrl);
+
+    /**
+     *
+     * @param workingDir  The directory to use as the working dir
+     * @param forceUpload true if package uploads should be forced
+     * @param pattern     The file matching pattern
+     * @param apiKey      The octopus api key
+     * @param octopusUrl  The octopus URL
+     * @param releaseVersion The new release to create
+     * @return
+     */
+    TaskContext getTaskContext(@NotNull final File workingDir,
+                               final boolean forceUpload,
+                               @NotNull final String pattern,
+                               @NotNull final String apiKey,
+                               @NotNull final String octopusUrl,
+                               @NotNull final String releaseVersion);
 
     /**
      *

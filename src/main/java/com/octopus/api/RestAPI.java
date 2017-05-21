@@ -49,7 +49,7 @@ public interface RestAPI {
      */
     @RequestLine("POST /releases?ignoreChannelRules={ignoreChannelRules}")
     @Headers("Content-Type: application/json")
-    Response createRelease(@Param("ignoreChannelRules") Boolean ignoreChannelRules, Release release);
+    Release createRelease(@Param("ignoreChannelRules") Boolean ignoreChannelRules, Release release);
 
     /**
      * https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/DeploymentProcesses
