@@ -248,6 +248,15 @@ public class MockPluginConfiguration {
                     + "  } \n"
             + "}";
 
+    private static final String GET_RELEASES_RESPONSE =
+            "{ \n"
+                    + "\"ItemType\": \"Release\", \n"
+                    + "\"IsStale\": false, \n"
+                    + "\"TotalResults\": 0, \n"
+                    + "\"ItemsPerPage\": 30, \n"
+                    + "\"Items\": [] \n"
+                    + "}";
+
     /**
      * @return The client that feign will use to make actual HTTP calls
      */
@@ -300,6 +309,14 @@ public class MockPluginConfiguration {
                 OctoConstants.LOCAL_OCTOPUS_INSTANCE + "/api/packages",
                 Response.builder()
                         .body(PACKAGES_RESPONSE, Charset.defaultCharset())
+                        .headers(new HashMap<String, Collection<String>>())
+                        .status(HttpStatus.SC_OK));
+
+        mockClient.add(
+                HttpMethod.GET,
+                OctoConstants.LOCAL_OCTOPUS_INSTANCE + "/api/releases",
+                Response.builder()
+                        .body(GET_RELEASES_RESPONSE, Charset.defaultCharset())
                         .headers(new HashMap<String, Collection<String>>())
                         .status(HttpStatus.SC_OK));
 

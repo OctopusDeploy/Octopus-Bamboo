@@ -32,7 +32,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @Component
 @ExportAsService({DeployReleaseTask.class})
-@Named("createReleaseTask")
+@Named("deployReleaseTask")
 public class DeployReleaseTask implements TaskType {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeployReleaseTask.class);
     private final FeignService feignService;
