@@ -25,7 +25,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @Component
 @ExportAsService({com.atlassian.bamboo.task.TaskConfigurator.class})
-@Named("createReleaseTaskConfigurator")
+@Named("deployReleaseTaskConfigurator")
 public class DeployReleaseTaskConfigurator extends AbstractTaskConfigurator {
 
     @ComponentImport

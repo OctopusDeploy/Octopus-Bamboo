@@ -7,7 +7,6 @@ import com.atlassian.bamboo.task.TaskType;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.google.common.base.Optional;
 import com.octopus.api.RestAPI;
-import com.octopus.bamboo.plugins.task.createrelease.CreateReleaseTask;
 import com.octopus.constants.OctoConstants;
 import com.octopus.domain.Deployment;
 import com.octopus.domain.Environment;
@@ -32,7 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Task used to deploy a release
  */
 @Component
-@ExportAsService({CreateReleaseTask.class})
+@ExportAsService({DeployReleaseTask.class})
 @Named("createReleaseTask")
 public class DeployReleaseTask implements TaskType {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeployReleaseTask.class);
@@ -109,8 +108,8 @@ public class DeployReleaseTask implements TaskType {
             taskContext.getBuildLogger().addErrorLogEntry(ex.getMessage());
             return commonTaskService.buildResult(taskContext, false);
         } catch (final FeignException ex) {
-            taskContext.getBuildLogger().addErrorLogEntry(
-                    "OCTOPUS-BAMBOO-ERROR-0007: The release could not be deployed.");
+            commonTaskService.logError(taskContext, "OCTOPUS-BAMBOO-ERROR-0007: The release could not be deployed.");
+            commonTaskService.logError(taskContext, ex.toString());
             return commonTaskService.buildResult(taskContext, false);
         }
     }

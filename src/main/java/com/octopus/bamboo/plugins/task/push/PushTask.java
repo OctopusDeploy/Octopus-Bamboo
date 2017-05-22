@@ -137,6 +137,7 @@ public class PushTask implements TaskType {
             /*
                 Any upload errors mean this task has failed.
              */
+            commonTaskService.logError(taskContext, "OCTOPUS-BAMBOO-ERROR-0008: The package could not be pushed.");
             commonTaskService.logError(taskContext, ex.toString());
             return commonTaskService.buildResult(taskContext, false);
         }

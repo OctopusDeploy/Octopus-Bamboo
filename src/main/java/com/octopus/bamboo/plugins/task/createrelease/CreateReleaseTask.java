@@ -119,10 +119,11 @@ public class CreateReleaseTask implements TaskType {
             taskContext.getBuildLogger().addErrorLogEntry(ex.getMessage());
             return commonTaskService.buildResult(taskContext, false);
         } catch (final FeignException ex) {
-            taskContext.getBuildLogger().addErrorLogEntry(
+            commonTaskService.logError(taskContext,
                     "OCTOPUS-BAMBOO-INPUT-ERROR-0004: The release could not be created. "
                             + "Make sure the release version number of \"" + releaseVersion + "\" is a "
                             + "valid semver version string.");
+            commonTaskService.logError(taskContext, ex.toString());
             return commonTaskService.buildResult(taskContext, false);
         }
     }
