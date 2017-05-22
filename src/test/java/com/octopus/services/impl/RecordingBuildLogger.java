@@ -5,8 +5,8 @@ import com.atlassian.bamboo.build.SimpleLogEntry;
 import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.build.logger.LogInterceptorStack;
 import com.atlassian.bamboo.build.logger.LogMutatorStack;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.Predicate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -75,7 +75,6 @@ public class RecordingBuildLogger implements BuildLogger {
 
     @Override
     public String addBuildLogEntry(@NotNull String s) {
-        LOGGER.info("RecordingBuildLogger.addBuildLogEntry() " + s);
         buildlogs.add(new SimpleLogEntry(s));
         return s;
     }
@@ -88,14 +87,12 @@ public class RecordingBuildLogger implements BuildLogger {
     @NotNull
     @Override
     public String addErrorLogEntry(LogEntry logEntry) {
-        LOGGER.error("RecordingBuildLogger.addErrorLogEntry() " + logEntry.getLog());
         errorlogs.add(logEntry);
         return logEntry.getLog();
     }
 
     @Override
     public String addErrorLogEntry(String s) {
-        LOGGER.error("RecordingBuildLogger.addErrorLogEntry() " + s);
         errorlogs.add(new SimpleLogEntry(s));
         return s;
     }

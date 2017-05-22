@@ -1,6 +1,7 @@
 package com.octopus.services.impl;
 
 import com.atlassian.bamboo.build.logger.BuildLogger;
+import com.octopus.services.CommonTaskService;
 import feign.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +15,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class BambooFeignLogger extends Logger {
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BambooFeignLogger.class);
+    private static final CommonTaskService COMMON_TASK_SERVICE = new CommonTaskServiceImpl();
     private final BuildLogger buildLogger;
 
     public BambooFeignLogger(@NotNull final BuildLogger buildLogger) {
@@ -28,7 +30,8 @@ public class BambooFeignLogger extends Logger {
         checkNotNull(format);
         checkNotNull(args);
 
-        final String entry = String.format(methodTag(configKey) + format, args);
+        final String sanitisedConfigKey = COMMON_TASK_SERVICE.sanitiseMessage(configKey);
+        final String entry = String.format(methodTag(sanitisedConfigKey) + format, args);
         /*
             This is the message that the user sees in the build log
          */

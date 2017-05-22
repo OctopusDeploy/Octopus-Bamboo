@@ -3,10 +3,10 @@ package com.octopus.domain;
 import java.util.List;
 
 /**
- * https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/Releases
+ * The base class for paged results
  */
-public class PagedReleases {
-    private List<Release> items;
+public class PagedResult<T> {
+    private List<T> items;
 
     private Integer itemsPerPage;
 
@@ -16,11 +16,11 @@ public class PagedReleases {
 
     private Boolean isStale;
 
-    public List<Release> getItems() {
+    public List<T> getItems() {
         return items;
     }
 
-    public void setItems(final List<Release> items) {
+    public void setItems(List<T> items) {
         this.items = items;
     }
 
@@ -28,7 +28,7 @@ public class PagedReleases {
         return itemsPerPage;
     }
 
-    public void setItemsPerPage(final Integer itemsPerPage) {
+    public void setItemsPerPage(Integer itemsPerPage) {
         this.itemsPerPage = itemsPerPage;
     }
 
@@ -36,7 +36,7 @@ public class PagedReleases {
         return itemType;
     }
 
-    public void setItemType(final String itemType) {
+    public void setItemType(String itemType) {
         this.itemType = itemType;
     }
 
@@ -44,15 +44,15 @@ public class PagedReleases {
         return totalResults;
     }
 
-    public void setTotalResults(final Integer totalResults) {
+    public void setTotalResults(Integer totalResults) {
         this.totalResults = totalResults;
     }
 
-    public Boolean getIsStale() {
+    public Boolean getStale() {
         return isStale;
     }
 
-    public void setIsStale(final Boolean isStale) {
-        this.isStale = isStale;
+    public void setStale(Boolean stale) {
+        isStale = stale;
     }
 }

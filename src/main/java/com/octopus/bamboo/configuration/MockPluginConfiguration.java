@@ -290,7 +290,7 @@ public class MockPluginConfiguration {
 
         mockClient.add(
                 HttpMethod.GET,
-                OctoConstants.LOCAL_OCTOPUS_INSTANCE + "/api/projects/Projects-1/channels",
+                OctoConstants.LOCAL_OCTOPUS_INSTANCE + "/api/projects/Projects-1/channels?skip=0",
                 Response.builder()
                         .body(PROJECT_CHANNELS_RESPONSE, Charset.defaultCharset())
                         .headers(new HashMap<String, Collection<String>>())
@@ -306,7 +306,7 @@ public class MockPluginConfiguration {
 
         mockClient.add(
                 HttpMethod.GET,
-                OctoConstants.LOCAL_OCTOPUS_INSTANCE + "/api/packages",
+                OctoConstants.LOCAL_OCTOPUS_INSTANCE + "/api/packages?skip=0",
                 Response.builder()
                         .body(PACKAGES_RESPONSE, Charset.defaultCharset())
                         .headers(new HashMap<String, Collection<String>>())
@@ -314,7 +314,7 @@ public class MockPluginConfiguration {
 
         mockClient.add(
                 HttpMethod.GET,
-                OctoConstants.LOCAL_OCTOPUS_INSTANCE + "/api/releases",
+                OctoConstants.LOCAL_OCTOPUS_INSTANCE + "/api/releases?skip=0",
                 Response.builder()
                         .body(GET_RELEASES_RESPONSE, Charset.defaultCharset())
                         .headers(new HashMap<String, Collection<String>>())

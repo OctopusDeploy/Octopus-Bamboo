@@ -30,4 +30,12 @@ public interface CommonTaskService {
      * @return A success or failure result
      */
     TaskResult buildResult(@NotNull TaskContext taskContext, boolean success);
+
+    /**
+     * Removes sensitive information from the message
+     *
+     * @param message The message to sanitise
+     * @return The sanitised message
+     */
+    String sanitiseMessage(@NotNull final String message);
 }

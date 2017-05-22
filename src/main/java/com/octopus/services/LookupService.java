@@ -63,4 +63,8 @@ public interface LookupService {
      */
     Optional<String> getDefaultChannel(@NotNull TaskContext taskContext,
                                        @NotNull Project project);
+
+    void populateSelectedPackages(@NotNull TaskContext taskContext,
+                                  @NotNull Release release,
+                                  @NotNull Project project);
 }

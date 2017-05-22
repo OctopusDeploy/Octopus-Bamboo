@@ -1,6 +1,7 @@
 package com.octopus.api;
 
 import com.octopus.domain.*;
+import com.octopus.domain.Package;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
@@ -38,8 +39,8 @@ public interface RestAPI {
      *
      * @return The channels of the project
      */
-    @RequestLine("GET /projects/{projectId}/channels")
-    PagedChannels getProjectChannels(@Param("projectId") String projectId);
+    @RequestLine("GET /projects/{projectId}/channels?skip={skip}")
+    PagedResult<Channel> getProjectChannels(@Param("projectId") String projectId, @Param("skip") Integer skip);
 
     /**
      * https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/Releases
@@ -66,15 +67,15 @@ public interface RestAPI {
      *
      * @return Pages results of package details
      */
-    @RequestLine("GET /packages")
-    PagedPackages getPackages();
+    @RequestLine("GET /packages?skip={skip}")
+    PagedResult<Package> getPackages(@Param("skip") Integer skip);
 
     /**
      * https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/Releases
      * @return Pages results of release details
      */
-    @RequestLine("GET /releases")
-    PagedReleases getReleases();
+    @RequestLine("GET /releases?skip={skip}")
+    PagedResult<Release> getReleases(@Param("skip") Integer skip);
 
     /**
      * https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/Environments
