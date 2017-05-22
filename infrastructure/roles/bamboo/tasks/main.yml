@@ -1,0 +1,18 @@
+---
+  - name: Add EPEL repository
+    yum:
+      name: http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
+      state: present
+
+  - name: install useful packages
+    yum:
+      name: wget,elinks,telnet,htop,mlocate,python-pip,vim,nano,jq,java-1.7.0-openjdk
+
+  - name: download bamboo
+    get_url:
+        url: "{{bamboo_download}}"
+        dest: /tmp/bamboo.tar.gz
+        mode: 0440
+
+  - name: extract firefox
+    command: tar -xjf /tmp/bamboo.tar.gz -C /opt

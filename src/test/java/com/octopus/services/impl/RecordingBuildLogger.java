@@ -5,7 +5,6 @@ import com.atlassian.bamboo.build.SimpleLogEntry;
 import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.build.logger.LogInterceptorStack;
 import com.atlassian.bamboo.build.logger.LogMutatorStack;
-import com.octopus.services.CommonTaskService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +22,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class RecordingBuildLogger implements BuildLogger {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecordingBuildLogger.class);
-    private static final CommonTaskService COMMON_TASK_SERVICE = new CommonTaskServiceImpl();
     private final List<LogEntry> buildlogs = new ArrayList<>();
     private final List<LogEntry> errorlogs = new ArrayList<>();
 
