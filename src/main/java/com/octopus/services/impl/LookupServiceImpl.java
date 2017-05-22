@@ -9,6 +9,7 @@ import com.octopus.domain.*;
 import com.octopus.domain.Package;
 import com.octopus.services.FeignService;
 import com.octopus.services.LookupService;
+import com.octopus.services.PagedAPICallable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.Predicate;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.*;
@@ -67,12 +69,16 @@ public class LookupServiceImpl implements LookupService {
 
         final RestAPI restAPI = feignService.createClient(taskContext, true);
 
-        int count = 0;
+        final PagedResultIterator<Release> iterator = new PagedResultIterator(new PagedAPICallable() {
+            @Override
+            public PagedResult<Release> call(int skip) {
+                return restAPI.getReleases(skip);
+            }
+        });
 
-        while (true) {
-            final PagedResult<Release> releases = restAPI.getReleases(count);
-            count += releases.getItems().size();
-            matching.addAll(releases.getItems());
+        for (Iterator<PagedResult<Release>> releases = iterator.iterator(); releases.hasNext(); ) {
+            final PagedResult<Release> pagedReleases = releases.next();
+            matching.addAll(pagedReleases.getItems());
             CollectionUtils.filter(matching, new Predicate<Release>() {
                 @Override
                 public boolean evaluate(final Release item) {
@@ -80,10 +86,6 @@ public class LookupServiceImpl implements LookupService {
                             && project.getId().equals(item.getProjectId());
                 }
             });
-
-            if (count >= releases.getTotalResults()) {
-                break;
-            }
         }
 
         return Optional.fromNullable(matching.isEmpty() ? null : matching.get(0));
@@ -118,22 +120,22 @@ public class LookupServiceImpl implements LookupService {
 
         final RestAPI restAPI = feignService.createClient(taskContext, true);
 
-        int count = 0;
+        final PagedResultIterator<Channel> iterator = new PagedResultIterator(new PagedAPICallable() {
+            @Override
+            public PagedResult<Channel> call(int skip) {
+                return restAPI.getProjectChannels(project.getId(), skip);
+            }
+        });
 
-        while (true) {
-            final PagedResult<Channel> channels = restAPI.getProjectChannels(project.getId(), count);
-            count += channels.getItems().size();
-            matching.addAll(channels.getItems());
+        for (Iterator<PagedResult<Channel>> channels = iterator.iterator(); channels.hasNext(); ) {
+            final PagedResult<Channel> pagedChannels = channels.next();
+            matching.addAll(pagedChannels.getItems());
             CollectionUtils.filter(matching, new Predicate<Channel>() {
                 @Override
                 public boolean evaluate(final Channel item) {
                     return channelName.equals(item.getName());
                 }
             });
-
-            if (count >= channels.getTotalResults()) {
-                break;
-            }
         }
 
         return Optional.fromNullable(matching.isEmpty() ? null : matching.get(0).getId());
@@ -148,21 +150,22 @@ public class LookupServiceImpl implements LookupService {
 
         final RestAPI restAPI = feignService.createClient(taskContext, true);
 
-        int count = 0;
-        while (true) {
-            final PagedResult<Channel> channels = restAPI.getProjectChannels(project.getId(), count);
-            count += channels.getItems().size();
-            matching.addAll(channels.getItems());
+        final PagedResultIterator<Channel> iterator = new PagedResultIterator(new PagedAPICallable() {
+            @Override
+            public PagedResult<Channel> call(int skip) {
+                return restAPI.getProjectChannels(project.getId(), skip);
+            }
+        });
+
+        for (Iterator<PagedResult<Channel>> channels = iterator.iterator(); channels.hasNext(); ) {
+            final PagedResult<Channel> pagedChannels = channels.next();
+            matching.addAll(pagedChannels.getItems());
             CollectionUtils.filter(matching, new Predicate<Channel>() {
                 @Override
                 public boolean evaluate(final Channel item) {
                     return item.getIsDefault();
                 }
             });
-
-            if (count >= channels.getTotalResults()) {
-                break;
-            }
         }
 
         return Optional.fromNullable(matching.isEmpty() ? null : matching.get(0).getId());
@@ -179,10 +182,14 @@ public class LookupServiceImpl implements LookupService {
         final RestAPI restAPI = feignService.createClient(taskContext, true);
         final DeploymentProcess deploymentProcess = restAPI.getDeploymentProcess(project.getDeploymentProcessId());
 
-        int count = 0;
-        while (true) {
-            final PagedResult<Package> pagedPackages = restAPI.getPackages(count);
-            count += pagedPackages.getItems().size();
+        final PagedResultIterator<Package> iterator = new PagedResultIterator(new PagedAPICallable() {
+            @Override
+            public PagedResult<Package> call(int skip) {
+                return restAPI.getPackages(skip);
+            }
+        });
+
+        for (Iterator<PagedResult<Package>> packages = iterator.iterator(); packages.hasNext(); ) {
 
             if (deploymentProcess.getSteps() != null) {
                 for (final Step step : deploymentProcess.getSteps()) {
@@ -190,6 +197,8 @@ public class LookupServiceImpl implements LookupService {
                         for (final Action action : step.getActions()) {
                             if (action.getProperties() != null && action.getProperties().containsKey(OctoConstants.PACKAGE_ID_PROP_KEY)) {
                                 final String packageId = action.getProperties().get(OctoConstants.PACKAGE_ID_PROP_KEY);
+
+                                final PagedResult<Package> pagedPackages = packages.next();
 
                                 checkState(pagedPackages.getItems() != null, "OCTOPUS-BAMBOO-ERROR-0006: Failed to find a list of packages.");
 
@@ -229,10 +238,6 @@ public class LookupServiceImpl implements LookupService {
                         }
                     }
                 }
-            }
-
-            if (count >= pagedPackages.getTotalResults()) {
-                break;
             }
         }
 
