@@ -68,4 +68,27 @@ public interface RestAPI {
      */
     @RequestLine("GET /packages")
     PagedPackages getPackages();
+
+    /**
+     * https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/Releases
+     * @return Pages results of release details
+     */
+    @RequestLine("GET /releases")
+    PagedReleases getReleases();
+
+    /**
+     * https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/Environments
+     *
+     * @return All the environments
+     */
+    @RequestLine("GET /environments/all")
+    List<Environment> getEnvironments();
+
+    /**
+     * https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/Deployments
+     *
+     * @return The created deployment
+     */
+    @RequestLine("POST /deployments")
+    Deployment createDeployment(Deployment deployment);
 }

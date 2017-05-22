@@ -55,6 +55,10 @@ public class OctoConstants {
      */
     public static final String CHANNEL_NAME = "channelName";
     /**
+     * The configuration key for the environment name option
+     */
+    public static final String ENVIRONMENT_NAME = "environmentName";
+    /**
      * The start of the http response range that indicates success
      */
     public static final int START_HTTP_OK_RANGE = 200;

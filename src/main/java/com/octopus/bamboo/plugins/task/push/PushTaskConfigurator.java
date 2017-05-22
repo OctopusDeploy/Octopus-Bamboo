@@ -28,6 +28,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Named("pushTaskConfigurator")
 public class PushTaskConfigurator extends AbstractTaskConfigurator {
     private static final String SERVER_URL_ERROR_KEY = "octopus.serverUrl.error";
+    private static final String API_KEY_ERROR_KEY = "octopus.apiKey.error";
     private static final String PUSH_PATTERN_ERROR_KEY = "octopus.pushPattern.error";
     @ComponentImport
     private final TextProvider textProvider;
@@ -46,7 +47,8 @@ public class PushTaskConfigurator extends AbstractTaskConfigurator {
         config.put(OctoConstants.SERVER_URL, params.getString(OctoConstants.SERVER_URL));
         config.put(OctoConstants.API_KEY, params.getString(OctoConstants.API_KEY));
         config.put(OctoConstants.PUSH_PATTERN, params.getString(OctoConstants.PUSH_PATTERN));
-        config.put(OctoConstants.FORCE, params.getBoolean(OctoConstants.FORCE) + "");
+        config.put(OctoConstants.FORCE, params.getString(OctoConstants.FORCE));
+        config.put(OctoConstants.VERBOSE_LOGGING, params.getString(OctoConstants.VERBOSE_LOGGING));
         return config;
     }
 
@@ -62,6 +64,7 @@ public class PushTaskConfigurator extends AbstractTaskConfigurator {
         context.put(OctoConstants.API_KEY, taskDefinition.getConfiguration().get(OctoConstants.API_KEY));
         context.put(OctoConstants.PUSH_PATTERN, taskDefinition.getConfiguration().get(OctoConstants.PUSH_PATTERN));
         context.put(OctoConstants.FORCE, taskDefinition.getConfiguration().get(OctoConstants.FORCE));
+        context.put(OctoConstants.VERBOSE_LOGGING, taskDefinition.getConfiguration().get(OctoConstants.VERBOSE_LOGGING));
     }
 
     @Override
@@ -75,6 +78,11 @@ public class PushTaskConfigurator extends AbstractTaskConfigurator {
         final String sayValue = params.getString(OctoConstants.SERVER_URL);
         if (StringUtils.isEmpty(sayValue)) {
             errorCollection.addError(OctoConstants.SERVER_URL, textProvider.getText(SERVER_URL_ERROR_KEY));
+        }
+
+        final String apiKeyValue = params.getString(OctoConstants.API_KEY);
+        if (StringUtils.isEmpty(apiKeyValue)) {
+            errorCollection.addError(OctoConstants.API_KEY, textProvider.getText(API_KEY_ERROR_KEY));
         }
 
         final String pushPattern = params.getString(OctoConstants.PUSH_PATTERN);

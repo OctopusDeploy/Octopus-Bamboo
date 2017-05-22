@@ -14,8 +14,8 @@ import com.octopus.domain.Package;
 import com.octopus.exception.ConfigurationException;
 import com.octopus.services.CommonTaskService;
 import com.octopus.services.FeignService;
+import com.octopus.services.LookupService;
 import feign.FeignException;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang.StringUtils;
@@ -42,6 +42,7 @@ public class CreateReleaseTask implements TaskType {
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateReleaseTask.class);
     private final FeignService feignService;
     private final CommonTaskService commonTaskService;
+    private final LookupService lookupService;
 
     /**
      * Constructor. Params are injected by Spring under normal usage.
@@ -51,12 +52,14 @@ public class CreateReleaseTask implements TaskType {
      */
     @Inject
     public CreateReleaseTask(@NotNull final FeignService feignService,
-                             @NotNull final CommonTaskService commonTaskService) {
+                             @NotNull final CommonTaskService commonTaskService,
+                             @NotNull final LookupService lookupService) {
         checkNotNull(feignService, "feignService cannot be null");
         checkNotNull(commonTaskService, "commonTaskService cannot be null");
 
         this.feignService = feignService;
         this.commonTaskService = commonTaskService;
+        this.lookupService = lookupService;
     }
 
 
@@ -191,20 +194,20 @@ public class CreateReleaseTask implements TaskType {
         checkNotNull(release);
         checkArgument(StringUtils.isNotBlank(projectName));
 
-        final Optional<Project> project = getProjectID(taskContext, projectName);
+        final Optional<Project> project = lookupService.getProject(taskContext, projectName);
         if (!project.isPresent()) {
             throw new ConfigurationException("OCTOPUS-BAMBOO-INPUT-ERROR-0001: Project named " + projectName + " was not found");
         }
         release.setProjectId(project.get().getId());
 
         if (StringUtils.isNotBlank(channelName)) {
-            final Optional<String> channelId = getChannelID(taskContext, project.get(), channelName);
+            final Optional<String> channelId = lookupService.getChannel(taskContext, project.get(), channelName);
             if (!channelId.isPresent()) {
                 throw new ConfigurationException("OCTOPUS-BAMBOO-INPUT-ERROR-0002: Channel named " + channelName + " was not found");
             }
             release.setChannelId(channelId.get());
         } else {
-            final Optional<String> channelId = getDefaultChannelID(taskContext, project.get());
+            final Optional<String> channelId = lookupService.getDefaultChannel(taskContext, project.get());
             if (!channelId.isPresent()) {
                 throw new ConfigurationException("OCTOPUS-BAMBOO-INPUT-ERROR-0003: Default channel ID was not found");
             }
@@ -212,83 +215,5 @@ public class CreateReleaseTask implements TaskType {
         }
 
         return project.get();
-    }
-
-    /**
-     * Matches a project name to an id
-     *
-     * @param taskContext The bamboo task context
-     * @param projectName The name of the project
-     * @return The project id, if one could be found
-     */
-    private Optional<Project> getProjectID(@NotNull final TaskContext taskContext, @NotNull final String projectName) {
-        checkNotNull(taskContext);
-        checkArgument(StringUtils.isNotBlank(projectName));
-
-        final RestAPI restAPI = feignService.createClient(taskContext, true);
-        final List<Project> projects = restAPI.getProjects();
-
-        CollectionUtils.filter(projects, new Predicate<Project>() {
-            @Override
-            public boolean evaluate(final Project item) {
-                LOGGER.info("Filtering project " + item.getName());
-                return projectName.equals(item.getName());
-            }
-        });
-
-        return Optional.fromNullable(projects.isEmpty() ? null : projects.get(0));
-    }
-
-    /**
-     * Matches a channel name to a channel ID
-     *
-     * @param taskContext The bamboo task context
-     * @param projectID   The project id
-     * @param channelName The channel name
-     * @return The channel if, if one could be found
-     */
-    private Optional<String> getChannelID(@NotNull final TaskContext taskContext,
-                                          @NotNull final Project project,
-                                          @NotNull final String channelName) {
-        checkNotNull(taskContext);
-        checkNotNull(project);
-        checkArgument(StringUtils.isNotBlank(channelName));
-
-        final RestAPI restAPI = feignService.createClient(taskContext, true);
-        final PagedChannels channels = restAPI.getProjectChannels(project.getId());
-
-        CollectionUtils.filter(channels.getItems(), new Predicate<Channel>() {
-            @Override
-            public boolean evaluate(final Channel item) {
-                return channelName.equals(item.getName());
-            }
-        });
-
-        return Optional.fromNullable(channels.getItems().isEmpty() ? null : channels.getItems().get(0).getId());
-    }
-
-    /**
-     * Gets the default channel ID for a project
-     *
-     * @param taskContext The bamboo task context
-     * @param projectID   The project id
-     * @return The channel if, if one could be found
-     */
-    private Optional<String> getDefaultChannelID(@NotNull final TaskContext taskContext,
-                                                 @NotNull final Project project) {
-        checkNotNull(taskContext);
-        checkNotNull(project);
-
-        final RestAPI restAPI = feignService.createClient(taskContext, true);
-        final PagedChannels channels = restAPI.getProjectChannels(project.getId());
-
-        CollectionUtils.filter(channels.getItems(), new Predicate<Channel>() {
-            @Override
-            public boolean evaluate(final Channel item) {
-                return item.getIsDefault();
-            }
-        });
-
-        return Optional.fromNullable(channels.getItems().isEmpty() ? null : channels.getItems().get(0).getId());
     }
 }
