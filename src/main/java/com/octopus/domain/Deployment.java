@@ -8,11 +8,16 @@ import java.util.List;
 public class Deployment {
     private String Comments;
 
-    private String UseGuidedFailure;
+    private Boolean UseGuidedFailure;
 
     private List<String> SpecificMachineIds;
 
-    private String FormValues;
+    /*
+        TODO: I don't know what form values is.
+        https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/Deployments doesn't help either.
+        https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/Deployments doesn't help either.
+     */
+    //private String FormValues;
 
     private String ManifestVariableSetId;
 
@@ -24,7 +29,7 @@ public class Deployment {
 
     private String TaskId;
 
-    private String ForcePackageDownload;
+    private Boolean ForcePackageDownload;
 
     private String Name;
 
@@ -48,7 +53,7 @@ public class Deployment {
 
     private String ReleaseId;
 
-    private String ForcePackageRedeployment;
+    private Boolean ForcePackageRedeployment;
 
     private String ProjectId;
 
@@ -60,11 +65,11 @@ public class Deployment {
         this.Comments = Comments;
     }
 
-    public String getUseGuidedFailure() {
+    public Boolean getUseGuidedFailure() {
         return UseGuidedFailure;
     }
 
-    public void setUseGuidedFailure(final String UseGuidedFailure) {
+    public void setUseGuidedFailure(final Boolean UseGuidedFailure) {
         this.UseGuidedFailure = UseGuidedFailure;
     }
 
@@ -76,6 +81,7 @@ public class Deployment {
         this.SpecificMachineIds = SpecificMachineIds;
     }
 
+    /*
     public String getFormValues() {
         return FormValues;
     }
@@ -83,6 +89,7 @@ public class Deployment {
     public void setFormValues(final String FormValues) {
         this.FormValues = FormValues;
     }
+    */
 
     public String getManifestVariableSetId() {
         return ManifestVariableSetId;
@@ -124,11 +131,11 @@ public class Deployment {
         this.TaskId = TaskId;
     }
 
-    public String getForcePackageDownload() {
+    public Boolean getForcePackageDownload() {
         return ForcePackageDownload;
     }
 
-    public void setForcePackageDownload(final String ForcePackageDownload) {
+    public void setForcePackageDownload(final Boolean ForcePackageDownload) {
         this.ForcePackageDownload = ForcePackageDownload;
     }
 
@@ -220,11 +227,11 @@ public class Deployment {
         this.ReleaseId = ReleaseId;
     }
 
-    public String getForcePackageRedeployment() {
+    public Boolean getForcePackageRedeployment() {
         return ForcePackageRedeployment;
     }
 
-    public void setForcePackageRedeployment(final String ForcePackageRedeployment) {
+    public void setForcePackageRedeployment(final Boolean ForcePackageRedeployment) {
         this.ForcePackageRedeployment = ForcePackageRedeployment;
     }
 
