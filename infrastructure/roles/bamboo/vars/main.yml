@@ -1,2 +1,4 @@
 ---
+bamboo_user: bamboo
 bamboo_download: https://www.atlassian.com/software/bamboo/downloads/binary/atlassian-bamboo-6.0.0.tar.gz
+bamboo_cli_download: https://bobswift.atlassian.net/wiki/download/attachments/16285777/atlassian-cli-6.5.0-distribution.zip

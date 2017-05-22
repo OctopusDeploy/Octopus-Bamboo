@@ -1,4 +1,7 @@
 ---
+  - name: create user to run iridium
+    user: name={{bamboo_user}}
+
   - name: Add EPEL repository
     yum:
       name: http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
@@ -6,7 +9,10 @@
 
   - name: install useful packages
     yum:
-      name: wget,elinks,telnet,htop,mlocate,python-pip,vim,nano,jq,java-1.7.0-openjdk
+      name: wget,elinks,telnet,htop,mlocate,python-pip,vim,nano,jq,java-1.8.0-openjdk-devel,unzip
+
+  - name: Set JAVA_HOME
+    lineinfile: dest=/etc/environment state=present regexp='^JAVA_HOME' line='JAVA_HOME=/usr/lib/jvm/jre-1.8.0'
 
   - name: download bamboo
     get_url:
@@ -14,5 +20,49 @@
         dest: /tmp/bamboo.tar.gz
         mode: 0440
 
-  - name: extract firefox
-    command: tar -xjf /tmp/bamboo.tar.gz -C /opt
+  - name: download bamboo
+    get_url:
+        url: "{{bamboo_cli_download}}"
+        dest: /tmp/atlassian-cli.zip
+        mode: 0440
+
+  - name: extract bamboo
+    unarchive:
+        src: /tmp/bamboo.tar.gz
+        dest: /opt
+        copy: no
+
+  - name: extract bamboo
+    unarchive:
+        src: /tmp/atlassian-cli.zip
+        dest: /opt
+        copy: no
+
+  - name: set bamboo permissions
+    file:
+      state: directory
+      path: /opt/atlassian-bamboo-6.0.0
+      owner: "{{bamboo_user}}"
+      group: "{{bamboo_user}}"
+      recurse: true
+
+  - name: Fix up bamboo home
+    lineinfile:
+      dest: /opt/atlassian-bamboo-6.0.0/atlassian-bamboo/WEB-INF/classes/bamboo-init.properties
+      state: present
+      regexp: '^bamboo.home'
+      line: 'bamboo.home=/opt/atlassian-bamboo-6.0.0'
+
+  - name: install bamboo service
+    template:
+      src: bamboo
+      dest: /etc/init.d/bamboo
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: start bamboo service
+    service:
+      name: bamboo
+      enabled: yes
+      state: restarted
