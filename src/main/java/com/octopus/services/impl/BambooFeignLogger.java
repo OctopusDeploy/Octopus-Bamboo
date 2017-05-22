@@ -30,8 +30,17 @@ public class BambooFeignLogger extends Logger {
         checkNotNull(format);
         checkNotNull(args);
 
-        final String sanitisedConfigKey = COMMON_TASK_SERVICE.sanitiseMessage(configKey);
-        final String entry = String.format(methodTag(sanitisedConfigKey) + format, args);
+        for (int i = 0; i < args.length; ++i) {
+            final Object arg = args[i];
+            if (arg != null) {
+                final String sanitised = COMMON_TASK_SERVICE.sanitiseMessage(arg.toString());
+                if (!sanitised.equals(arg.toString())) {
+                    args[i] = sanitised;
+                }
+            }
+        }
+
+        final String entry = String.format(methodTag(configKey) + format, args);
         /*
             This is the message that the user sees in the build log
          */
