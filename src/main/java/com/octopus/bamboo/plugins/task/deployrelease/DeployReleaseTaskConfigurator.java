@@ -1,4 +1,4 @@
-package com.octopus.bamboo.plugins.task.createrelease;
+package com.octopus.bamboo.plugins.task.deployrelease;
 
 import com.atlassian.bamboo.collections.ActionParametersMap;
 import com.atlassian.bamboo.task.AbstractTaskConfigurator;
@@ -26,13 +26,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Component
 @ExportAsService({com.atlassian.bamboo.task.TaskConfigurator.class})
 @Named("createReleaseTaskConfigurator")
-public class CreateReleaseTaskConfigurator extends AbstractTaskConfigurator {
+public class DeployReleaseTaskConfigurator extends AbstractTaskConfigurator {
 
     @ComponentImport
     private final TextProvider textProvider;
 
     @Inject
-    public CreateReleaseTaskConfigurator(@NotNull final TextProvider textProvider) {
+    public DeployReleaseTaskConfigurator(@NotNull final TextProvider textProvider) {
         this.textProvider = textProvider;
     }
 
@@ -45,7 +45,7 @@ public class CreateReleaseTaskConfigurator extends AbstractTaskConfigurator {
         config.put(OctoConstants.SERVER_URL, params.getString(OctoConstants.SERVER_URL));
         config.put(OctoConstants.API_KEY, params.getString(OctoConstants.API_KEY));
         config.put(OctoConstants.PROJECT_NAME, params.getString(OctoConstants.PROJECT_NAME));
-        config.put(OctoConstants.CHANNEL_NAME, params.getString(OctoConstants.CHANNEL_NAME));
+        config.put(OctoConstants.ENVIRONMENT_NAME, params.getString(OctoConstants.ENVIRONMENT_NAME));
         config.put(OctoConstants.VERBOSE_LOGGING, params.getString(OctoConstants.VERBOSE_LOGGING));
         config.put(OctoConstants.RELEASE_VERSION, params.getString(OctoConstants.RELEASE_VERSION));
         return config;
@@ -62,7 +62,7 @@ public class CreateReleaseTaskConfigurator extends AbstractTaskConfigurator {
         context.put(OctoConstants.SERVER_URL, taskDefinition.getConfiguration().get(OctoConstants.SERVER_URL));
         context.put(OctoConstants.API_KEY, taskDefinition.getConfiguration().get(OctoConstants.API_KEY));
         context.put(OctoConstants.PROJECT_NAME, taskDefinition.getConfiguration().get(OctoConstants.PROJECT_NAME));
-        context.put(OctoConstants.CHANNEL_NAME, taskDefinition.getConfiguration().get(OctoConstants.CHANNEL_NAME));
+        context.put(OctoConstants.ENVIRONMENT_NAME, taskDefinition.getConfiguration().get(OctoConstants.ENVIRONMENT_NAME));
         context.put(OctoConstants.VERBOSE_LOGGING, taskDefinition.getConfiguration().get(OctoConstants.VERBOSE_LOGGING));
         context.put(OctoConstants.RELEASE_VERSION, taskDefinition.getConfiguration().get(OctoConstants.RELEASE_VERSION));
     }
@@ -93,6 +93,11 @@ public class CreateReleaseTaskConfigurator extends AbstractTaskConfigurator {
         final String releaseValue = params.getString(OctoConstants.RELEASE_VERSION);
         if (StringUtils.isEmpty(releaseValue)) {
             errorCollection.addError(OctoConstants.RELEASE_VERSION, textProvider.getText(OctoConstants.RELEASE_VERSION_ERROR_KEY));
+        }
+
+        final String environmentValue = params.getString(OctoConstants.ENVIRONMENT_NAME);
+        if (StringUtils.isEmpty(environmentValue)) {
+            errorCollection.addError(OctoConstants.ENVIRONMENT_NAME, textProvider.getText(OctoConstants.ENVIRONMENT_NAME_ERROR_KEY));
         }
     }
 }

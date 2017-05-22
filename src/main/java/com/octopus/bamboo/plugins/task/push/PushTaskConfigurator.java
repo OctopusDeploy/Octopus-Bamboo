@@ -27,9 +27,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @ExportAsService({com.atlassian.bamboo.task.TaskConfigurator.class})
 @Named("pushTaskConfigurator")
 public class PushTaskConfigurator extends AbstractTaskConfigurator {
-    private static final String SERVER_URL_ERROR_KEY = "octopus.serverUrl.error";
-    private static final String API_KEY_ERROR_KEY = "octopus.apiKey.error";
-    private static final String PUSH_PATTERN_ERROR_KEY = "octopus.pushPattern.error";
     @ComponentImport
     private final TextProvider textProvider;
 
@@ -77,17 +74,17 @@ public class PushTaskConfigurator extends AbstractTaskConfigurator {
 
         final String sayValue = params.getString(OctoConstants.SERVER_URL);
         if (StringUtils.isEmpty(sayValue)) {
-            errorCollection.addError(OctoConstants.SERVER_URL, textProvider.getText(SERVER_URL_ERROR_KEY));
+            errorCollection.addError(OctoConstants.SERVER_URL, textProvider.getText(OctoConstants.SERVER_URL_ERROR_KEY));
         }
 
         final String apiKeyValue = params.getString(OctoConstants.API_KEY);
         if (StringUtils.isEmpty(apiKeyValue)) {
-            errorCollection.addError(OctoConstants.API_KEY, textProvider.getText(API_KEY_ERROR_KEY));
+            errorCollection.addError(OctoConstants.API_KEY, textProvider.getText(OctoConstants.API_KEY_ERROR_KEY));
         }
 
         final String pushPattern = params.getString(OctoConstants.PUSH_PATTERN);
         if (StringUtils.isEmpty(pushPattern)) {
-            errorCollection.addError(OctoConstants.PUSH_PATTERN, textProvider.getText(PUSH_PATTERN_ERROR_KEY));
+            errorCollection.addError(OctoConstants.PUSH_PATTERN, textProvider.getText(OctoConstants.PUSH_PATTERN_ERROR_KEY));
         }
     }
 }

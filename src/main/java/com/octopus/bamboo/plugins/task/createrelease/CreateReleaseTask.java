@@ -95,14 +95,21 @@ public class CreateReleaseTask implements TaskType {
             final Project project = populateProjectAndChannelID(taskContext, release, projectName, channelName);
 
             /*
-                Set the package versions for the steps associated with the project
+                See if a release already exists
              */
-            populateSelectedPackages(taskContext, release, project);
+            final Optional<Release> existingRelease = lookupService.getRelease(taskContext, releaseVersion, project);
 
-            /*
-                Create the release
-             */
-            restAPI.createRelease(false, release);
+            if (!existingRelease.isPresent()) {
+                /*
+                    Set the package versions for the steps associated with the project
+                 */
+                populateSelectedPackages(taskContext, release, project);
+
+                /*
+                    Create the release
+                 */
+                restAPI.createRelease(false, release);
+            }
 
             /*
                 All went well, so return a successful result
@@ -114,7 +121,8 @@ public class CreateReleaseTask implements TaskType {
         } catch (final FeignException ex) {
             taskContext.getBuildLogger().addErrorLogEntry(
                     "OCTOPUS-BAMBOO-INPUT-ERROR-0004: The release could not be created. "
-                            + "Make sure the release version number of \"" + releaseVersion + "\" is a valid semver version string");
+                            + "Make sure the release version number of \"" + releaseVersion + "\" is a "
+                            + "valid semver version string.");
             return commonTaskService.buildResult(taskContext, false);
         }
     }

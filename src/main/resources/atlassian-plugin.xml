@@ -39,4 +39,13 @@
         <resource type="download" name="icon" location="images/pluginLogo.png"/>
     </taskType>
 
+    <taskType key="task.deployrelease" name="Octopus Deploy: Deploy Release"
+              class="com.octopus.bamboo.plugins.task.deployrelease.DeployReleaseTask">
+        <description>Create a release within an Octopus Deploy project</description>
+        <category name="deployment"/>
+        <configuration class="com.octopus.bamboo.plugins.task.deployrelease.DeployReleaseTaskConfigurator"/>
+        <resource type="freemarker" name="edit" location="freemarker/deployrelease.ftl"/>
+        <resource type="download" name="icon" location="images/pluginLogo.png"/>
+    </taskType>
+
 </atlassian-plugin>

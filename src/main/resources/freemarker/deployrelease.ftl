@@ -1,0 +1,6 @@
+[@ww.textfield labelKey="octopus.serverUrl.key" name="serverUrl" required='true'/]
+[@ww.password labelKey="octopus.apiKey.key" name="apiKey" required='true' showPassword='true'/]
+[@ww.textfield labelKey="octopus.projectName.key" name="projectName" required='true'/]
+[@ww.textfield labelKey="octopus.environmentName.key" name="environmentName" required='true'/]
+[@ww.textfield labelKey="octopus.releaseVersion.key" name="releaseVersion" required='true'/]
+[@ww.checkbox labelKey="octopus.verboseLogging.key" name="verboseLogging" required='false'/]

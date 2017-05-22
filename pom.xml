@@ -229,7 +229,7 @@
                         <!-- Add package to export here -->
                         <Export-Package>
                             com.octopus.bamboo.plugins.task.push,
-                            com.octopus.bamboo.plugins.task.deploy,
+                            com.octopus.bamboo.plugins.task.deployrelease,
                             com.octopus.bamboo.plugins.task.createrelease
                         </Export-Package>
 
