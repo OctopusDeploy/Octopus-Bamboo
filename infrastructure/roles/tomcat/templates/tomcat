@@ -21,7 +21,7 @@
 . /etc/init.d/functions
 
 ## tomcat installation directory
-PROCESS_NAME=tomcat-servicename
+PROCESS_NAME=tomcat
 
 CATALINA_HOME="/opt/apache-tomcat-8.5.15"
 

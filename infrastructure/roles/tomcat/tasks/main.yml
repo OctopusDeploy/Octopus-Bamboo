@@ -45,6 +45,14 @@
       group: root
       mode: 0755
 
+  - name: set tomcat permissions
+    file:
+      state: directory
+      path: /opt/apache-tomcat-8.5.15
+      owner: "{{tomcat_user}}"
+      group: "{{tomcat_user}}"
+      recurse: true
+
   - name: start tomcat service
     service:
       name: tomcat
