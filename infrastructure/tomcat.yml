@@ -1,0 +1,9 @@
+---
+- name: tomcat
+  hosts: tag_Appplication_Tomcat
+  remote_user: centos
+  become: true
+  become_user: root
+
+  roles:
+    - tomcat

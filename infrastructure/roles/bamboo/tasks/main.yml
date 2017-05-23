@@ -4,11 +4,13 @@
       name: bamboo
       enabled: yes
       state: stopped
+    ignore_errors: yes
 
   - name: kill bamboo
     command: "pkill -9 -U {{bamboo_user}}"
+    ignore_errors: yes
 
-  - name: create user to run iridium
+  - name: create user to run bamboo
     user: name={{bamboo_user}}
 
   - name: Add EPEL repository

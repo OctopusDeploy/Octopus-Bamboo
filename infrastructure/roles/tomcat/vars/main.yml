@@ -1,0 +1,3 @@
+---
+tomcat_user: tomcat
+tomcat_download: http://apache.uberglobalmirror.com/tomcat/tomcat-8/v8.5.15/bin/apache-tomcat-8.5.15.tar.gz

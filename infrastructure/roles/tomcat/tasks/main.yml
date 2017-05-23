@@ -1,0 +1,52 @@
+---
+  - name: stop tomcat service
+    service:
+      name: tomcat
+      enabled: yes
+      state: stopped
+    ignore_errors: yes
+
+  - name: kill tomcat
+    command: "pkill -9 -U {{tomcat_user}}"
+    ignore_errors: yes
+
+  - name: create user to run tomcat
+    user: name={{tomcat_user}}
+
+  - name: Add EPEL repository
+    yum:
+      name: http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
+      state: present
+
+  - name: install useful packages
+    yum:
+      name: wget,elinks,telnet,htop,mlocate,python-pip,vim,nano,jq,java-1.8.0-openjdk-devel,unzip,maven
+
+  - name: Set JAVA_HOME
+    lineinfile: dest=/etc/environment state=present regexp='^JAVA_HOME' line='JAVA_HOME=/usr/lib/jvm/jre-1.8.0'
+
+  - name: download tomcat
+    get_url:
+        url: "{{tomcat_download}}"
+        dest: /tmp/tomcat.tar.gz
+        mode: 0440
+
+  - name: extract tomcat
+    unarchive:
+        src: /tmp/tomcat.tar.gz
+        dest: /opt
+        copy: no
+
+  - name: install tomcat service
+    template:
+      src: tomcat
+      dest: /etc/init.d/tomcat
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: start tomcat service
+    service:
+      name: tomcat
+      enabled: yes
+      state: restarted
