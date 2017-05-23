@@ -20,10 +20,34 @@
 
   - name: install useful packages
     yum:
-      name: wget,elinks,telnet,htop,mlocate,python-pip,vim,nano,jq,java-1.8.0-openjdk-devel,unzip,maven
+      name: wget,elinks,telnet,htop,mlocate,python-pip,vim,nano,jq,java-1.8.0-openjdk-devel,unzip,maven,yum-utils
 
   - name: Set JAVA_HOME
     lineinfile: dest=/etc/environment state=present regexp='^JAVA_HOME' line='JAVA_HOME=/usr/lib/jvm/jre-1.8.0'
+
+  - name: install mono key
+    get_url:
+        url: http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+        dest: /tmp/GPG-KEY-mono
+        mode: 0440
+
+  - name: import mono key
+    rpm_key:
+      state: present
+      key: /tmp/GPG-KEY-mono
+
+  - name: Add mono repo
+    yum_repository:
+      name: mono
+      description: Mono repository
+      baseurl: http://download.mono-project.com/repo/centos7/
+      gpgkey: http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+      gpgcheck: yes
+      enabled: yes
+
+  - name: install mono
+    yum:
+      name: mono-devel
 
   - name: download tomcat
     get_url:
