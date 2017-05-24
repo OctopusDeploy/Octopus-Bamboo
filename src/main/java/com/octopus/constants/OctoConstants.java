@@ -78,6 +78,10 @@ public class OctoConstants {
      * The end of the http response range that indicates success
      */
     public static final int END_HTTP_OK_RANGE = 299;
+    /**
+     * The name of the capability that links to the octopus cli
+     */
+    public static final String OCTOPUS_CLI_CAPABILITY = "OctopusCLI";
 
     public static final String API_KEY_ERROR_KEY = "octopus.apiKey.error";
     public static final String SERVER_URL_ERROR_KEY = "octopus.serverUrl.error";

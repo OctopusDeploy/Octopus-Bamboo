@@ -1,17 +1,19 @@
 package com.octopus.bamboo.plugins.task.push;
 
-import com.atlassian.bamboo.task.TaskContext;
-import com.atlassian.bamboo.task.TaskException;
-import com.atlassian.bamboo.task.TaskResult;
-import com.atlassian.bamboo.task.TaskType;
+import com.atlassian.bamboo.process.ExternalProcessBuilder;
+import com.atlassian.bamboo.process.ProcessService;
+import com.atlassian.bamboo.task.*;
+import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
+import com.atlassian.utils.process.ExternalProcess;
 import com.octopus.constants.OctoConstants;
 import com.octopus.services.CommonTaskService;
 import com.octopus.services.LoggerService;
-import com.octopus.services.OctopusClient;
 import com.octopus.services.impl.BambooFeignLogger;
 import com.octopus.services.impl.LoggerServiceImpl;
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.Arrays;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -30,7 +33,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Named("pushTask")
 public class PushTask implements TaskType {
     private static final Logger LOGGER = LoggerFactory.getLogger(PushTask.class);
-    private final OctopusClient octopusClient;
+    @ComponentImport
+    private final ProcessService processService;
+    @ComponentImport
+    private final CapabilityContext capabilityContext;
     private final CommonTaskService commonTaskService;
 
     /**
@@ -40,12 +46,14 @@ public class PushTask implements TaskType {
      * @param commonTaskService The service used for common task operations
      */
     @Inject
-    public PushTask(@NotNull final OctopusClient octopusClient,
+    public PushTask(@NotNull final ProcessService processService,
+                    @NotNull final CapabilityContext capabilityContext,
                     @NotNull final CommonTaskService commonTaskService) {
-        checkNotNull(octopusClient, "octopusClient cannot be null");
-        checkNotNull(commonTaskService, "commonTaskService cannot be null");
+        checkNotNull(processService, "processService cannot be null");
+        checkNotNull(capabilityContext, "capabilityContext cannot be null");
 
-        this.octopusClient = octopusClient;
+        this.processService = processService;
+        this.capabilityContext = capabilityContext;
         this.commonTaskService = commonTaskService;
     }
 
@@ -63,17 +71,21 @@ public class PushTask implements TaskType {
         final String loggingLevel = taskContext.getConfigurationMap().get(OctoConstants.VERBOSE_LOGGING);
         final Boolean verboseLogging = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(loggingLevel));
 
-        final boolean success = octopusClient.pushPackage(
-                loggerService,
-                buildLogger,
-                serverUrl,
-                apiKey,
-                pattern,
-                taskContext.getWorkingDirectory(),
-                forceUploadBoolean,
-                verboseLogging
-        );
+        final String octoCli = capabilityContext.getCapabilityValue(OctoConstants.OCTOPUS_CLI_CAPABILITY);
 
-        return commonTaskService.buildResult(taskContext, success);
+        if (StringUtils.isBlank(octoCli)) {
+            commonTaskService.logError(taskContext, "Failed to find the Octopus CLI capability. "
+                    + "Make sure you have defined this in as part of the Bamboo configuration.");
+            return TaskResultBuilder.create(taskContext).failed().build();
+        }
+
+        final ExternalProcess process = processService.createProcess(taskContext,
+                new ExternalProcessBuilder()
+                        .command(Arrays.asList(octoCli))
+                        .workingDirectory(taskContext.getWorkingDirectory()));
+
+        return TaskResultBuilder.create(taskContext)
+                .checkReturnCode(process, 0)
+                .build();
     }
 }

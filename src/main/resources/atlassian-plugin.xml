@@ -28,6 +28,8 @@
         <configuration class="com.octopus.bamboo.plugins.task.push.PushTaskConfigurator"/>
         <resource type="freemarker" name="edit" location="freemarker/push.ftl"/>
         <resource type="download" name="icon" location="images/pluginLogo.png"/>
+        <executable key="octopuscli" nameKey="octopus.cli.key" pathHelpKey="octopus.cli.help"
+                    primaryCapabilityProvider="true"/>
     </taskType>
 
     <taskType key="task.createrelease" name="Octopus Deploy: Create Release"
@@ -37,6 +39,8 @@
         <configuration class="com.octopus.bamboo.plugins.task.createrelease.CreateReleaseTaskConfigurator"/>
         <resource type="freemarker" name="edit" location="freemarker/createrelease.ftl"/>
         <resource type="download" name="icon" location="images/pluginLogo.png"/>
+        <executable key="octopuscli" nameKey="octopus.cli.key" pathHelpKey="octopus.cli.help"
+                    primaryCapabilityProvider="false"/>
     </taskType>
 
     <taskType key="task.deployrelease" name="Octopus Deploy: Deploy Release"
@@ -46,6 +50,8 @@
         <configuration class="com.octopus.bamboo.plugins.task.deployrelease.DeployReleaseTaskConfigurator"/>
         <resource type="freemarker" name="edit" location="freemarker/deployrelease.ftl"/>
         <resource type="download" name="icon" location="images/pluginLogo.png"/>
+        <executable key="octopuscli" nameKey="octopus.cli.key" pathHelpKey="octopus.cli.help"
+                    primaryCapabilityProvider="false"/>
     </taskType>
 
 </atlassian-plugin>

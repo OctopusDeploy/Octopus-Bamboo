@@ -43,6 +43,23 @@
         dest: /opt
         copy: no
 
+  - name: download octopus cli
+    get_url:
+        url: "{{octopus_cli_download}}"
+        dest: /tmp/octopus-tools.tar.gz
+        mode: 0440
+
+  - name: create octopus cli directory
+    file:
+        path: /opt/octocli
+        state: directory
+
+  - name: extract octopus cli
+    unarchive:
+        src: /tmp/octopus-tools.tar.gz
+        dest: /opt/octocli
+        copy: no
+
   - name: create plugins directory
     file:
         path: /opt/atlassian-bamboo-6.0.0/plugins
