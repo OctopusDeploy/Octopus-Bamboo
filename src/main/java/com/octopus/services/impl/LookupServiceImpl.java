@@ -71,7 +71,7 @@ public class LookupServiceImpl implements LookupService {
 
         final PagedResultIterator<Release> iterator = new PagedResultIterator(new PagedAPICallable() {
             @Override
-            public PagedResult<Release> call(int skip) {
+            public PagedResult<Release> call(final int skip) {
                 return restAPI.getReleases(skip);
             }
         });
@@ -122,7 +122,7 @@ public class LookupServiceImpl implements LookupService {
 
         final PagedResultIterator<Channel> iterator = new PagedResultIterator(new PagedAPICallable() {
             @Override
-            public PagedResult<Channel> call(int skip) {
+            public PagedResult<Channel> call(final int skip) {
                 return restAPI.getProjectChannels(project.getId(), skip);
             }
         });
@@ -152,7 +152,7 @@ public class LookupServiceImpl implements LookupService {
 
         final PagedResultIterator<Channel> iterator = new PagedResultIterator(new PagedAPICallable() {
             @Override
-            public PagedResult<Channel> call(int skip) {
+            public PagedResult<Channel> call(final int skip) {
                 return restAPI.getProjectChannels(project.getId(), skip);
             }
         });
@@ -184,7 +184,7 @@ public class LookupServiceImpl implements LookupService {
 
         final PagedResultIterator<Package> iterator = new PagedResultIterator(new PagedAPICallable() {
             @Override
-            public PagedResult<Package> call(int skip) {
+            public PagedResult<Package> call(final int skip) {
                 return restAPI.getPackages(skip);
             }
         });

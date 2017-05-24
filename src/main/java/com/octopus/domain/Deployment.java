@@ -6,79 +6,78 @@ import java.util.List;
  * https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/Deployments
  */
 public class Deployment {
-    private String Comments;
+    private String comments;
 
-    private Boolean UseGuidedFailure;
+    private Boolean useGuidedFailure;
 
-    private List<String> SpecificMachineIds;
+    private List<String> specificMachineIds;
 
     /*
-        TODO: I don't know what form values is.
-        https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/Deployments doesn't help either.
+        I don't know what form values is.
         https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/Deployments doesn't help either.
      */
     //private String FormValues;
 
-    private String ManifestVariableSetId;
+    private String manifestVariableSetId;
 
-    private String LastModifiedBy;
+    private String lastModifiedBy;
 
-    private String QueueTimeExpiry;
+    private String queueTimeExpiry;
 
-    private String EnvironmentId;
+    private String environmentId;
 
-    private String TaskId;
+    private String taskId;
 
-    private Boolean ForcePackageDownload;
+    private Boolean forcePackageDownload;
 
-    private String Name;
+    private String name;
 
-    private String ChannelId;
+    private String channelId;
 
-    private String TenantId;
+    private String tenantId;
 
-    private String Created;
+    private String created;
 
-    private List<String> SkipActions;
+    private List<String> skipActions;
 
-    private String DeploymentProcessId;
+    private String deploymentProcessId;
 
-    private String LastModifiedOn;
+    private String lastModifiedOn;
 
-    private List<String> ExcludedMachineIds;
+    private List<String> excludedMachineIds;
 
-    private String Id;
+    private String id;
 
-    private String QueueTime;
+    private String queueTime;
 
-    private String ReleaseId;
+    private String releaseId;
 
-    private Boolean ForcePackageRedeployment;
+    private Boolean forcePackageRedeployment;
 
-    private String ProjectId;
+    private String projectId;
 
     public String getComments() {
-        return Comments;
+        return comments;
     }
 
-    public void setComments(final String Comments) {
-        this.Comments = Comments;
+    public void setComments(final String comments) {
+        this.comments = comments;
     }
 
     public Boolean getUseGuidedFailure() {
-        return UseGuidedFailure;
+        return useGuidedFailure;
     }
 
-    public void setUseGuidedFailure(final Boolean UseGuidedFailure) {
-        this.UseGuidedFailure = UseGuidedFailure;
+    public void setUseGuidedFailure(final Boolean useGuidedFailure) {
+        this.useGuidedFailure = useGuidedFailure;
     }
 
     public List<String> getSpecificMachineIds() {
-        return SpecificMachineIds;
+        return specificMachineIds;
     }
 
-    public void setSpecificMachineIds(final List<String> SpecificMachineIds) {
-        this.SpecificMachineIds = SpecificMachineIds;
+    public void setSpecificMachineIds(final List<String> specificMachineIds) {
+        this.specificMachineIds = specificMachineIds;
     }
 
     /*
@@ -92,154 +91,154 @@ public class Deployment {
     */
 
     public String getManifestVariableSetId() {
-        return ManifestVariableSetId;
+        return manifestVariableSetId;
     }
 
-    public void setManifestVariableSetId(final String ManifestVariableSetId) {
-        this.ManifestVariableSetId = ManifestVariableSetId;
+    public void setManifestVariableSetId(final String manifestVariableSetId) {
+        this.manifestVariableSetId = manifestVariableSetId;
     }
 
     public String getLastModifiedBy() {
-        return LastModifiedBy;
+        return lastModifiedBy;
     }
 
-    public void setLastModifiedBy(final String LastModifiedBy) {
-        this.LastModifiedBy = LastModifiedBy;
+    public void setLastModifiedBy(final String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
     }
 
     public String getQueueTimeExpiry() {
-        return QueueTimeExpiry;
+        return queueTimeExpiry;
     }
 
-    public void setQueueTimeExpiry(final String QueueTimeExpiry) {
-        this.QueueTimeExpiry = QueueTimeExpiry;
+    public void setQueueTimeExpiry(final String queueTimeExpiry) {
+        this.queueTimeExpiry = queueTimeExpiry;
     }
 
     public String getEnvironmentId() {
-        return EnvironmentId;
+        return environmentId;
     }
 
-    public void setEnvironmentId(final String EnvironmentId) {
-        this.EnvironmentId = EnvironmentId;
+    public void setEnvironmentId(final String environmentId) {
+        this.environmentId = environmentId;
     }
 
     public String getTaskId() {
-        return TaskId;
+        return taskId;
     }
 
-    public void setTaskId(final String TaskId) {
-        this.TaskId = TaskId;
+    public void setTaskId(final String taskId) {
+        this.taskId = taskId;
     }
 
     public Boolean getForcePackageDownload() {
-        return ForcePackageDownload;
+        return forcePackageDownload;
     }
 
-    public void setForcePackageDownload(final Boolean ForcePackageDownload) {
-        this.ForcePackageDownload = ForcePackageDownload;
+    public void setForcePackageDownload(final Boolean forcePackageDownload) {
+        this.forcePackageDownload = forcePackageDownload;
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
-    public void setName(final String Name) {
-        this.Name = Name;
+    public void setName(final String name) {
+        this.name = name;
     }
 
     public String getChannelId() {
-        return ChannelId;
+        return channelId;
     }
 
-    public void setChannelId(final String ChannelId) {
-        this.ChannelId = ChannelId;
+    public void setChannelId(final String channelId) {
+        this.channelId = channelId;
     }
 
     public String getTenantId() {
-        return TenantId;
+        return tenantId;
     }
 
-    public void setTenantId(final String TenantId) {
-        this.TenantId = TenantId;
+    public void setTenantId(final String tenantId) {
+        this.tenantId = tenantId;
     }
 
     public String getCreated() {
-        return Created;
+        return created;
     }
 
-    public void setCreated(final String Created) {
-        this.Created = Created;
+    public void setCreated(final String created) {
+        this.created = created;
     }
 
     public List<String> getSkipActions() {
-        return SkipActions;
+        return skipActions;
     }
 
-    public void setSkipActions(final List<String> SkipActions) {
-        this.SkipActions = SkipActions;
+    public void setSkipActions(final List<String> skipActions) {
+        this.skipActions = skipActions;
     }
 
     public String getDeploymentProcessId() {
-        return DeploymentProcessId;
+        return deploymentProcessId;
     }
 
-    public void setDeploymentProcessId(final String DeploymentProcessId) {
-        this.DeploymentProcessId = DeploymentProcessId;
+    public void setDeploymentProcessId(final String deploymentProcessId) {
+        this.deploymentProcessId = deploymentProcessId;
     }
 
     public String getLastModifiedOn() {
-        return LastModifiedOn;
+        return lastModifiedOn;
     }
 
-    public void setLastModifiedOn(final String LastModifiedOn) {
-        this.LastModifiedOn = LastModifiedOn;
+    public void setLastModifiedOn(final String lastModifiedOn) {
+        this.lastModifiedOn = lastModifiedOn;
     }
 
     public List<String> getExcludedMachineIds() {
-        return ExcludedMachineIds;
+        return excludedMachineIds;
     }
 
-    public void setExcludedMachineIds(final List<String> ExcludedMachineIds) {
-        this.ExcludedMachineIds = ExcludedMachineIds;
+    public void setExcludedMachineIds(final List<String> excludedMachineIds) {
+        this.excludedMachineIds = excludedMachineIds;
     }
 
     public String getId() {
-        return Id;
+        return id;
     }
 
-    public void setId(final String Id) {
-        this.Id = Id;
+    public void setId(final String id) {
+        this.id = id;
     }
 
     public String getQueueTime() {
-        return QueueTime;
+        return queueTime;
     }
 
-    public void setQueueTime(final String QueueTime) {
-        this.QueueTime = QueueTime;
+    public void setQueueTime(final String queueTime) {
+        this.queueTime = queueTime;
     }
 
     public String getReleaseId() {
-        return ReleaseId;
+        return releaseId;
     }
 
-    public void setReleaseId(final String ReleaseId) {
-        this.ReleaseId = ReleaseId;
+    public void setReleaseId(final String releaseId) {
+        this.releaseId = releaseId;
     }
 
     public Boolean getForcePackageRedeployment() {
-        return ForcePackageRedeployment;
+        return forcePackageRedeployment;
     }
 
-    public void setForcePackageRedeployment(final Boolean ForcePackageRedeployment) {
-        this.ForcePackageRedeployment = ForcePackageRedeployment;
+    public void setForcePackageRedeployment(final Boolean forcePackageRedeployment) {
+        this.forcePackageRedeployment = forcePackageRedeployment;
     }
 
     public String getProjectId() {
-        return ProjectId;
+        return projectId;
     }
 
-    public void setProjectId(final String ProjectId) {
-        this.ProjectId = ProjectId;
+    public void setProjectId(final String projectId) {
+        this.projectId = projectId;
     }
 }

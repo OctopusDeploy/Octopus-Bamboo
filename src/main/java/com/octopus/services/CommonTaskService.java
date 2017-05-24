@@ -37,5 +37,5 @@ public interface CommonTaskService {
      * @param message The message to sanitise
      * @return The sanitised message
      */
-    String sanitiseMessage(@NotNull final String message);
+    String sanitiseMessage(@NotNull String message);
 }

@@ -20,7 +20,7 @@ public class PagedResult<T> {
         return items;
     }
 
-    public void setItems(List<T> items) {
+    public void setItems(final List<T> items) {
         this.items = items;
     }
 
@@ -28,7 +28,7 @@ public class PagedResult<T> {
         return itemsPerPage;
     }
 
-    public void setItemsPerPage(Integer itemsPerPage) {
+    public void setItemsPerPage(final Integer itemsPerPage) {
         this.itemsPerPage = itemsPerPage;
     }
 
@@ -36,7 +36,7 @@ public class PagedResult<T> {
         return itemType;
     }
 
-    public void setItemType(String itemType) {
+    public void setItemType(final String itemType) {
         this.itemType = itemType;
     }
 
@@ -44,7 +44,7 @@ public class PagedResult<T> {
         return totalResults;
     }
 
-    public void setTotalResults(Integer totalResults) {
+    public void setTotalResults(final Integer totalResults) {
         this.totalResults = totalResults;
     }
 
@@ -52,7 +52,7 @@ public class PagedResult<T> {
         return isStale;
     }
 
-    public void setStale(Boolean stale) {
+    public void setStale(final Boolean stale) {
         isStale = stale;
     }
 }

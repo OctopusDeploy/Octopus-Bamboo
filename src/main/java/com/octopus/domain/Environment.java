@@ -4,53 +4,53 @@ package com.octopus.domain;
  * https://github.com/OctopusDeploy/OctopusDeploy-Api/wiki/Environments
  */
 public class Environment {
-    private String Name;
+    private String name;
 
-    private String Description;
+    private String description;
 
-    private Boolean UseGuidedFailure;
+    private Boolean useGuidedFailure;
 
-    private Integer SortOrder;
+    private Integer sortOrder;
 
-    private String Id;
+    private String id;
 
     public String getName() {
-        return Name;
+        return name;
     }
 
-    public void setName(final String Name) {
-        this.Name = Name;
+    public void setName(final String name) {
+        this.name = name;
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
-    public void setDescription(final String Description) {
-        this.Description = Description;
+    public void setDescription(final String description) {
+        this.description = description;
     }
 
     public Boolean getUseGuidedFailure() {
-        return UseGuidedFailure;
+        return useGuidedFailure;
     }
 
-    public void setUseGuidedFailure(final Boolean UseGuidedFailure) {
-        this.UseGuidedFailure = UseGuidedFailure;
+    public void setUseGuidedFailure(final Boolean useGuidedFailure) {
+        this.useGuidedFailure = useGuidedFailure;
     }
 
     public Integer getSortOrder() {
-        return SortOrder;
+        return sortOrder;
     }
 
-    public void setSortOrder(final Integer SortOrder) {
-        this.SortOrder = SortOrder;
+    public void setSortOrder(final Integer sortOrder) {
+        this.sortOrder = sortOrder;
     }
 
     public String getId() {
-        return Id;
+        return id;
     }
 
-    public void setId(final String Id) {
-        this.Id = Id;
+    public void setId(final String id) {
+        this.id = id;
     }
 }

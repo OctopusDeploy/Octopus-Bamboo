@@ -25,6 +25,7 @@ import java.util.HashMap;
 @Configuration
 @Component
 @Conditional(IntegrationTestCondition.class)
+@SuppressWarnings("LineLength")
 public class MockPluginConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(MockPluginConfiguration.class);
 
