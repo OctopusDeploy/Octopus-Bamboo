@@ -1,6 +1,5 @@
 package com.octopus.services.impl;
 
-import com.atlassian.bamboo.task.TaskContext;
 import com.github.zafarkhaja.semver.Version;
 import com.google.common.base.Optional;
 import com.octopus.api.RestAPI;
@@ -8,18 +7,19 @@ import com.octopus.constants.OctoConstants;
 import com.octopus.domain.*;
 import com.octopus.domain.Package;
 import com.octopus.services.FeignService;
+import com.octopus.services.LoggerService;
 import com.octopus.services.LookupService;
 import com.octopus.services.PagedAPICallable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang.StringUtils;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -40,11 +40,24 @@ public class LookupServiceImpl implements LookupService {
         this.feignService = feignService;
     }
 
-    public Optional<Project> getProject(@NotNull final TaskContext taskContext, @NotNull final String projectName) {
-        checkNotNull(taskContext);
+    public Optional<Project> getProject(@NotNull final LoggerService logger,
+                                        @NotNull final feign.Logger buildLogger,
+                                        @NotNull final String host,
+                                        @NotNull final String apiKey,
+                                        @NotNull final String projectName,
+                                        boolean verboseLogging) {
+        checkNotNull(logger);
+        checkNotNull(buildLogger);
+        checkArgument(StringUtils.isNotBlank(host));
+        checkArgument(StringUtils.isNotBlank(apiKey));
         checkArgument(StringUtils.isNotBlank(projectName));
 
-        final RestAPI restAPI = feignService.createClient(taskContext, true);
+        final RestAPI restAPI = feignService.createClient(
+                buildLogger,
+                host,
+                apiKey,
+                verboseLogging,
+                true);
         final List<Project> projects = restAPI.getProjects();
 
         CollectionUtils.filter(projects, new Predicate<Project>() {
@@ -58,16 +71,28 @@ public class LookupServiceImpl implements LookupService {
     }
 
     @Override
-    public Optional<Release> getRelease(@NotNull final TaskContext taskContext,
+    public Optional<Release> getRelease(@NotNull final LoggerService logger,
+                                        @NotNull final feign.Logger buildLogger,
+                                        @NotNull final String host,
+                                        @NotNull final String apiKey,
                                         @NotNull final String releaseVersion,
-                                        @NotNull final Project project) {
-        checkNotNull(taskContext);
+                                        @NotNull final Project project,
+                                        boolean verboseLogging) {
+        checkNotNull(logger);
+        checkNotNull(buildLogger);
+        checkArgument(StringUtils.isNotBlank(host));
+        checkArgument(StringUtils.isNotBlank(apiKey));
         checkNotNull(project);
         checkArgument(StringUtils.isNotBlank(releaseVersion));
 
         final List<Release> matching = new ArrayList<>();
 
-        final RestAPI restAPI = feignService.createClient(taskContext, true);
+        final RestAPI restAPI = feignService.createClient(
+                buildLogger,
+                host,
+                apiKey,
+                verboseLogging,
+                true);
 
         final PagedResultIterator<Release> iterator = new PagedResultIterator(new PagedAPICallable() {
             @Override
@@ -94,11 +119,24 @@ public class LookupServiceImpl implements LookupService {
     }
 
     @Override
-    public Optional<Environment> getEnvironment(@NotNull final TaskContext taskContext, @NotNull final String environmentName) {
-        checkNotNull(taskContext);
+    public Optional<Environment> getEnvironment(@NotNull final LoggerService logger,
+                                                @NotNull final feign.Logger buildLogger,
+                                                @NotNull final String host,
+                                                @NotNull final String apiKey,
+                                                @NotNull final String environmentName,
+                                                boolean verboseLogging) {
+        checkNotNull(logger);
+        checkNotNull(buildLogger);
+        checkArgument(StringUtils.isNotBlank(host));
+        checkArgument(StringUtils.isNotBlank(apiKey));
         checkArgument(StringUtils.isNotBlank(environmentName));
 
-        final RestAPI restAPI = feignService.createClient(taskContext, true);
+        final RestAPI restAPI = feignService.createClient(
+                buildLogger,
+                host,
+                apiKey,
+                verboseLogging,
+                true);
         final List<Environment> environments = restAPI.getEnvironments();
 
         CollectionUtils.filter(environments, new Predicate<Environment>() {
@@ -111,16 +149,28 @@ public class LookupServiceImpl implements LookupService {
         return Optional.fromNullable(environments.isEmpty() ? null : environments.get(0));
     }
 
-    public Optional<String> getChannel(@NotNull final TaskContext taskContext,
+    public Optional<String> getChannel(@NotNull final LoggerService logger,
+                                       @NotNull final feign.Logger buildLogger,
+                                       @NotNull final String host,
+                                       @NotNull final String apiKey,
                                        @NotNull final Project project,
-                                       @NotNull final String channelName) {
-        checkNotNull(taskContext);
+                                       @NotNull final String channelName,
+                                       boolean verboseLogging) {
+        checkNotNull(logger);
+        checkNotNull(buildLogger);
+        checkArgument(StringUtils.isNotBlank(host));
+        checkArgument(StringUtils.isNotBlank(apiKey));
         checkNotNull(project);
         checkArgument(StringUtils.isNotBlank(channelName));
 
         final List<Channel> matching = new ArrayList<>();
 
-        final RestAPI restAPI = feignService.createClient(taskContext, true);
+        final RestAPI restAPI = feignService.createClient(
+                buildLogger,
+                host,
+                apiKey,
+                verboseLogging,
+                true);
 
         final PagedResultIterator<Channel> iterator = new PagedResultIterator(new PagedAPICallable() {
             @Override
@@ -145,14 +195,26 @@ public class LookupServiceImpl implements LookupService {
         return Optional.fromNullable(matching.isEmpty() ? null : matching.get(0).getId());
     }
 
-    public Optional<String> getDefaultChannel(@NotNull final TaskContext taskContext,
-                                              @NotNull final Project project) {
-        checkNotNull(taskContext);
+    public Optional<String> getDefaultChannel(@NotNull final LoggerService logger,
+                                              @NotNull final feign.Logger buildLogger,
+                                              @NotNull final String host,
+                                              @NotNull final String apiKey,
+                                              @NotNull final Project project,
+                                              boolean verboseLogging) {
+        checkNotNull(logger);
+        checkNotNull(buildLogger);
+        checkArgument(StringUtils.isNotBlank(host));
+        checkArgument(StringUtils.isNotBlank(apiKey));
         checkNotNull(project);
 
         final List<Channel> matching = new ArrayList<>();
 
-        final RestAPI restAPI = feignService.createClient(taskContext, true);
+        final RestAPI restAPI = feignService.createClient(
+                buildLogger,
+                host,
+                apiKey,
+                verboseLogging,
+                true);
 
         final PagedResultIterator<Channel> iterator = new PagedResultIterator(new PagedAPICallable() {
             @Override
@@ -178,14 +240,27 @@ public class LookupServiceImpl implements LookupService {
     }
 
     @Override
-    public void populateSelectedPackages(@NotNull final TaskContext taskContext,
+    public void populateSelectedPackages(@NotNull final LoggerService logger,
+                                         @NotNull final feign.Logger buildLogger,
+                                         @NotNull final String host,
+                                         @NotNull final String apiKey,
                                          @NotNull final Release release,
-                                         @NotNull final Project project) {
-        checkNotNull(taskContext);
+                                         @NotNull final Project project,
+                                         boolean verboseLogging) {
+        checkNotNull(logger);
+        checkNotNull(buildLogger);
+        checkArgument(StringUtils.isNotBlank(host));
+        checkArgument(StringUtils.isNotBlank(apiKey));
         checkNotNull(release);
         checkNotNull(project);
 
-        final RestAPI restAPI = feignService.createClient(taskContext, true);
+        final RestAPI restAPI = feignService.createClient(
+                buildLogger,
+                host,
+                apiKey,
+                verboseLogging,
+                true);
+
         final DeploymentProcess deploymentProcess = restAPI.getDeploymentProcess(project.getDeploymentProcessId());
 
         final PagedResultIterator<Package> iterator = new PagedResultIterator(new PagedAPICallable() {

@@ -1,6 +1,5 @@
 package com.octopus.services.impl;
 
-import com.atlassian.bamboo.task.TaskContext;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.GsonBuilder;
 import com.octopus.api.RestAPI;
@@ -11,7 +10,6 @@ import feign.form.FormEncoder;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,15 +33,12 @@ public class FeignServiceImpl implements FeignService {
 
     @Override
     @NotNull
-    public RestAPI createClient(@NotNull final TaskContext taskContext, final boolean enableRetry) {
-        checkNotNull(taskContext);
-
-        final Logger buildLogger = new BambooFeignLogger(taskContext.getBuildLogger());
-
-        final String serverUrl = taskContext.getConfigurationMap().get(OctoConstants.SERVER_URL);
-        final String apiKey = taskContext.getConfigurationMap().get(OctoConstants.API_KEY);
-        final String loggingLevel = taskContext.getConfigurationMap().get(OctoConstants.VERBOSE_LOGGING);
-
+    public RestAPI createClient(@NotNull final Logger buildLogger,
+                                @NotNull final String serverUrl,
+                                @NotNull final String apiKey,
+                                final boolean verboseLogging,
+                                final boolean enableRetry) {
+        checkNotNull(buildLogger);
         checkState(StringUtils.isNotBlank(serverUrl));
         checkState(StringUtils.isNotBlank(apiKey),
                 "OCTOPUS-BAMBOO-ERROR-0004: The API key was blank. "
@@ -63,7 +58,7 @@ public class FeignServiceImpl implements FeignService {
                         .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
                         .create()))
                 .logger(buildLogger)
-                .logLevel(BooleanUtils.toBooleanDefaultIfNull(BooleanUtils.toBooleanObject(loggingLevel), false)
+                .logLevel(verboseLogging
                         ? Logger.Level.FULL
                         : Logger.Level.NONE)
                 .requestInterceptor(new RequestInterceptor() {
