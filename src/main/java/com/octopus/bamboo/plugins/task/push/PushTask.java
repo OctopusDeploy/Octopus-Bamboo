@@ -3,6 +3,7 @@ package com.octopus.bamboo.plugins.task.push;
 import com.atlassian.bamboo.process.ExternalProcessBuilder;
 import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.*;
+import com.atlassian.bamboo.v2.build.agent.capability.Capability;
 import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
@@ -13,7 +14,6 @@ import com.octopus.services.LoggerService;
 import com.octopus.services.impl.BambooFeignLogger;
 import com.octopus.services.impl.LoggerServiceImpl;
 import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,21 +71,33 @@ public class PushTask implements TaskType {
         final String loggingLevel = taskContext.getConfigurationMap().get(OctoConstants.VERBOSE_LOGGING);
         final Boolean verboseLogging = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(loggingLevel));
 
-        final String octoCli = capabilityContext.getCapabilityValue(OctoConstants.OCTOPUS_CLI_CAPABILITY);
+        for (final Capability cap : capabilityContext.getCapabilitySet().getCapabilities()) {
+            if (cap.getKey().startsWith(OctoConstants.OCTOPUS_CLI_CAPABILITY)) {
+                final String octoCli = cap.getValue();
 
-        if (StringUtils.isBlank(octoCli)) {
-            commonTaskService.logError(taskContext, "Failed to find the Octopus CLI capability. "
-                    + "Make sure you have defined this in as part of the Bamboo configuration.");
-            return TaskResultBuilder.create(taskContext).failed().build();
+                final ExternalProcess process = processService.createProcess(taskContext,
+                        new ExternalProcessBuilder()
+                                .command(Arrays.asList(octoCli))
+                                .workingDirectory(taskContext.getWorkingDirectory()));
+
+                process.execute();
+
+                if (process.getHandler().getExitCode() != 0) {
+                    commonTaskService.logError(
+                            taskContext,
+                            "Failed to execute the Octopus Command line client. "
+                                    + "If the error message mentions missing library files "
+                                    + "(like unwind or icu) make sure you have installed all "
+                                    + "the dependencies that are documented at "
+                                    + "https://www.microsoft.com/net/core");
+                }
+
+                return TaskResultBuilder.create(taskContext)
+                        .checkReturnCode(process, 0)
+                        .build();
+            }
         }
 
-        final ExternalProcess process = processService.createProcess(taskContext,
-                new ExternalProcessBuilder()
-                        .command(Arrays.asList(octoCli))
-                        .workingDirectory(taskContext.getWorkingDirectory()));
-
-        return TaskResultBuilder.create(taskContext)
-                .checkReturnCode(process, 0)
-                .build();
+        return TaskResultBuilder.create(taskContext).failed().build();
     }
 }
