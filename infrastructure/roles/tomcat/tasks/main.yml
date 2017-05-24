@@ -77,6 +77,15 @@
       group: "{{tomcat_user}}"
       recurse: true
 
+  - name: allow centos user to deploy to webapps
+    file:
+      state: directory
+      path: /opt/apache-tomcat-8.5.15/webapps
+      owner: "centos"
+      group: "centos"
+      recurse: true
+      mode: 0777
+
   - name: start tomcat service
     service:
       name: tomcat
