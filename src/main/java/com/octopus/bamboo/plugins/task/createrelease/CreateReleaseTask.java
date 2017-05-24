@@ -8,9 +8,9 @@ import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.utils.process.ExternalProcess;
+import com.google.common.base.Splitter;
 import com.octopus.constants.OctoConstants;
 import com.octopus.services.CommonTaskService;
-import edu.emory.mathcs.backport.java.util.Arrays;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.types.Commandline;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -76,9 +77,11 @@ public class CreateReleaseTask implements TaskType {
                 taskContext.getConfigurationMap().get(OctoConstants.IGNORE_EXISTING_RELEASE_NAME)));
         final String loggingLevel = taskContext.getConfigurationMap().get(OctoConstants.VERBOSE_LOGGING);
         final Boolean verboseLogging = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(loggingLevel));
-        final String deploymentProgress = taskContext.getConfigurationMap().get(OctoConstants.SHOW_DEPLOYMENT_PROGRESS_KEY);
+        final String deploymentProgress = taskContext.getConfigurationMap().get(OctoConstants.SHOW_DEPLOYMENT_PROGRESS);
         final Boolean deploymentProgressEnabled = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(deploymentProgress));
         final String additionalArgs = taskContext.getConfigurationMap().get(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME);
+        final String tenants = taskContext.getConfigurationMap().get(OctoConstants.TENANTS_NAME);
+        final String tenantTags = taskContext.getConfigurationMap().get(OctoConstants.TENANT_TAGS_NAME);
 
         checkState(StringUtils.isNotBlank(serverUrl), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus URL can not be blank");
         checkState(StringUtils.isNotBlank(apiKey), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: API key can not be blank");
@@ -125,6 +128,28 @@ public class CreateReleaseTask implements TaskType {
 
         if (deploymentProgressEnabled) {
             commands.add("--progress");
+        }
+
+        if (StringUtils.isNotBlank(tenants)) {
+            Iterable<String> tenantsSplit = Splitter.on(',')
+                    .trimResults()
+                    .omitEmptyStrings()
+                    .split(tenants);
+            for (final String tenant : tenantsSplit) {
+                commands.add("--tenant");
+                commands.add(tenant);
+            }
+        }
+
+        if (StringUtils.isNotBlank(tenantTags)) {
+            Iterable<String> tenantTagsSplit = Splitter.on(',')
+                    .trimResults()
+                    .omitEmptyStrings()
+                    .split(tenantTags);
+            for (final String tenantTag : tenantTagsSplit) {
+                commands.add("--tenanttag");
+                commands.add(tenantTag);
+            }
         }
 
         if (StringUtils.isNotBlank(additionalArgs)) {

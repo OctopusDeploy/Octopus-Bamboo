@@ -75,6 +75,18 @@ public class OctoConstants {
      */
     public static final String PROMOTE_TO_NAME = "promoteTo";
     /**
+     * The configuration key for the show progress option
+     */
+    public static final String SHOW_DEPLOYMENT_PROGRESS = "showProgress";
+    /**
+     * The configuration key for the tenants option
+     */
+    public static final String TENANTS_NAME = "tenants";
+    /**
+     * The configuration key for the tenant tags option
+     */
+    public static final String TENANT_TAGS_NAME = "tenantTags";
+    /**
      * The name of the capability that links to the octopus cli
      */
     public static final String OCTOPUS_CLI_CAPABILITY = "system.builder.octopuscli";
@@ -85,7 +97,7 @@ public class OctoConstants {
     public static final String PROJECT_NAME_ERROR_KEY = "octopus.projectName.error";
     public static final String RELEASE_VERSION_ERROR_KEY = "octopus.releaseVersion.error";
     public static final String ENVIRONMENT_NAME_ERROR_KEY = "octopus.environmentName.error";
-    public static final String SHOW_DEPLOYMENT_PROGRESS_KEY = "octopus.showProgress.error";
+
     public static final String PROMOTE_FROM_NAME_ERROR_KEY = "octopus.promoteFrom.error";
     public static final String PROMOTE_TO_NAME_ERROR_KEY = "octopus.promoteTo.error";
 

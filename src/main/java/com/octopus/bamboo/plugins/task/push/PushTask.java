@@ -11,7 +11,6 @@ import com.atlassian.utils.process.ExternalProcess;
 import com.octopus.constants.OctoConstants;
 import com.octopus.services.CommonTaskService;
 import com.octopus.services.FileService;
-import edu.emory.mathcs.backport.java.util.Arrays;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.types.Commandline;
@@ -25,6 +24,7 @@ import javax.inject.Named;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;

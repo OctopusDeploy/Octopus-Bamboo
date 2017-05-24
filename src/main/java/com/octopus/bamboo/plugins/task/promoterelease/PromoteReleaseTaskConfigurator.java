@@ -48,8 +48,10 @@ public class PromoteReleaseTaskConfigurator extends AbstractTaskConfigurator {
         config.put(OctoConstants.PROMOTE_FROM_NAME, params.getString(OctoConstants.PROMOTE_FROM_NAME));
         config.put(OctoConstants.PROMOTE_TO_NAME, params.getString(OctoConstants.PROMOTE_TO_NAME));
         config.put(OctoConstants.VERBOSE_LOGGING, params.getString(OctoConstants.VERBOSE_LOGGING));
-        config.put(OctoConstants.SHOW_DEPLOYMENT_PROGRESS_KEY, params.getString(OctoConstants.SHOW_DEPLOYMENT_PROGRESS_KEY));
+        config.put(OctoConstants.SHOW_DEPLOYMENT_PROGRESS, params.getString(OctoConstants.SHOW_DEPLOYMENT_PROGRESS));
         config.put(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME, params.getString(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME));
+        config.put(OctoConstants.TENANTS_NAME, params.getString(OctoConstants.TENANTS_NAME));
+        config.put(OctoConstants.TENANT_TAGS_NAME, params.getString(OctoConstants.TENANT_TAGS_NAME));
         return config;
     }
 
@@ -67,8 +69,10 @@ public class PromoteReleaseTaskConfigurator extends AbstractTaskConfigurator {
         context.put(OctoConstants.PROMOTE_FROM_NAME, taskDefinition.getConfiguration().get(OctoConstants.PROMOTE_FROM_NAME));
         context.put(OctoConstants.PROMOTE_TO_NAME, taskDefinition.getConfiguration().get(OctoConstants.PROMOTE_TO_NAME));
         context.put(OctoConstants.VERBOSE_LOGGING, taskDefinition.getConfiguration().get(OctoConstants.VERBOSE_LOGGING));
-        context.put(OctoConstants.SHOW_DEPLOYMENT_PROGRESS_KEY, taskDefinition.getConfiguration().get(OctoConstants.SHOW_DEPLOYMENT_PROGRESS_KEY));
+        context.put(OctoConstants.SHOW_DEPLOYMENT_PROGRESS, taskDefinition.getConfiguration().get(OctoConstants.SHOW_DEPLOYMENT_PROGRESS));
         context.put(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME, taskDefinition.getConfiguration().get(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME));
+        context.put(OctoConstants.TENANTS_NAME, taskDefinition.getConfiguration().get(OctoConstants.TENANTS_NAME));
+        context.put(OctoConstants.TENANT_TAGS_NAME, taskDefinition.getConfiguration().get(OctoConstants.TENANT_TAGS_NAME));
     }
 
     @Override
