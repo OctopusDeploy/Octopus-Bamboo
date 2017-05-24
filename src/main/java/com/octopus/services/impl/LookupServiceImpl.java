@@ -77,7 +77,7 @@ public class LookupServiceImpl implements LookupService {
         });
 
         // @formatter:off
-        for (Iterator<PagedResult<Release>> releases = iterator.iterator(); releases.hasNext(); ) {
+        for (Iterator<PagedResult<Release>> releases = iterator.iterator(); releases.hasNext();) {
             final PagedResult<Release> pagedReleases = releases.next();
             matching.addAll(pagedReleases.getItems());
             CollectionUtils.filter(matching, new Predicate<Release>() {
@@ -130,7 +130,7 @@ public class LookupServiceImpl implements LookupService {
         });
 
         // @formatter:off
-        for (Iterator<PagedResult<Channel>> channels = iterator.iterator(); channels.hasNext(); ) {
+        for (Iterator<PagedResult<Channel>> channels = iterator.iterator(); channels.hasNext();) {
             final PagedResult<Channel> pagedChannels = channels.next();
             matching.addAll(pagedChannels.getItems());
             CollectionUtils.filter(matching, new Predicate<Channel>() {
@@ -162,7 +162,7 @@ public class LookupServiceImpl implements LookupService {
         });
 
         // @formatter:off
-        for (Iterator<PagedResult<Channel>> channels = iterator.iterator(); channels.hasNext(); ) {
+        for (Iterator<PagedResult<Channel>> channels = iterator.iterator(); channels.hasNext();) {
             final PagedResult<Channel> pagedChannels = channels.next();
             matching.addAll(pagedChannels.getItems());
             CollectionUtils.filter(matching, new Predicate<Channel>() {
@@ -196,7 +196,7 @@ public class LookupServiceImpl implements LookupService {
         });
 
         // @formatter:off
-        for (Iterator<PagedResult<Package>> packages = iterator.iterator(); packages.hasNext(); ) {
+        for (Iterator<PagedResult<Package>> packages = iterator.iterator(); packages.hasNext();) {
 
             if (deploymentProcess.getSteps() != null) {
                 for (final Step step : deploymentProcess.getSteps()) {
