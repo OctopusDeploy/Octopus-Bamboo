@@ -13,7 +13,7 @@ public class CommonTaskServiceImplTest {
     @Test
     public void testSanitisation() {
         final String message = "Performed POST with API-ABCDEFGHIJKLMNOPQRSTUVWXY";
-        final String sanitised = "Performed POST with API-.........................";
+        final String sanitised = "Performed POST with API-....................UVWXY";
 
         Assert.assertEquals(sanitised, COMMON_TASK_SERVICE.sanitiseMessage(message));
     }

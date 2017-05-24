@@ -16,6 +16,7 @@ import com.octopus.services.CommonTaskService;
 import com.octopus.services.FeignService;
 import com.octopus.services.LookupService;
 import feign.FeignException;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -67,6 +68,8 @@ public class CreateReleaseTask implements TaskType {
         final String projectName = taskContext.getConfigurationMap().get(OctoConstants.PROJECT_NAME);
         final String channelName = taskContext.getConfigurationMap().get(OctoConstants.CHANNEL_NAME);
         final String releaseVersion = taskContext.getConfigurationMap().get(OctoConstants.RELEASE_VERSION);
+        final Boolean ignoreExisting = BooleanUtils.toBooleanObject(
+                taskContext.getConfigurationMap().get(OctoConstants.IGNORE_EXISTING_RELEASE_NAME));
 
         checkState(StringUtils.isNotBlank(projectName));
 
@@ -96,17 +99,27 @@ public class CreateReleaseTask implements TaskType {
              */
             final Optional<Release> existingRelease = lookupService.getRelease(taskContext, releaseVersion, project);
 
-            if (!existingRelease.isPresent()) {
-                /*
-                    Set the package versions for the steps associated with the project
-                 */
-                lookupService.populateSelectedPackages(taskContext, release, project);
-
-                /*
-                    Create the release
-                 */
-                restAPI.createRelease(false, release);
+            if (existingRelease.isPresent()) {
+                if (BooleanUtils.isTrue(ignoreExisting)) {
+                    return commonTaskService.buildResult(taskContext, true);
+                } else {
+                    commonTaskService.logError(
+                            taskContext,
+                            "OCTOPUS-BAMBOO-INPUT-ERROR-0007: The release version already exists, and the ignore existing releases option was not selected.");
+                    return commonTaskService.buildResult(taskContext, false);
+                }
             }
+
+            /*
+                Set the package versions for the steps associated with the project
+             */
+            lookupService.populateSelectedPackages(taskContext, release, project);
+
+            /*
+                Create the release
+             */
+            restAPI.createRelease(false, release);
+
 
             /*
                 All went well, so return a successful result

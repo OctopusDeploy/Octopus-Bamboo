@@ -6,6 +6,7 @@ import com.atlassian.bamboo.task.TaskResult;
 import com.atlassian.bamboo.task.TaskType;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.google.common.base.Optional;
+import com.google.common.base.Splitter;
 import com.octopus.api.RestAPI;
 import com.octopus.constants.OctoConstants;
 import com.octopus.domain.Deployment;
@@ -77,14 +78,6 @@ public class DeployReleaseTask implements TaskType {
             }
 
             /*
-                Match environment name to id
-             */
-            final Optional<Environment> environment = lookupService.getEnvironment(taskContext, environmentName);
-            if (!environment.isPresent()) {
-                throw new ConfigurationException("OCTOPUS-BAMBOO-INPUT-ERROR-0005: Environment named " + environmentName + " was not found");
-            }
-
-            /*
                 Match release to id
              */
             final Optional<Release> release = lookupService.getRelease(taskContext, releaseVersion, project.get());
@@ -93,15 +86,33 @@ public class DeployReleaseTask implements TaskType {
             }
 
             /*
-                Create the deployment
+                Split up the environments
              */
+            final Iterable<String> environments = Splitter.on(',')
+                    .trimResults()
+                    .omitEmptyStrings()
+                    .split(environmentName);
 
-            final Deployment deployment = new Deployment();
-            deployment.setReleaseId(release.get().getId());
-            deployment.setEnvironmentId(environment.get().getId());
+            for (final String environment : environments) {
+                /*
+                    Match environment name to id
+                 */
+                final Optional<Environment> environmentEntity = lookupService.getEnvironment(taskContext, environment);
+                if (!environmentEntity.isPresent()) {
+                    throw new ConfigurationException("OCTOPUS-BAMBOO-INPUT-ERROR-0005: Environment named " + environment + " was not found");
+                }
 
-            final RestAPI restAPI = feignService.createClient(taskContext, false);
-            restAPI.createDeployment(deployment);
+                /*
+                    Create the deployment
+                 */
+
+                final Deployment deployment = new Deployment();
+                deployment.setReleaseId(release.get().getId());
+                deployment.setEnvironmentId(environmentEntity.get().getId());
+
+                final RestAPI restAPI = feignService.createClient(taskContext, false);
+                restAPI.createDeployment(deployment);
+            }
 
             return commonTaskService.buildResult(taskContext, true);
         } catch (final ConfigurationException | IllegalStateException ex) {

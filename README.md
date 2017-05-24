@@ -47,3 +47,4 @@ Run the command `atlas-run` to start an instance of Bamboo with the plugin deplo
 | OCTOPUS-BAMBOO-INPUT-ERROR-0004 | The release could not be created |
 | OCTOPUS-BAMBOO-INPUT-ERROR-0005 | The environment name could not be found |
 | OCTOPUS-BAMBOO-INPUT-ERROR-0006 | The release version could not be found |
+| OCTOPUS-BAMBOO-INPUT-ERROR-0007 | The release version already exists, and the ignore existing releases option was not selected |

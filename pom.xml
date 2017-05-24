@@ -14,8 +14,8 @@
         <url>http://www.optopus.com/</url>
     </organization>
 
-    <name>OctopusBamboo</name>
-    <description>This is the com.octopus:OctopusBamboo plugin for Atlassian Bamboo.</description>
+    <name>Octopus Deploy Bamboo Plugin</name>
+    <description>Octopus Deploy Bamboo plugin for Atlassian Bamboo.</description>
     <packaging>atlassian-plugin</packaging>
 
     <repositories>

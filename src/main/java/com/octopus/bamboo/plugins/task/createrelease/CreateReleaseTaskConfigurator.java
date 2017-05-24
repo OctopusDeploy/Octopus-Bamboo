@@ -48,6 +48,7 @@ public class CreateReleaseTaskConfigurator extends AbstractTaskConfigurator {
         config.put(OctoConstants.CHANNEL_NAME, params.getString(OctoConstants.CHANNEL_NAME));
         config.put(OctoConstants.VERBOSE_LOGGING, params.getString(OctoConstants.VERBOSE_LOGGING));
         config.put(OctoConstants.RELEASE_VERSION, params.getString(OctoConstants.RELEASE_VERSION));
+        config.put(OctoConstants.IGNORE_EXISTING_RELEASE_NAME, params.getString(OctoConstants.IGNORE_EXISTING_RELEASE_NAME));
         return config;
     }
 
@@ -65,6 +66,7 @@ public class CreateReleaseTaskConfigurator extends AbstractTaskConfigurator {
         context.put(OctoConstants.CHANNEL_NAME, taskDefinition.getConfiguration().get(OctoConstants.CHANNEL_NAME));
         context.put(OctoConstants.VERBOSE_LOGGING, taskDefinition.getConfiguration().get(OctoConstants.VERBOSE_LOGGING));
         context.put(OctoConstants.RELEASE_VERSION, taskDefinition.getConfiguration().get(OctoConstants.RELEASE_VERSION));
+        context.put(OctoConstants.IGNORE_EXISTING_RELEASE_NAME, taskDefinition.getConfiguration().get(OctoConstants.IGNORE_EXISTING_RELEASE_NAME));
     }
 
     @Override

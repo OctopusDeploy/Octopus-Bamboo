@@ -19,8 +19,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Component
 public class CommonTaskServiceImpl implements CommonTaskService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CommonTaskServiceImpl.class);
-    private static final Pattern API_KEY_PATTERN = Pattern.compile("API-\\w{25}");
-    private static final String REPLACEMENT = "API-.........................";
+    private static final Pattern API_KEY_PATTERN = Pattern.compile("API-\\w{20}");
+    private static final String REPLACEMENT = "API-....................";
 
     public void logInfo(@NotNull final TaskContext taskContext, @NotNull final String message) {
         checkNotNull(taskContext);

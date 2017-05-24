@@ -59,6 +59,10 @@ public class OctoConstants {
      */
     public static final String ENVIRONMENT_NAME = "environmentName";
     /**
+     * The configuration key for the ignore existing release option
+     */
+    public static final String IGNORE_EXISTING_RELEASE_NAME = "ignoreExisting";
+    /**
      * The start of the http response range that indicates success
      */
     public static final int START_HTTP_OK_RANGE = 200;
