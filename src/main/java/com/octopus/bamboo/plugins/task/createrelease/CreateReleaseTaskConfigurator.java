@@ -50,6 +50,8 @@ public class CreateReleaseTaskConfigurator extends AbstractTaskConfigurator {
         config.put(OctoConstants.RELEASE_VERSION, params.getString(OctoConstants.RELEASE_VERSION));
         config.put(OctoConstants.ENVIRONMENT_NAME, params.getString(OctoConstants.ENVIRONMENT_NAME));
         config.put(OctoConstants.IGNORE_EXISTING_RELEASE_NAME, params.getString(OctoConstants.IGNORE_EXISTING_RELEASE_NAME));
+        config.put(OctoConstants.SHOW_DEPLOYMENT_PROGRESS_KEY, params.getString(OctoConstants.SHOW_DEPLOYMENT_PROGRESS_KEY));
+        config.put(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME, params.getString(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME));
         return config;
     }
 
@@ -69,6 +71,8 @@ public class CreateReleaseTaskConfigurator extends AbstractTaskConfigurator {
         context.put(OctoConstants.RELEASE_VERSION, taskDefinition.getConfiguration().get(OctoConstants.RELEASE_VERSION));
         context.put(OctoConstants.ENVIRONMENT_NAME, taskDefinition.getConfiguration().get(OctoConstants.ENVIRONMENT_NAME));
         context.put(OctoConstants.IGNORE_EXISTING_RELEASE_NAME, taskDefinition.getConfiguration().get(OctoConstants.IGNORE_EXISTING_RELEASE_NAME));
+        context.put(OctoConstants.SHOW_DEPLOYMENT_PROGRESS_KEY, taskDefinition.getConfiguration().get(OctoConstants.SHOW_DEPLOYMENT_PROGRESS_KEY));
+        context.put(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME, taskDefinition.getConfiguration().get(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME));
     }
 
     @Override
@@ -92,11 +96,6 @@ public class CreateReleaseTaskConfigurator extends AbstractTaskConfigurator {
         final String projectValue = params.getString(OctoConstants.PROJECT_NAME);
         if (StringUtils.isEmpty(projectValue)) {
             errorCollection.addError(OctoConstants.PROJECT_NAME, textProvider.getText(OctoConstants.PROJECT_NAME_ERROR_KEY));
-        }
-
-        final String releaseValue = params.getString(OctoConstants.RELEASE_VERSION);
-        if (StringUtils.isEmpty(releaseValue)) {
-            errorCollection.addError(OctoConstants.RELEASE_VERSION, textProvider.getText(OctoConstants.RELEASE_VERSION_ERROR_KEY));
         }
     }
 }

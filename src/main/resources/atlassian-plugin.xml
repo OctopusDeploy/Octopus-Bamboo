@@ -54,4 +54,15 @@
                     primaryCapabilityProvider="false"/>
     </taskType>
 
+    <taskType key="task.promoterelease" name="Octopus Deploy: Promote Release"
+              class="com.octopus.bamboo.plugins.task.promoterelease.PromoteReleaseTask">
+        <description>Promote a release within an Octopus Deploy project</description>
+        <category name="deployment"/>
+        <configuration class="com.octopus.bamboo.plugins.task.promoterelease.PromoteReleaseTaskConfigurator"/>
+        <resource type="freemarker" name="edit" location="freemarker/promoterelease.ftl"/>
+        <resource type="download" name="icon" location="images/pluginLogo.png"/>
+        <executable key="octopuscli" nameKey="octopus.cli.key" pathHelpKey="octopus.cli.help"
+                    primaryCapabilityProvider="false"/>
+    </taskType>
+
 </atlassian-plugin>

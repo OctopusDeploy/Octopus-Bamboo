@@ -1,4 +1,4 @@
-package com.octopus.bamboo.plugins.task.deployrelease;
+package com.octopus.bamboo.plugins.task.promoterelease;
 
 import com.atlassian.bamboo.collections.ActionParametersMap;
 import com.atlassian.bamboo.task.AbstractTaskConfigurator;
@@ -25,14 +25,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @Component
 @ExportAsService({com.atlassian.bamboo.task.TaskConfigurator.class})
-@Named("deployReleaseTaskConfigurator")
-public class DeployReleaseTaskConfigurator extends AbstractTaskConfigurator {
+@Named("promoteReleaseTaskConfigurator")
+public class PromoteReleaseTaskConfigurator extends AbstractTaskConfigurator {
 
     @ComponentImport
     private final TextProvider textProvider;
 
     @Inject
-    public DeployReleaseTaskConfigurator(@NotNull final TextProvider textProvider) {
+    public PromoteReleaseTaskConfigurator(@NotNull final TextProvider textProvider) {
         this.textProvider = textProvider;
     }
 
@@ -45,9 +45,9 @@ public class DeployReleaseTaskConfigurator extends AbstractTaskConfigurator {
         config.put(OctoConstants.SERVER_URL, params.getString(OctoConstants.SERVER_URL));
         config.put(OctoConstants.API_KEY, params.getString(OctoConstants.API_KEY));
         config.put(OctoConstants.PROJECT_NAME, params.getString(OctoConstants.PROJECT_NAME));
-        config.put(OctoConstants.ENVIRONMENT_NAME, params.getString(OctoConstants.ENVIRONMENT_NAME));
+        config.put(OctoConstants.PROMOTE_FROM_NAME, params.getString(OctoConstants.PROMOTE_FROM_NAME));
+        config.put(OctoConstants.PROMOTE_TO_NAME, params.getString(OctoConstants.PROMOTE_TO_NAME));
         config.put(OctoConstants.VERBOSE_LOGGING, params.getString(OctoConstants.VERBOSE_LOGGING));
-        config.put(OctoConstants.RELEASE_VERSION, params.getString(OctoConstants.RELEASE_VERSION));
         config.put(OctoConstants.SHOW_DEPLOYMENT_PROGRESS_KEY, params.getString(OctoConstants.SHOW_DEPLOYMENT_PROGRESS_KEY));
         config.put(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME, params.getString(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME));
         return config;
@@ -64,9 +64,9 @@ public class DeployReleaseTaskConfigurator extends AbstractTaskConfigurator {
         context.put(OctoConstants.SERVER_URL, taskDefinition.getConfiguration().get(OctoConstants.SERVER_URL));
         context.put(OctoConstants.API_KEY, taskDefinition.getConfiguration().get(OctoConstants.API_KEY));
         context.put(OctoConstants.PROJECT_NAME, taskDefinition.getConfiguration().get(OctoConstants.PROJECT_NAME));
-        context.put(OctoConstants.ENVIRONMENT_NAME, taskDefinition.getConfiguration().get(OctoConstants.ENVIRONMENT_NAME));
+        context.put(OctoConstants.PROMOTE_FROM_NAME, taskDefinition.getConfiguration().get(OctoConstants.PROMOTE_FROM_NAME));
+        context.put(OctoConstants.PROMOTE_TO_NAME, taskDefinition.getConfiguration().get(OctoConstants.PROMOTE_TO_NAME));
         context.put(OctoConstants.VERBOSE_LOGGING, taskDefinition.getConfiguration().get(OctoConstants.VERBOSE_LOGGING));
-        context.put(OctoConstants.RELEASE_VERSION, taskDefinition.getConfiguration().get(OctoConstants.RELEASE_VERSION));
         context.put(OctoConstants.SHOW_DEPLOYMENT_PROGRESS_KEY, taskDefinition.getConfiguration().get(OctoConstants.SHOW_DEPLOYMENT_PROGRESS_KEY));
         context.put(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME, taskDefinition.getConfiguration().get(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME));
     }
@@ -94,14 +94,14 @@ public class DeployReleaseTaskConfigurator extends AbstractTaskConfigurator {
             errorCollection.addError(OctoConstants.PROJECT_NAME, textProvider.getText(OctoConstants.PROJECT_NAME_ERROR_KEY));
         }
 
-        final String releaseValue = params.getString(OctoConstants.RELEASE_VERSION);
-        if (StringUtils.isEmpty(releaseValue)) {
-            errorCollection.addError(OctoConstants.RELEASE_VERSION, textProvider.getText(OctoConstants.RELEASE_VERSION_ERROR_KEY));
+        final String promoteFrom = params.getString(OctoConstants.PROMOTE_FROM_NAME);
+        if (StringUtils.isEmpty(promoteFrom)) {
+            errorCollection.addError(OctoConstants.PROMOTE_FROM_NAME, textProvider.getText(OctoConstants.PROMOTE_FROM_NAME_ERROR_KEY));
         }
 
-        final String environmentValue = params.getString(OctoConstants.ENVIRONMENT_NAME);
-        if (StringUtils.isEmpty(environmentValue)) {
-            errorCollection.addError(OctoConstants.ENVIRONMENT_NAME, textProvider.getText(OctoConstants.ENVIRONMENT_NAME_ERROR_KEY));
+        final String promoteTo = params.getString(OctoConstants.PROMOTE_TO_NAME);
+        if (StringUtils.isEmpty(promoteTo)) {
+            errorCollection.addError(OctoConstants.PROMOTE_TO_NAME, textProvider.getText(OctoConstants.PROMOTE_TO_NAME_ERROR_KEY));
         }
     }
 }

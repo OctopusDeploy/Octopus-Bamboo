@@ -3,3 +3,4 @@
 [@ww.textfield labelKey="octopus.pushPattern.key" name="pushPattern" required='true'/]
 [@ww.checkbox labelKey="octopus.force.key" name="force" required='false'/]
 [@ww.checkbox labelKey="octopus.verboseLogging.key" name="verboseLogging" required='false'/]
+[@ww.textfield labelKey="octopus.additionalArgs.key" name="additionalArgs" required='false'/]

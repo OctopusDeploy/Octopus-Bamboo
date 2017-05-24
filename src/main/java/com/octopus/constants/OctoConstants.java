@@ -67,17 +67,13 @@ public class OctoConstants {
      */
     public static final String PROMOTE_FROM_NAME = "promoteFrom";
     /**
+     * The configuration key for the additional command line arguments
+     */
+    public static final String ADDITIONAL_COMMAND_LINE_ARGS_NAME = "additionalArgs";
+    /**
      * The configuration key for the promote to option
      */
     public static final String PROMOTE_TO_NAME = "promoteTo";
-    /**
-     * The start of the http response range that indicates success
-     */
-    public static final int START_HTTP_OK_RANGE = 200;
-    /**
-     * The end of the http response range that indicates success
-     */
-    public static final int END_HTTP_OK_RANGE = 299;
     /**
      * The name of the capability that links to the octopus cli
      */
@@ -89,6 +85,9 @@ public class OctoConstants {
     public static final String PROJECT_NAME_ERROR_KEY = "octopus.projectName.error";
     public static final String RELEASE_VERSION_ERROR_KEY = "octopus.releaseVersion.error";
     public static final String ENVIRONMENT_NAME_ERROR_KEY = "octopus.environmentName.error";
+    public static final String SHOW_DEPLOYMENT_PROGRESS_KEY = "octopus.showProgress.error";
+    public static final String PROMOTE_FROM_NAME_ERROR_KEY = "octopus.promoteFrom.error";
+    public static final String PROMOTE_TO_NAME_ERROR_KEY = "octopus.promoteTo.error";
 
     private OctoConstants() {
 

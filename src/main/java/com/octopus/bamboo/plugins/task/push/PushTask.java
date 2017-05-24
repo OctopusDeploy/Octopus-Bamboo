@@ -11,8 +11,10 @@ import com.atlassian.utils.process.ExternalProcess;
 import com.octopus.constants.OctoConstants;
 import com.octopus.services.CommonTaskService;
 import com.octopus.services.FileService;
+import edu.emory.mathcs.backport.java.util.Arrays;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.tools.ant.types.Commandline;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +79,7 @@ public class PushTask implements TaskType {
         final Boolean forceUploadBoolean = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(forceUpload));
         final String loggingLevel = taskContext.getConfigurationMap().get(OctoConstants.VERBOSE_LOGGING);
         final Boolean verboseLogging = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(loggingLevel));
+        final String additionalArgs = taskContext.getConfigurationMap().get(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME);
 
         checkState(StringUtils.isNotBlank(serverUrl), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus URL can not be blank");
         checkState(StringUtils.isNotBlank(apiKey), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: API key can not be blank");
@@ -115,6 +118,11 @@ public class PushTask implements TaskType {
 
         if (verboseLogging) {
             commands.add("--debug");
+        }
+
+        if (StringUtils.isNotBlank(additionalArgs)) {
+            final String myArgs[] = Commandline.translateCommandline(additionalArgs);
+            commands.addAll(Arrays.asList(myArgs));
         }
 
         for (final File file : files) {

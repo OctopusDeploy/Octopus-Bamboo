@@ -190,7 +190,8 @@
                         <Export-Package>
                             com.octopus.bamboo.plugins.task.push,
                             com.octopus.bamboo.plugins.task.deployrelease,
-                            com.octopus.bamboo.plugins.task.createrelease
+                            com.octopus.bamboo.plugins.task.createrelease,
+                            com.octopus.bamboo.plugins.task.promoterelease
                         </Export-Package>
 
                         <!--

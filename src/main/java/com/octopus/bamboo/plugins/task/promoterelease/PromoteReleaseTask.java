@@ -1,4 +1,4 @@
-package com.octopus.bamboo.plugins.task.createrelease;
+package com.octopus.bamboo.plugins.task.promoterelease;
 
 import com.atlassian.bamboo.process.ExternalProcessBuilder;
 import com.atlassian.bamboo.process.ProcessService;
@@ -28,13 +28,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * The Bamboo Task that is used to create releases in Octopus Deploy
+ * Task used to deploy a release
  */
 @Component
-@ExportAsService({CreateReleaseTask.class})
-@Named("createReleaseTask")
-public class CreateReleaseTask implements TaskType {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CreateReleaseTask.class);
+@ExportAsService({PromoteReleaseTask.class})
+@Named("promoteReleaseTask")
+public class PromoteReleaseTask implements TaskType {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PromoteReleaseTask.class);
     @ComponentImport
     private final ProcessService processService;
     @ComponentImport
@@ -44,14 +44,13 @@ public class CreateReleaseTask implements TaskType {
     /**
      * Constructor. Params are injected by Spring under normal usage.
      *
-     * @param processService      The service used the execute external applications
-     * @param capabilityContext      The service used get details of server capabilities
+     * @param feignService      The service that is used to interact with the API
      * @param commonTaskService The service used for common task operations
      */
     @Inject
-    public CreateReleaseTask(@NotNull final ProcessService processService,
-                             @NotNull final CapabilityContext capabilityContext,
-                             @NotNull final CommonTaskService commonTaskService) {
+    public PromoteReleaseTask(@NotNull final ProcessService processService,
+                              @NotNull final CapabilityContext capabilityContext,
+                              @NotNull final CommonTaskService commonTaskService) {
         checkNotNull(processService, "processService cannot be null");
         checkNotNull(capabilityContext, "capabilityContext cannot be null");
         checkNotNull(commonTaskService, "commonTaskService cannot be null");
@@ -61,19 +60,15 @@ public class CreateReleaseTask implements TaskType {
         this.commonTaskService = commonTaskService;
     }
 
-
     @NotNull
+    @Override
     public TaskResult execute(@NotNull final TaskContext taskContext) throws TaskException {
-        checkNotNull(taskContext, "taskContext cannot be null");
 
         final String serverUrl = taskContext.getConfigurationMap().get(OctoConstants.SERVER_URL);
         final String apiKey = taskContext.getConfigurationMap().get(OctoConstants.API_KEY);
         final String projectName = taskContext.getConfigurationMap().get(OctoConstants.PROJECT_NAME);
-        final String channelName = taskContext.getConfigurationMap().get(OctoConstants.CHANNEL_NAME);
-        final String releaseVersion = taskContext.getConfigurationMap().get(OctoConstants.RELEASE_VERSION);
-        final String environmentName = taskContext.getConfigurationMap().get(OctoConstants.ENVIRONMENT_NAME);
-        final Boolean ignoreExisting = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(
-                taskContext.getConfigurationMap().get(OctoConstants.IGNORE_EXISTING_RELEASE_NAME)));
+        final String promoteFrom = taskContext.getConfigurationMap().get(OctoConstants.PROMOTE_FROM_NAME);
+        final String promoteTo = taskContext.getConfigurationMap().get(OctoConstants.PROMOTE_TO_NAME);
         final String loggingLevel = taskContext.getConfigurationMap().get(OctoConstants.VERBOSE_LOGGING);
         final Boolean verboseLogging = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(loggingLevel));
         final String deploymentProgress = taskContext.getConfigurationMap().get(OctoConstants.SHOW_DEPLOYMENT_PROGRESS_KEY);
@@ -83,13 +78,15 @@ public class CreateReleaseTask implements TaskType {
         checkState(StringUtils.isNotBlank(serverUrl), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus URL can not be blank");
         checkState(StringUtils.isNotBlank(apiKey), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: API key can not be blank");
         checkState(StringUtils.isNotBlank(projectName), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Project name can not be blank");
+        checkState(StringUtils.isNotBlank(promoteFrom), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Promote from can not be blank");
+        checkState(StringUtils.isNotBlank(promoteTo), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Promote to can not be blank");
 
         /*
             Build up the commands to be passed to the octopus cli
          */
         final List<String> commands = new ArrayList<String>();
 
-        commands.add("create-release");
+        commands.add("deploy-release");
 
         commands.add("--server");
         commands.add(serverUrl);
@@ -100,24 +97,11 @@ public class CreateReleaseTask implements TaskType {
         commands.add("--project");
         commands.add(projectName);
 
-        if (StringUtils.isNotBlank(releaseVersion)) {
-            commands.add("--version");
-            commands.add(releaseVersion);
-        }
+        commands.add("--from");
+        commands.add(promoteFrom);
 
-        if (StringUtils.isNotBlank(channelName)) {
-            commands.add("--channel");
-            commands.add(channelName);
-        }
-
-        if (ignoreExisting) {
-            commands.add("--ignoreexisting");
-        }
-
-        if (StringUtils.isNotBlank(environmentName)) {
-            commands.add("--deployto");
-            commands.add(environmentName);
-        }
+        commands.add("--to");
+        commands.add(promoteTo);
 
         if (verboseLogging) {
             commands.add("--debug");

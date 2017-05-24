@@ -4,5 +4,7 @@
 [@ww.textfield labelKey="octopus.channelName.key" name="channelName" required='false'/]
 [@ww.textfield labelKey="octopus.releaseVersion.key" name="releaseVersion" required='false'/]
 [@ww.textfield labelKey="octopus.environmentName.key" name="environmentName" required='false'/]
+[@ww.checkbox labelKey="octopus.showProgress.key" name="showProgress" required='false'/]
 [@ww.checkbox labelKey="octopus.ignoreExisting.key" name="ignoreExisting" required='false'/]
 [@ww.checkbox labelKey="octopus.verboseLogging.key" name="verboseLogging" required='false'/]
+[@ww.textfield labelKey="octopus.additionalArgs.key" name="additionalArgs" required='false'/]

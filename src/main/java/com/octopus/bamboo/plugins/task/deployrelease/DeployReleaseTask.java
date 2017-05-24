@@ -10,8 +10,10 @@ import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.utils.process.ExternalProcess;
 import com.octopus.constants.OctoConstants;
 import com.octopus.services.CommonTaskService;
+import edu.emory.mathcs.backport.java.util.Arrays;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.tools.ant.types.Commandline;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,6 +71,9 @@ public class DeployReleaseTask implements TaskType {
         final String releaseVersion = taskContext.getConfigurationMap().get(OctoConstants.RELEASE_VERSION);
         final String loggingLevel = taskContext.getConfigurationMap().get(OctoConstants.VERBOSE_LOGGING);
         final Boolean verboseLogging = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(loggingLevel));
+        final String deploymentProgress = taskContext.getConfigurationMap().get(OctoConstants.SHOW_DEPLOYMENT_PROGRESS_KEY);
+        final Boolean deploymentProgressEnabled = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(deploymentProgress));
+        final String additionalArgs = taskContext.getConfigurationMap().get(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME);
 
         checkState(StringUtils.isNotBlank(serverUrl), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus URL can not be blank");
         checkState(StringUtils.isNotBlank(apiKey), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: API key can not be blank");
@@ -100,6 +105,15 @@ public class DeployReleaseTask implements TaskType {
 
         if (verboseLogging) {
             commands.add("--debug");
+        }
+
+        if (deploymentProgressEnabled) {
+            commands.add("--progress");
+        }
+
+        if (StringUtils.isNotBlank(additionalArgs)) {
+            final String myArgs[] = Commandline.translateCommandline(additionalArgs);
+            commands.addAll(Arrays.asList(myArgs));
         }
 
         for (final Capability cap : capabilityContext.getCapabilitySet().getCapabilities()) {
