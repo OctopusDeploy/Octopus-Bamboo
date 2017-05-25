@@ -34,7 +34,7 @@ import static com.google.common.base.Preconditions.checkState;
 @Component
 @ExportAsService({CreateReleaseTask.class})
 @Named("createReleaseTask")
-public class CreateReleaseTask implements TaskType {
+public class CreateReleaseTask implements CommonTaskType {
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateReleaseTask.class);
     @ComponentImport
     private final ProcessService processService;
@@ -64,7 +64,7 @@ public class CreateReleaseTask implements TaskType {
 
 
     @NotNull
-    public TaskResult execute(@NotNull final TaskContext taskContext) throws TaskException {
+    public TaskResult execute(@NotNull final CommonTaskContext taskContext) throws TaskException {
         checkNotNull(taskContext, "taskContext cannot be null");
 
         final String serverUrl = taskContext.getConfigurationMap().get(OctoConstants.SERVER_URL);
@@ -167,12 +167,10 @@ public class CreateReleaseTask implements TaskType {
             if (cap.getKey().startsWith(OctoConstants.OCTOPUS_CLI_CAPABILITY)) {
                 commands.add(0, cap.getValue());
 
-                final ExternalProcess process = processService.createProcess(taskContext,
+                final ExternalProcess process = processService.executeExternalProcess(taskContext,
                         new ExternalProcessBuilder()
                                 .command(commands)
                                 .workingDirectory(taskContext.getWorkingDirectory()));
-
-                process.execute();
 
                 if (process.getHandler().getExitCode() != 0) {
                     commonTaskService.logError(
@@ -184,7 +182,7 @@ public class CreateReleaseTask implements TaskType {
                                     + "https://www.microsoft.com/net/core");
                 }
 
-                return TaskResultBuilder.create(taskContext)
+                return TaskResultBuilder.newBuilder(taskContext)
                         .checkReturnCode(process, 0)
                         .build();
             }
@@ -193,6 +191,6 @@ public class CreateReleaseTask implements TaskType {
         commonTaskService.logError(
                 taskContext,
                 "You need to define the Octopus CLI executable server capability in the Bamboo administration page");
-        return TaskResultBuilder.create(taskContext).failed().build();
+        return TaskResultBuilder.newBuilder(taskContext).failed().build();
     }
 }

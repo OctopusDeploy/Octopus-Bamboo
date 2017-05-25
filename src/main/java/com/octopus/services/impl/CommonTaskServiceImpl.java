@@ -1,6 +1,6 @@
 package com.octopus.services.impl;
 
-import com.atlassian.bamboo.task.TaskContext;
+import com.atlassian.bamboo.task.CommonTaskContext;
 import com.atlassian.bamboo.task.TaskResult;
 import com.atlassian.bamboo.task.TaskResultBuilder;
 import com.octopus.services.CommonTaskService;
@@ -22,7 +22,7 @@ public class CommonTaskServiceImpl implements CommonTaskService {
     private static final Pattern API_KEY_PATTERN = Pattern.compile("API-\\w{20}");
     private static final String REPLACEMENT = "API-....................";
 
-    public void logInfo(@NotNull final TaskContext taskContext, @NotNull final String message) {
+    public void logInfo(@NotNull final CommonTaskContext taskContext, @NotNull final String message) {
         checkNotNull(taskContext);
         checkNotNull(message);
 
@@ -30,7 +30,7 @@ public class CommonTaskServiceImpl implements CommonTaskService {
         taskContext.getBuildLogger().addBuildLogEntry(message);
     }
 
-    public void logError(@NotNull final TaskContext taskContext, @NotNull final String message) {
+    public void logError(@NotNull final CommonTaskContext taskContext, @NotNull final String message) {
         checkNotNull(taskContext);
         checkNotNull(message);
 
@@ -38,7 +38,7 @@ public class CommonTaskServiceImpl implements CommonTaskService {
         taskContext.getBuildLogger().addErrorLogEntry(message);
     }
 
-    public TaskResult buildResult(@NotNull final TaskContext taskContext, final boolean success) {
+    public TaskResult buildResult(@NotNull final CommonTaskContext taskContext, final boolean success) {
         checkNotNull(taskContext);
 
         final TaskResultBuilder builder = TaskResultBuilder.newBuilder(taskContext);

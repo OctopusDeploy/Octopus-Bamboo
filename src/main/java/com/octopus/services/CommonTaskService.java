@@ -1,6 +1,6 @@
 package com.octopus.services;
 
-import com.atlassian.bamboo.task.TaskContext;
+import com.atlassian.bamboo.task.CommonTaskContext;
 import com.atlassian.bamboo.task.TaskResult;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +14,7 @@ public interface CommonTaskService {
      * @param taskContext The Bamboo task context
      * @param message     The message to be logged
      */
-    void logInfo(@NotNull TaskContext taskContext, @NotNull String message);
+    void logInfo(@NotNull CommonTaskContext taskContext, @NotNull String message);
 
     /**
      * Log an error message
@@ -22,14 +22,14 @@ public interface CommonTaskService {
      * @param taskContext The Bamboo task context
      * @param message     The message to be logged
      */
-    void logError(@NotNull TaskContext taskContext, @NotNull String message);
+    void logError(@NotNull CommonTaskContext taskContext, @NotNull String message);
 
     /**
      * @param taskContext The bamboo task context
      * @param success     true if this was a successful result
      * @return A success or failure result
      */
-    TaskResult buildResult(@NotNull TaskContext taskContext, boolean success);
+    TaskResult buildResult(@NotNull CommonTaskContext taskContext, boolean success);
 
     /**
      * Removes sensitive information from the message
