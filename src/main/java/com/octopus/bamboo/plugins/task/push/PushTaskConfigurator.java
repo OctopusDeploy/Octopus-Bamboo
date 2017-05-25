@@ -4,6 +4,7 @@ import com.atlassian.bamboo.collections.ActionParametersMap;
 import com.atlassian.bamboo.task.AbstractTaskConfigurator;
 import com.atlassian.bamboo.task.TaskDefinition;
 import com.atlassian.bamboo.utils.error.ErrorCollection;
+import com.atlassian.bamboo.ww2.actions.build.admin.create.UIConfigSupport;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.struts.TextProvider;
@@ -29,10 +30,17 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class PushTaskConfigurator extends AbstractTaskConfigurator {
     @ComponentImport
     private final TextProvider textProvider;
+    @ComponentImport
+    private final UIConfigSupport uiConfigSupport;
 
     @Inject
-    public PushTaskConfigurator(@NotNull final TextProvider textProvider) {
+    public PushTaskConfigurator(@NotNull final TextProvider textProvider,
+                                @NotNull final UIConfigSupport uiConfigSupport) {
+        checkNotNull(uiConfigSupport, "uiConfigSupport cannot be null");
+        checkNotNull(textProvider, "textProvider cannot be null");
+
         this.textProvider = textProvider;
+        this.uiConfigSupport = uiConfigSupport;
     }
 
     @Override
@@ -47,7 +55,13 @@ public class PushTaskConfigurator extends AbstractTaskConfigurator {
         config.put(OctoConstants.FORCE, params.getString(OctoConstants.FORCE));
         config.put(OctoConstants.VERBOSE_LOGGING, params.getString(OctoConstants.VERBOSE_LOGGING));
         config.put(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME, params.getString(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME));
+        config.put(OctoConstants.OCTOPUS_CLI, params.getString(OctoConstants.OCTOPUS_CLI));
         return config;
+    }
+
+    @Override
+    public void populateContextForCreate(@NotNull final Map<String, Object> context) {
+        context.put(OctoConstants.UI_CONFIG_BEAN, this.uiConfigSupport);
     }
 
     @Override
@@ -64,6 +78,7 @@ public class PushTaskConfigurator extends AbstractTaskConfigurator {
         context.put(OctoConstants.FORCE, taskDefinition.getConfiguration().get(OctoConstants.FORCE));
         context.put(OctoConstants.VERBOSE_LOGGING, taskDefinition.getConfiguration().get(OctoConstants.VERBOSE_LOGGING));
         context.put(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME, taskDefinition.getConfiguration().get(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME));
+        context.put(OctoConstants.UI_CONFIG_BEAN, this.uiConfigSupport);
     }
 
     @Override

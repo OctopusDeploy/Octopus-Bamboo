@@ -39,7 +39,7 @@ import static com.google.common.base.Preconditions.checkState;
 @Component
 @ExportAsService({PushTask.class})
 @Named("pushTask")
-public class PushTask implements CommonTaskType {
+public class PushTask extends AbstractTaskConfigurator implements CommonTaskType {
     private static final Logger LOGGER = LoggerFactory.getLogger(PushTask.class);
     @ComponentImport
     private final ProcessService processService;

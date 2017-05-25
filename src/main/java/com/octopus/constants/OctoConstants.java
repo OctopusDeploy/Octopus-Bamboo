@@ -23,6 +23,10 @@ public class OctoConstants {
     public static final String PACKAGE_ID_PROP_KEY = "Octopus.Action.Package.PackageId";
 
     /**
+     * The configuration key for the Octopus CLI instance
+     */
+    public static final String OCTOPUS_CLI = "octopusCli";
+    /**
      * The configuration key for the Octopus Server URL
      */
     public static final String SERVER_URL = "serverUrl";
@@ -90,6 +94,10 @@ public class OctoConstants {
      * The name of the capability that links to the octopus cli
      */
     public static final String OCTOPUS_CLI_CAPABILITY = "system.builder.octopuscli";
+    /**
+     * UIConfigSupport bean used to display lists of executables
+     */
+    public static final String UI_CONFIG_BEAN = "uiConfigBean";
 
     public static final String API_KEY_ERROR_KEY = "octopus.apiKey.error";
     public static final String SERVER_URL_ERROR_KEY = "octopus.serverUrl.error";
