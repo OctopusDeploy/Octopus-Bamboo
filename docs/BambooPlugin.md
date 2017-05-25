@@ -58,7 +58,7 @@ The `Octopus CLI` field references a [Bamboo capability](https://confluence.atla
 
 Click the `Add new executable` link to specify the location of the command line tool. The `Executable label` can be anything you want, and the `Path` is the full path to the command line tool executable file.
 
-![Add new executable][Executable.PNG]
+![Add new executable](https://github.com/OctopusDeploy/Octopus-Bamboo/blob/master/docs/Executable.PNG?raw=true)
 
 #### Octopus URL
 
@@ -74,4 +74,4 @@ The `Package paths` field defines the [Ant paths](https://ant.apache.org/manual/
 
 Note that it is recommended that the package paths defined here are specific to the build. While the Ant path `**/*.tar.gz` or `**/*.zip` do match the packages, they also match any old packages that might have been created in previous builds and not cleaned up. This means these less specific paths can result in old packages being uploaded, which is usually not the desired result.
 
-![Push Package][PushPackage.PNG]
+![Push Package](https://github.com/OctopusDeploy/Octopus-Bamboo/blob/master/docs/PushPackage.PNG?raw=true)
