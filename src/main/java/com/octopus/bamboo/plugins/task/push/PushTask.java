@@ -1,5 +1,6 @@
 package com.octopus.bamboo.plugins.task.push;
 
+import com.atlassian.bamboo.build.logger.LogMutator;
 import com.atlassian.bamboo.process.ExternalProcessBuilder;
 import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.*;
@@ -46,6 +47,7 @@ public class PushTask extends AbstractTaskConfigurator implements CommonTaskType
     private final CapabilityContext capabilityContext;
     private final CommonTaskService commonTaskService;
     private final FileService fileService;
+    private final LogMutator logMutator;
 
     /**
      * Constructor. Params are injected by Spring under normal usage.
@@ -58,16 +60,19 @@ public class PushTask extends AbstractTaskConfigurator implements CommonTaskType
     public PushTask(@NotNull final ProcessService processService,
                     @NotNull final CapabilityContext capabilityContext,
                     @NotNull final CommonTaskService commonTaskService,
-                    @NotNull final FileService fileService) {
+                    @NotNull final FileService fileService,
+                    @NotNull final LogMutator logMutator) {
         checkNotNull(processService, "processService cannot be null");
         checkNotNull(capabilityContext, "capabilityContext cannot be null");
         checkNotNull(commonTaskService, "commonTaskService cannot be null");
         checkNotNull(fileService, "fileService cannot be null");
+        checkNotNull(logMutator, "logMutator cannot be null");
 
         this.processService = processService;
         this.capabilityContext = capabilityContext;
         this.commonTaskService = commonTaskService;
         this.fileService = fileService;
+        this.logMutator = logMutator;
     }
 
     @NotNull
@@ -88,6 +93,8 @@ public class PushTask extends AbstractTaskConfigurator implements CommonTaskType
         checkState(StringUtils.isNotBlank(serverUrl), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus URL can not be blank");
         checkState(StringUtils.isNotBlank(apiKey), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: API key can not be blank");
         checkState(StringUtils.isNotBlank(patterns), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Package paths can not be blank");
+
+        taskContext.getBuildLogger().getMutatorStack().add(logMutator);
 
          /*
             Get the list of matching files that need to be uploaded

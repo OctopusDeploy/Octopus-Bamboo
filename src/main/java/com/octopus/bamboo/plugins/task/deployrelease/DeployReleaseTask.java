@@ -1,5 +1,6 @@
 package com.octopus.bamboo.plugins.task.deployrelease;
 
+import com.atlassian.bamboo.build.logger.LogMutator;
 import com.atlassian.bamboo.process.ExternalProcessBuilder;
 import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.*;
@@ -41,6 +42,7 @@ public class DeployReleaseTask implements CommonTaskType {
     @ComponentImport
     private final CapabilityContext capabilityContext;
     private final CommonTaskService commonTaskService;
+    private final LogMutator logMutator;
 
     /**
      * Constructor. Params are injected by Spring under normal usage.
@@ -51,14 +53,17 @@ public class DeployReleaseTask implements CommonTaskType {
     @Inject
     public DeployReleaseTask(@NotNull final ProcessService processService,
                              @NotNull final CapabilityContext capabilityContext,
-                             @NotNull final CommonTaskService commonTaskService) {
+                             @NotNull final CommonTaskService commonTaskService,
+                             @NotNull final LogMutator logMutator) {
         checkNotNull(processService, "processService cannot be null");
         checkNotNull(capabilityContext, "capabilityContext cannot be null");
         checkNotNull(commonTaskService, "commonTaskService cannot be null");
+        checkNotNull(logMutator, "logMutator cannot be null");
 
         this.processService = processService;
         this.capabilityContext = capabilityContext;
         this.commonTaskService = commonTaskService;
+        this.logMutator = logMutator;
     }
 
     @NotNull
@@ -85,6 +90,8 @@ public class DeployReleaseTask implements CommonTaskType {
         checkState(StringUtils.isNotBlank(projectName), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Project name can not be blank");
         checkState(StringUtils.isNotBlank(environmentName), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Environment name can not be blank");
         checkState(StringUtils.isNotBlank(releaseVersion), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Version can not be blank");
+
+        taskContext.getBuildLogger().getMutatorStack().add(logMutator);
 
         /*
             Build up the commands to be passed to the octopus cli
