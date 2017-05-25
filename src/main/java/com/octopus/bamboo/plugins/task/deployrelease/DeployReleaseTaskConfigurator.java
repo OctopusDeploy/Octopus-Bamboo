@@ -4,6 +4,7 @@ import com.atlassian.bamboo.collections.ActionParametersMap;
 import com.atlassian.bamboo.task.AbstractTaskConfigurator;
 import com.atlassian.bamboo.task.TaskDefinition;
 import com.atlassian.bamboo.utils.error.ErrorCollection;
+import com.atlassian.bamboo.ww2.actions.build.admin.create.UIConfigSupport;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.struts.TextProvider;
@@ -30,10 +31,17 @@ public class DeployReleaseTaskConfigurator extends AbstractTaskConfigurator {
 
     @ComponentImport
     private final TextProvider textProvider;
+    @ComponentImport
+    private final UIConfigSupport uiConfigSupport;
 
     @Inject
-    public DeployReleaseTaskConfigurator(@NotNull final TextProvider textProvider) {
+    public DeployReleaseTaskConfigurator(@NotNull final TextProvider textProvider,
+                                         @NotNull final UIConfigSupport uiConfigSupport) {
+        checkNotNull(uiConfigSupport, "uiConfigSupport cannot be null");
+        checkNotNull(textProvider, "textProvider cannot be null");
+
         this.textProvider = textProvider;
+        this.uiConfigSupport = uiConfigSupport;
     }
 
     @Override
@@ -52,7 +60,13 @@ public class DeployReleaseTaskConfigurator extends AbstractTaskConfigurator {
         config.put(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME, params.getString(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME));
         config.put(OctoConstants.TENANTS_NAME, params.getString(OctoConstants.TENANTS_NAME));
         config.put(OctoConstants.TENANT_TAGS_NAME, params.getString(OctoConstants.TENANT_TAGS_NAME));
+        config.put(OctoConstants.OCTOPUS_CLI, params.getString(OctoConstants.OCTOPUS_CLI));
         return config;
+    }
+
+    @Override
+    public void populateContextForCreate(@NotNull final Map<String, Object> context) {
+        context.put(OctoConstants.UI_CONFIG_BEAN, this.uiConfigSupport);
     }
 
     @Override
@@ -73,6 +87,8 @@ public class DeployReleaseTaskConfigurator extends AbstractTaskConfigurator {
         context.put(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME, taskDefinition.getConfiguration().get(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME));
         context.put(OctoConstants.TENANTS_NAME, taskDefinition.getConfiguration().get(OctoConstants.TENANTS_NAME));
         context.put(OctoConstants.TENANT_TAGS_NAME, taskDefinition.getConfiguration().get(OctoConstants.TENANT_TAGS_NAME));
+        context.put(OctoConstants.OCTOPUS_CLI, taskDefinition.getConfiguration().get(OctoConstants.OCTOPUS_CLI));
+        context.put(OctoConstants.UI_CONFIG_BEAN, this.uiConfigSupport);
     }
 
     @Override
@@ -106,6 +122,11 @@ public class DeployReleaseTaskConfigurator extends AbstractTaskConfigurator {
         final String environmentValue = params.getString(OctoConstants.ENVIRONMENT_NAME);
         if (StringUtils.isEmpty(environmentValue)) {
             errorCollection.addError(OctoConstants.ENVIRONMENT_NAME, textProvider.getText(OctoConstants.ENVIRONMENT_NAME_ERROR_KEY));
+        }
+
+        final String octopusCli = params.getString(OctoConstants.OCTOPUS_CLI);
+        if (StringUtils.isEmpty(octopusCli)) {
+            errorCollection.addError(OctoConstants.OCTOPUS_CLI, textProvider.getText(OctoConstants.OCTOPUS_CLI_ERROR_KEY));
         }
     }
 }

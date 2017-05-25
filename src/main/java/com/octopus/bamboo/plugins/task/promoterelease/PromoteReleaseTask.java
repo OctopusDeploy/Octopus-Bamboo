@@ -3,7 +3,6 @@ package com.octopus.bamboo.plugins.task.promoterelease;
 import com.atlassian.bamboo.process.ExternalProcessBuilder;
 import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.*;
-import com.atlassian.bamboo.v2.build.agent.capability.Capability;
 import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
@@ -21,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,6 +65,7 @@ public class PromoteReleaseTask implements CommonTaskType {
     @Override
     public TaskResult execute(@NotNull final CommonTaskContext taskContext) throws TaskException {
 
+        final String octopusCli = taskContext.getConfigurationMap().get(OctoConstants.OCTOPUS_CLI);
         final String serverUrl = taskContext.getConfigurationMap().get(OctoConstants.SERVER_URL);
         final String apiKey = taskContext.getConfigurationMap().get(OctoConstants.API_KEY);
         final String projectName = taskContext.getConfigurationMap().get(OctoConstants.PROJECT_NAME);
@@ -78,6 +79,7 @@ public class PromoteReleaseTask implements CommonTaskType {
         final String tenants = taskContext.getConfigurationMap().get(OctoConstants.TENANTS_NAME);
         final String tenantTags = taskContext.getConfigurationMap().get(OctoConstants.TENANT_TAGS_NAME);
 
+        checkState(StringUtils.isNotBlank(octopusCli), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus CLI can not be blank");
         checkState(StringUtils.isNotBlank(serverUrl), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus URL can not be blank");
         checkState(StringUtils.isNotBlank(apiKey), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: API key can not be blank");
         checkState(StringUtils.isNotBlank(projectName), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Project name can not be blank");
@@ -147,34 +149,26 @@ public class PromoteReleaseTask implements CommonTaskType {
             commands.addAll(Arrays.asList(myArgs));
         }
 
-        for (final Capability cap : capabilityContext.getCapabilitySet().getCapabilities()) {
-            if (cap.getKey().startsWith(OctoConstants.OCTOPUS_CLI_CAPABILITY)) {
-                commands.add(0, cap.getValue());
+        final String cliPath = capabilityContext.getCapabilityValue(
+                OctoConstants.OCTOPUS_CLI_CAPABILITY + "." + octopusCli);
 
-                final ExternalProcess process = processService.executeExternalProcess(taskContext,
-                        new ExternalProcessBuilder()
-                                .command(commands)
-                                .workingDirectory(taskContext.getWorkingDirectory()));
+        if (new File(cliPath).exists()) {
+            commands.add(0, cliPath);
 
-                if (process.getHandler().getExitCode() != 0) {
-                    commonTaskService.logError(
-                            taskContext,
-                            "Failed to execute the Octopus Command line client. "
-                                    + "If the error message mentions missing library files "
-                                    + "(like unwind or icu) make sure you have installed all "
-                                    + "the dependencies that are documented at "
-                                    + "https://www.microsoft.com/net/core");
-                }
+            final ExternalProcess process = processService.executeExternalProcess(taskContext,
+                    new ExternalProcessBuilder()
+                            .command(commands)
+                            .workingDirectory(taskContext.getWorkingDirectory()));
 
-                return TaskResultBuilder.newBuilder(taskContext)
-                        .checkReturnCode(process, 0)
-                        .build();
-            }
+
+            return TaskResultBuilder.newBuilder(taskContext)
+                    .checkReturnCode(process, 0)
+                    .build();
         }
 
         commonTaskService.logError(
                 taskContext,
-                "You need to define the Octopus CLI executable server capability in the Bamboo administration page");
+                "OCTOPUS-BAMBOO-INPUT-ERROR-0003:The path of \"" + cliPath + "\" for the selected Octopus CLI does not exist.");
         return TaskResultBuilder.newBuilder(taskContext).failed().build();
     }
 }

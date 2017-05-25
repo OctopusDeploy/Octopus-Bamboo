@@ -185,7 +185,7 @@ public class PushTask extends AbstractTaskConfigurator implements CommonTaskType
 
         commonTaskService.logError(
                 taskContext,
-                "The path of \"" + cliPath + "\" for the selected Octopus CLI does not exist.");
+                "OCTOPUS-BAMBOO-INPUT-ERROR-0003:The path of \"" + cliPath + "\" for the selected Octopus CLI does not exist.");
         return TaskResultBuilder.newBuilder(taskContext).failed().build();
     }
 }

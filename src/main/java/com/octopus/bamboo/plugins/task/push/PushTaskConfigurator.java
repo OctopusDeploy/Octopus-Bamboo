@@ -104,5 +104,10 @@ public class PushTaskConfigurator extends AbstractTaskConfigurator {
         if (StringUtils.isEmpty(pushPattern)) {
             errorCollection.addError(OctoConstants.PUSH_PATTERN, textProvider.getText(OctoConstants.PUSH_PATTERN_ERROR_KEY));
         }
+
+        final String octopusCli = params.getString(OctoConstants.OCTOPUS_CLI);
+        if (StringUtils.isEmpty(octopusCli)) {
+            errorCollection.addError(OctoConstants.OCTOPUS_CLI, textProvider.getText(OctoConstants.OCTOPUS_CLI_ERROR_KEY));
+        }
     }
 }

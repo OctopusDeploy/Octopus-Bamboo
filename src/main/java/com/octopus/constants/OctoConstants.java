@@ -102,6 +102,7 @@ public class OctoConstants {
     public static final String API_KEY_ERROR_KEY = "octopus.apiKey.error";
     public static final String SERVER_URL_ERROR_KEY = "octopus.serverUrl.error";
     public static final String PUSH_PATTERN_ERROR_KEY = "octopus.pushPattern.error";
+    public static final String OCTOPUS_CLI_ERROR_KEY = "octopus.cli.error";
     public static final String PROJECT_NAME_ERROR_KEY = "octopus.projectName.error";
     public static final String RELEASE_VERSION_ERROR_KEY = "octopus.releaseVersion.error";
     public static final String ENVIRONMENT_NAME_ERROR_KEY = "octopus.environmentName.error";
