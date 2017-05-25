@@ -118,8 +118,14 @@ public class CreateReleaseTask implements TaskType {
         }
 
         if (StringUtils.isNotBlank(environmentName)) {
-            commands.add("--deployto");
-            commands.add(environmentName);
+            final Iterable<String> environmentNameSplit = Splitter.on(',')
+                    .trimResults()
+                    .omitEmptyStrings()
+                    .split(environmentName);
+            for (final String environment : environmentNameSplit) {
+                commands.add("--deployto");
+                commands.add(environment);
+            }
         }
 
         if (verboseLogging) {
@@ -131,7 +137,7 @@ public class CreateReleaseTask implements TaskType {
         }
 
         if (StringUtils.isNotBlank(tenants)) {
-            Iterable<String> tenantsSplit = Splitter.on(',')
+            final Iterable<String> tenantsSplit = Splitter.on(',')
                     .trimResults()
                     .omitEmptyStrings()
                     .split(tenants);
@@ -142,7 +148,7 @@ public class CreateReleaseTask implements TaskType {
         }
 
         if (StringUtils.isNotBlank(tenantTags)) {
-            Iterable<String> tenantTagsSplit = Splitter.on(',')
+            final Iterable<String> tenantTagsSplit = Splitter.on(',')
                     .trimResults()
                     .omitEmptyStrings()
                     .split(tenantTags);

@@ -100,8 +100,14 @@ public class DeployReleaseTask implements TaskType {
         commands.add("--project");
         commands.add(projectName);
 
-        commands.add("--deployto");
-        commands.add(environmentName);
+        final Iterable<String> environmentNameSplit = Splitter.on(',')
+                .trimResults()
+                .omitEmptyStrings()
+                .split(environmentName);
+        for (final String environment : environmentNameSplit) {
+            commands.add("--deployto");
+            commands.add(environment);
+        }
 
         commands.add("--version");
         commands.add(releaseVersion);
