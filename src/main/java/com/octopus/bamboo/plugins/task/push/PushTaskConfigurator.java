@@ -78,6 +78,7 @@ public class PushTaskConfigurator extends AbstractTaskConfigurator {
         context.put(OctoConstants.FORCE, taskDefinition.getConfiguration().get(OctoConstants.FORCE));
         context.put(OctoConstants.VERBOSE_LOGGING, taskDefinition.getConfiguration().get(OctoConstants.VERBOSE_LOGGING));
         context.put(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME, taskDefinition.getConfiguration().get(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME));
+        context.put(OctoConstants.OCTOPUS_CLI, taskDefinition.getConfiguration().get(OctoConstants.OCTOPUS_CLI));
         context.put(OctoConstants.UI_CONFIG_BEAN, this.uiConfigSupport);
     }
 

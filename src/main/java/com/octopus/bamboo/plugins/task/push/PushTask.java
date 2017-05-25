@@ -3,7 +3,6 @@ package com.octopus.bamboo.plugins.task.push;
 import com.atlassian.bamboo.process.ExternalProcessBuilder;
 import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.*;
-import com.atlassian.bamboo.v2.build.agent.capability.Capability;
 import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
@@ -75,6 +74,7 @@ public class PushTask extends AbstractTaskConfigurator implements CommonTaskType
     public TaskResult execute(@NotNull final CommonTaskContext taskContext) throws TaskException {
         checkNotNull(taskContext, "taskContext cannot be null");
 
+        final String octopusCli = taskContext.getConfigurationMap().get(OctoConstants.OCTOPUS_CLI);
         final String serverUrl = taskContext.getConfigurationMap().get(OctoConstants.SERVER_URL);
         final String apiKey = taskContext.getConfigurationMap().get(OctoConstants.API_KEY);
         final String patterns = taskContext.getConfigurationMap().get(OctoConstants.PUSH_PATTERN);
@@ -84,6 +84,7 @@ public class PushTask extends AbstractTaskConfigurator implements CommonTaskType
         final Boolean verboseLogging = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(loggingLevel));
         final String additionalArgs = taskContext.getConfigurationMap().get(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME);
 
+        checkState(StringUtils.isNotBlank(octopusCli), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus CLI can not be blank");
         checkState(StringUtils.isNotBlank(serverUrl), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus URL can not be blank");
         checkState(StringUtils.isNotBlank(apiKey), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: API key can not be blank");
         checkState(StringUtils.isNotBlank(patterns), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Package paths can not be blank");
@@ -166,34 +167,25 @@ public class PushTask extends AbstractTaskConfigurator implements CommonTaskType
             }
         }
 
-        for (final Capability cap : capabilityContext.getCapabilitySet().getCapabilities()) {
-            if (cap.getKey().startsWith(OctoConstants.OCTOPUS_CLI_CAPABILITY)) {
-                commands.add(0, cap.getValue());
+        final String cliPath = capabilityContext.getCapabilityValue(
+                OctoConstants.OCTOPUS_CLI_CAPABILITY + "." + octopusCli);
 
-                final ExternalProcess process = processService.executeExternalProcess(taskContext,
-                        new ExternalProcessBuilder()
-                                .command(commands)
-                                .workingDirectory(taskContext.getWorkingDirectory()));
+        if (new File(cliPath).exists()) {
+            commands.add(0, cliPath);
 
-                if (process.getHandler().getExitCode() != 0) {
-                    commonTaskService.logError(
-                            taskContext,
-                            "Failed to execute the Octopus Command line client. "
-                                    + "If the error message mentions missing library files "
-                                    + "(like unwind or icu) make sure you have installed all "
-                                    + "the dependencies that are documented at "
-                                    + "https://www.microsoft.com/net/core");
-                }
+            final ExternalProcess process = processService.executeExternalProcess(taskContext,
+                    new ExternalProcessBuilder()
+                            .command(commands)
+                            .workingDirectory(taskContext.getWorkingDirectory()));
 
-                return TaskResultBuilder.newBuilder(taskContext)
-                        .checkReturnCode(process, 0)
-                        .build();
-            }
+            return TaskResultBuilder.newBuilder(taskContext)
+                    .checkReturnCode(process, 0)
+                    .build();
         }
 
         commonTaskService.logError(
                 taskContext,
-                "You need to define the Octopus CLI executable server capability in the Bamboo administration page");
+                "The path of \"" + cliPath + "\" for the selected Octopus CLI does not exist.");
         return TaskResultBuilder.newBuilder(taskContext).failed().build();
     }
 }
