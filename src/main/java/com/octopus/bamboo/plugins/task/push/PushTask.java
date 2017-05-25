@@ -8,9 +8,12 @@ import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.utils.process.ExternalProcess;
+import com.google.common.base.Splitter;
 import com.octopus.constants.OctoConstants;
 import com.octopus.services.CommonTaskService;
 import com.octopus.services.FileService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.types.Commandline;
@@ -74,7 +77,7 @@ public class PushTask implements TaskType {
 
         final String serverUrl = taskContext.getConfigurationMap().get(OctoConstants.SERVER_URL);
         final String apiKey = taskContext.getConfigurationMap().get(OctoConstants.API_KEY);
-        final String pattern = taskContext.getConfigurationMap().get(OctoConstants.PUSH_PATTERN);
+        final String patterns = taskContext.getConfigurationMap().get(OctoConstants.PUSH_PATTERN);
         final String forceUpload = taskContext.getConfigurationMap().get(OctoConstants.FORCE);
         final Boolean forceUploadBoolean = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(forceUpload));
         final String loggingLevel = taskContext.getConfigurationMap().get(OctoConstants.VERBOSE_LOGGING);
@@ -83,19 +86,45 @@ public class PushTask implements TaskType {
 
         checkState(StringUtils.isNotBlank(serverUrl), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus URL can not be blank");
         checkState(StringUtils.isNotBlank(apiKey), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: API key can not be blank");
-        checkState(StringUtils.isNotBlank(pattern), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Package paths can not be blank");
+        checkState(StringUtils.isNotBlank(patterns), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Package paths can not be blank");
 
          /*
             Get the list of matching files that need to be uploaded
          */
-        final List<File> files = fileService.getMatchingFile(taskContext.getWorkingDirectory(), pattern);
+        final List<File> files = new ArrayList<>();
+
+        final Iterable<String> patternSplit = Splitter.on("\n")
+                .trimResults()
+                .omitEmptyStrings()
+                .split(patterns);
+        for (final String pattern : patternSplit) {
+            final List<File> matchingFiles = fileService.getMatchingFile(taskContext.getWorkingDirectory(), pattern);
+            /*
+                Don't add duplicates
+             */
+            for (final File file : matchingFiles) {
+                if (file != null) {
+                    final File existing = CollectionUtils.find(files, new Predicate<File>() {
+                        @Override
+                        public boolean evaluate(final File existingFile) {
+                            return existingFile.getAbsolutePath().equals(file.getAbsolutePath());
+                        }
+                    });
+
+                    if (existing == null) {
+                        files.add(file);
+                    }
+                }
+            }
+        }
 
         /*
             Fail if no files were matched
          */
         if (files.isEmpty()) {
-            commonTaskService.logError(taskContext, "OCTOPUS-BAMBOO-INPUT-ERROR-0001: The pattern " + pattern
-                    + " failed to match any files");
+            commonTaskService.logError(taskContext, "OCTOPUS-BAMBOO-INPUT-ERROR-0001: The pattern \n"
+                    + patterns
+                    + "\nfailed to match any files");
             return commonTaskService.buildResult(taskContext, false);
         }
 

@@ -103,8 +103,14 @@ public class PromoteReleaseTask implements TaskType {
         commands.add("--from");
         commands.add(promoteFrom);
 
-        commands.add("--to");
-        commands.add(promoteTo);
+        final Iterable<String> promoteToSplit = Splitter.on(',')
+                .trimResults()
+                .omitEmptyStrings()
+                .split(promoteTo);
+        for (final String promoteToEnv : promoteToSplit) {
+            commands.add("--to");
+            commands.add(promoteToEnv);
+        }
 
         if (verboseLogging) {
             commands.add("--debug");
