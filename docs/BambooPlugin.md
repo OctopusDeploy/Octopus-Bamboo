@@ -225,3 +225,13 @@ running command line: \n/opt/octocli/Octo push --server http://localhost --apiKe
 
 This is the command that was run to perform the actual interaction with the Octopus Deploy server, with the exception of the
 redacted API key. You can take this command and run it manually to help diagnose any issues.
+
+# Error Codes
+
+Error conditions encountered by the add-on have unique error codes, which are listed here.
+
+| Error Code | Description |
+|------------|-------------|
+| OCTOPUS-BAMBOO-INPUT-ERROR-0001 | No matching files could be found to push to Octopus Deploy. Check that the file pattern matches a file in the Bamboo working directory. |
+| OCTOPUS-BAMBOO-INPUT-ERROR-0002 | A required field was empty. |
+| OCTOPUS-BAMBOO-INPUT-ERROR-0003 | The server capability that defines the path to the Octopus CLI has an incorrect path. Make sure The path you assigned to the Octopus CLI is correct. |
