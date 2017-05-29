@@ -61,6 +61,22 @@
         dest: /opt
         copy: no
 
+  - name: set tomcat users
+    template:
+      src: tomcat-users.xml
+      dest: /opt/apache-tomcat-8.5.15/conf/tomcat-users.xml
+      owner: tomcat
+      group: tomcat
+      mode: 0600
+
+  - name: allow manager to be used anywhere
+    template:
+      src: context.xml
+      dest: /opt/apache-tomcat-8.5.15/webapps/manager/META-INF/context.xml
+      owner: tomcat
+      group: tomcat
+      mode: 0600
+
   - name: install tomcat service
     template:
       src: tomcat

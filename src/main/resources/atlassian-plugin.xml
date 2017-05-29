@@ -65,4 +65,15 @@
                     primaryCapabilityProvider="false"/>
     </taskType>
 
+    <taskType key="task.pack" name="Octopus Deploy: Pack Package"
+              class="com.octopus.bamboo.plugins.task.pack.PackTask">
+        <description>Promote a release within an Octopus Deploy project</description>
+        <category name="deployment"/>
+        <configuration class="com.octopus.bamboo.plugins.task.pack.PackTaskConfigurator"/>
+        <resource type="freemarker" name="edit" location="freemarker/pack.ftl"/>
+        <resource type="download" name="icon" location="images/pluginLogo.png"/>
+        <executable key="octopuscli" nameKey="octopus.cli.key" pathHelpKey="octopus.cli.help"
+                    primaryCapabilityProvider="false"/>
+    </taskType>
+
 </atlassian-plugin>

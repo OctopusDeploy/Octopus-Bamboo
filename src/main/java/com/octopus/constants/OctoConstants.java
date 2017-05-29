@@ -91,6 +91,34 @@ public class OctoConstants {
      */
     public static final String TENANT_TAGS_NAME = "tenantTags";
     /**
+     * The configuration key for the pack id
+     */
+    public static final String PACK_ID_NAME = "packId";
+    /**
+     * The configuration key for the pack format
+     */
+    public static final String PACK_FORMAT_NAME = "packFormat";
+    /**
+     * The configuration key for the pack format
+     */
+    public static final String PACK_VERSION_NAME = "packVersion";
+    /**
+     * The configuration key for the pack out folder
+     */
+    public static final String PACK_OUT_FOLDER_NAME = "packOutFolder";
+    /**
+     * The configuration key for the pack base folder
+     */
+    public static final String PACK_BASE_PATH_NAME = "packBasePath";
+    /**
+     * The configuration key for the pack include pattern
+     */
+    public static final String PACK_INCLUDE_NAME = "packInclude";
+    /**
+     * The configuration key for the pack overwrite option
+     */
+    public static final String PACK_OVERWRITE_NAME = "packOverwrite";
+    /**
      * The name of the capability that links to the octopus cli
      */
     public static final String OCTOPUS_CLI_CAPABILITY = "system.builder.octopuscli";
@@ -98,6 +126,18 @@ public class OctoConstants {
      * UIConfigSupport bean used to display lists of executables
      */
     public static final String UI_CONFIG_BEAN = "uiConfigBean";
+    /**
+     * Collection of pack formats
+     */
+    public static final String PACK_FORMATS_LIST = "formats";
+    /**
+     * ZIP pack format
+     */
+    public static final String PACK_ZIP_FORMAT = "zip";
+    /**
+     * NUGET pack format
+     */
+    public static final String PACK_NUGET_FORMAT = "nuget";
 
     public static final String API_KEY_ERROR_KEY = "octopus.apiKey.error";
     public static final String SERVER_URL_ERROR_KEY = "octopus.serverUrl.error";
@@ -106,6 +146,10 @@ public class OctoConstants {
     public static final String PROJECT_NAME_ERROR_KEY = "octopus.projectName.error";
     public static final String RELEASE_VERSION_ERROR_KEY = "octopus.releaseVersion.error";
     public static final String ENVIRONMENT_NAME_ERROR_KEY = "octopus.environmentName.error";
+    public static final String PACK_ID_ERROR_KEY = "octopus.packId.error";
+    public static final String PACK_FORMAT_ERROR_KEY = "octopus.packFormat.error";
+
+
 
     public static final String PROMOTE_FROM_NAME_ERROR_KEY = "octopus.promoteFrom.error";
     public static final String PROMOTE_TO_NAME_ERROR_KEY = "octopus.promoteTo.error";

@@ -22,6 +22,53 @@
     yum:
       name: wget,elinks,telnet,htop,mlocate,python-pip,vim,nano,jq,java-1.8.0-openjdk-devel,unzip,maven,libunwind,libicu
 
+  - name: download .NET Core
+    get_url:
+          url: "{{dot_net_download}}"
+          dest: /tmp/dotnet.tar.gz
+          mode: 0440
+
+  - name: create dotnet directory
+    file:
+        path: /opt/dotnet
+        state: directory
+
+  - name: extract dotnet
+    unarchive:
+        src: /tmp/dotnet.tar.gz
+        dest: /opt/dotnet
+        copy: no
+
+  - name: link dotnet
+    file:
+      src: /opt/dotnet/dotnet
+      dest: /usr/local/bin/dotnet
+      state: link
+
+  - name: install mono key
+    get_url:
+        url: http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+        dest: /tmp/GPG-KEY-mono
+        mode: 0440
+
+  - name: import mono key
+    rpm_key:
+      state: present
+      key: /tmp/GPG-KEY-mono
+
+  - name: Add mono repo
+    yum_repository:
+      name: mono
+      description: Mono repository
+      baseurl: http://download.mono-project.com/repo/centos7/
+      gpgkey: http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+      gpgcheck: yes
+      enabled: yes
+
+  - name: install mono
+    yum:
+      name: mono-devel
+
   - name: Set JAVA_HOME
     lineinfile: dest=/etc/environment state=present regexp='^JAVA_HOME' line='JAVA_HOME=/usr/lib/jvm/jre-1.8.0'
 
