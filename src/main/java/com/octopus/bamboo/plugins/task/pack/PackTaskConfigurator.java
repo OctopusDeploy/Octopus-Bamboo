@@ -50,8 +50,6 @@ public class PackTaskConfigurator extends AbstractTaskConfigurator {
         checkNotNull(params);
 
         final Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
-        config.put(OctoConstants.SERVER_URL, params.getString(OctoConstants.SERVER_URL));
-        config.put(OctoConstants.API_KEY, params.getString(OctoConstants.API_KEY));
         config.put(OctoConstants.PACK_BASE_PATH_NAME, params.getString(OctoConstants.PACK_BASE_PATH_NAME));
         config.put(OctoConstants.PACK_FORMAT_NAME, params.getString(OctoConstants.PACK_FORMAT_NAME));
         config.put(OctoConstants.PACK_ID_NAME, params.getString(OctoConstants.PACK_ID_NAME));
@@ -80,8 +78,6 @@ public class PackTaskConfigurator extends AbstractTaskConfigurator {
 
         super.populateContextForEdit(context, taskDefinition);
 
-        context.put(OctoConstants.SERVER_URL, taskDefinition.getConfiguration().get(OctoConstants.SERVER_URL));
-        context.put(OctoConstants.API_KEY, taskDefinition.getConfiguration().get(OctoConstants.API_KEY));
         context.put(OctoConstants.PACK_BASE_PATH_NAME, taskDefinition.getConfiguration().get(OctoConstants.PACK_BASE_PATH_NAME));
         context.put(OctoConstants.PACK_FORMAT_NAME, StringUtils.defaultIfBlank(
                 taskDefinition.getConfiguration().get(OctoConstants.PACK_FORMAT_NAME),
@@ -105,16 +101,6 @@ public class PackTaskConfigurator extends AbstractTaskConfigurator {
         checkNotNull(errorCollection);
 
         super.validate(params, errorCollection);
-
-        final String sayValue = params.getString(OctoConstants.SERVER_URL);
-        if (StringUtils.isEmpty(sayValue)) {
-            errorCollection.addError(OctoConstants.SERVER_URL, textProvider.getText(OctoConstants.SERVER_URL_ERROR_KEY));
-        }
-
-        final String apiKeyValue = params.getString(OctoConstants.API_KEY);
-        if (StringUtils.isEmpty(apiKeyValue)) {
-            errorCollection.addError(OctoConstants.API_KEY, textProvider.getText(OctoConstants.API_KEY_ERROR_KEY));
-        }
 
         final String pushPattern = params.getString(OctoConstants.PACK_ID_NAME);
         if (StringUtils.isEmpty(pushPattern)) {

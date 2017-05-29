@@ -22,6 +22,10 @@
     yum:
       name: wget,elinks,telnet,htop,mlocate,python-pip,vim,nano,jq,java-1.8.0-openjdk-devel,unzip,maven,yum-utils
 
+  - name: install powershell
+    yum:
+      name: "{{powershell_download}}"
+
   - name: Set JAVA_HOME
     lineinfile: dest=/etc/environment state=present regexp='^JAVA_HOME' line='JAVA_HOME=/usr/lib/jvm/jre-1.8.0'
 

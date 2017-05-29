@@ -72,8 +72,6 @@ public class PackTask extends AbstractTaskConfigurator implements CommonTaskType
         checkNotNull(taskContext, "taskContext cannot be null");
 
         final String octopusCli = taskContext.getConfigurationMap().get(OctoConstants.OCTOPUS_CLI);
-        final String serverUrl = taskContext.getConfigurationMap().get(OctoConstants.SERVER_URL);
-        final String apiKey = taskContext.getConfigurationMap().get(OctoConstants.API_KEY);
         final String basePath = taskContext.getConfigurationMap().get(OctoConstants.PACK_BASE_PATH_NAME);
         final String format = taskContext.getConfigurationMap().get(OctoConstants.PACK_FORMAT_NAME);
         final String id = taskContext.getConfigurationMap().get(OctoConstants.PACK_ID_NAME);
@@ -88,8 +86,6 @@ public class PackTask extends AbstractTaskConfigurator implements CommonTaskType
         final String additionalArgs = taskContext.getConfigurationMap().get(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME);
 
         checkState(StringUtils.isNotBlank(octopusCli), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus CLI can not be blank");
-        checkState(StringUtils.isNotBlank(serverUrl), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus URL can not be blank");
-        checkState(StringUtils.isNotBlank(apiKey), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: API key can not be blank");
         checkState(StringUtils.isNotBlank(id), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Package id can not be blank");
 
         taskContext.getBuildLogger().getMutatorStack().add(logMutator);
@@ -100,12 +96,6 @@ public class PackTask extends AbstractTaskConfigurator implements CommonTaskType
         final List<String> commands = new ArrayList<String>();
 
         commands.add("pack");
-
-        commands.add("--server");
-        commands.add(serverUrl);
-
-        commands.add("--apiKey");
-        commands.add(apiKey);
 
         commands.add("--id");
         commands.add(id);
