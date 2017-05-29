@@ -73,6 +73,14 @@
       group: tomcat
       mode: 0600
 
+  - name: set tomcat server settings
+    template:
+      src: server.xml
+      dest: /opt/apache-tomcat-8.5.15/conf/server.xml
+      owner: tomcat
+      group: tomcat
+      mode: 0600
+
   - name: allow manager to be used anywhere
     template:
       src: context.xml
