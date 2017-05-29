@@ -68,6 +68,8 @@ public class PackTaskConfigurator extends AbstractTaskConfigurator {
     @Override
     public void populateContextForCreate(@NotNull final Map<String, Object> context) {
         context.put(OctoConstants.UI_CONFIG_BEAN, this.uiConfigSupport);
+        context.put(OctoConstants.PACK_FORMAT_NAME, OctoConstants.PACK_ZIP_FORMAT);
+        context.put(OctoConstants.PACK_FORMATS_LIST, Arrays.asList(OctoConstants.PACK_ZIP_FORMAT, OctoConstants.PACK_NUGET_FORMAT));
     }
 
     @Override
