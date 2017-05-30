@@ -16,12 +16,12 @@ public class ApiKeyLogMutator implements LogMutator {
     private static final String REPLACEMENT = "API-....................";
 
     @Override
-    public LogEntry mutate(@NotNull LogEntry logEntry) {
+    public LogEntry mutate(@NotNull final LogEntry logEntry) {
         return removeApiKeys(logEntry);
     }
 
     @Override
-    public LogEntry mutateError(@NotNull LogEntry logEntry) {
+    public LogEntry mutateError(@NotNull final LogEntry logEntry) {
         return removeApiKeys(logEntry);
     }
 

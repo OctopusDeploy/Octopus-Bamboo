@@ -152,7 +152,7 @@ public class PromoteReleaseTask implements CommonTaskType {
         }
 
         if (StringUtils.isNotBlank(additionalArgs)) {
-            final String myArgs[] = Commandline.translateCommandline(additionalArgs);
+            final String[] myArgs = Commandline.translateCommandline(additionalArgs);
             commands.addAll(Arrays.asList(myArgs));
         }
 
