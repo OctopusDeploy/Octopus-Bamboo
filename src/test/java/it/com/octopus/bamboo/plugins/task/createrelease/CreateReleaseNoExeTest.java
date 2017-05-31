@@ -1,12 +1,11 @@
-package it.com.octopus.bamboo.plugins.task.push;
+package it.com.octopus.bamboo.plugins.task.createrelease;
 
 import com.atlassian.bamboo.task.TaskException;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.plugins.osgi.test.AtlassianPluginsTestRunner;
-import com.octopus.bamboo.plugins.task.push.PushTask;
+import com.octopus.bamboo.plugins.task.createrelease.CreateReleaseTask;
 import com.octopus.services.impl.MockCommonTaskContext;
 import com.octopus.services.impl.RecordingBuildLogger;
-import com.octopus.services.impl.StubCapabilityContext;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,18 +19,14 @@ import javax.validation.constraints.NotNull;
  * Integration tests for the pack task
  */
 @RunWith(AtlassianPluginsTestRunner.class)
-public class NoExeTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(NoExeTest.class);
+public class CreateReleaseNoExeTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CreateReleaseNoExeTest.class);
     private final MockCommonTaskContext mockCommonTaskContext = new MockCommonTaskContext();
-    private final StubCapabilityContext stubCapabilityContext = new StubCapabilityContext();
-    private final PushTask task;
+    private final CreateReleaseTask task;
 
     @Inject
-    public NoExeTest(@ComponentImport @NotNull final PushTask task) {
+    public CreateReleaseNoExeTest(@ComponentImport @NotNull final CreateReleaseTask task) {
         this.task = task;
-
-        stubCapabilityContext.setOctoPath("/this/does/not/exist");
-        task.setCapabilityContext(stubCapabilityContext);
     }
 
     /**
@@ -45,6 +40,6 @@ public class NoExeTest {
         task.execute(mockCommonTaskContext);
 
         Assert.assertFalse(((RecordingBuildLogger)mockCommonTaskContext.getBuildLogger())
-                .findLogs("OCTOPUS-BAMBOO-INPUT-ERROR-0003").isEmpty());
+                .findErrorLogs("OCTOPUS-BAMBOO-INPUT-ERROR-0003").isEmpty());
     }
 }

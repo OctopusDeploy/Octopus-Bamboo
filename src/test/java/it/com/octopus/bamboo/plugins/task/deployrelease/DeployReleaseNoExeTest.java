@@ -1,12 +1,11 @@
-package it.com.octopus.bamboo.plugins.task.createrelease;
+package it.com.octopus.bamboo.plugins.task.deployrelease;
 
 import com.atlassian.bamboo.task.TaskException;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.plugins.osgi.test.AtlassianPluginsTestRunner;
-import com.octopus.bamboo.plugins.task.createrelease.CreateReleaseTask;
+import com.octopus.bamboo.plugins.task.deployrelease.DeployReleaseTask;
 import com.octopus.services.impl.MockCommonTaskContext;
 import com.octopus.services.impl.RecordingBuildLogger;
-import com.octopus.services.impl.StubCapabilityContext;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,18 +19,14 @@ import javax.validation.constraints.NotNull;
  * Integration tests for the pack task
  */
 @RunWith(AtlassianPluginsTestRunner.class)
-public class NoExeTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(NoExeTest.class);
+public class DeployReleaseNoExeTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeployReleaseNoExeTest.class);
     private final MockCommonTaskContext mockCommonTaskContext = new MockCommonTaskContext();
-    private final StubCapabilityContext stubCapabilityContext = new StubCapabilityContext();
-    private final CreateReleaseTask task;
+    private final DeployReleaseTask task;
 
     @Inject
-    public NoExeTest(@ComponentImport @NotNull final CreateReleaseTask task) {
+    public DeployReleaseNoExeTest(@ComponentImport @NotNull final DeployReleaseTask task) {
         this.task = task;
-
-        stubCapabilityContext.setOctoPath("/this/does/not/exist");
-        task.setCapabilityContext(stubCapabilityContext);
     }
 
     /**
@@ -45,6 +40,6 @@ public class NoExeTest {
         task.execute(mockCommonTaskContext);
 
         Assert.assertFalse(((RecordingBuildLogger)mockCommonTaskContext.getBuildLogger())
-                .findLogs("OCTOPUS-BAMBOO-INPUT-ERROR-0003").isEmpty());
+                .findErrorLogs("OCTOPUS-BAMBOO-INPUT-ERROR-0003").isEmpty());
     }
 }
