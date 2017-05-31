@@ -4,7 +4,26 @@ package com.octopus.constants;
  * Constants used by the Bamboo plugin
  */
 public class OctoConstants {
+    /**
+     * https://octopus.com/docs/api-and-integration/octo.exe-command-line/pushing-packages
+     */
     public static final String PUSH_COMMAND = "push";
+    /**
+     * https://octopus.com/docs/packaging-applications/nuget-packages/using-octo.exe
+     */
+    public static final String PACK_COMMAND = "pack";
+    /**
+     * https://octopus.com/docs/api-and-integration/octo.exe-command-line/creating-releases
+     */
+    public static final String CREATE_RELEASE_COMMAND = "create-release";
+    /**
+     * https://octopus.com/docs/api-and-integration/octo.exe-command-line/deploying-releases
+     */
+    public static final String DEPLOY_RELEASE_COMMAND = "deploy-release";
+    /**
+     * https://octopus.com/docs/api-and-integration/octo.exe-command-line/promoting-releases
+     */
+    public static final String PROMOTE_RELEASE_COMMAND = "promote-release";
 
     /**
      * The address of the local test Octopus Deploy instance

@@ -1,4 +1,4 @@
-package it.com.octopus.bamboo.plugins.task.deploy;
+package it.com.octopus.bamboo.plugins.task.push;
 
 import com.atlassian.bamboo.task.TaskException;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
@@ -9,6 +9,7 @@ import com.octopus.constants.OctoTestConstants;
 import com.octopus.services.impl.MockCommonTaskContext;
 import com.octopus.services.impl.MockProcessService;
 import com.octopus.services.impl.StubCapabilityContext;
+import it.com.octopus.bamboo.plugins.task.BaseTest;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -29,13 +30,9 @@ import java.nio.file.Path;
  * Integration tests for the deployment task
  */
 @RunWith(AtlassianPluginsTestRunner.class)
-public class PushTaskTest {
+public class PushTaskTest extends BaseTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(PushTaskTest.class);
     private final PushTask octopusDeployTask;
-    private final MockProcessService processService = new MockProcessService();
-    private final MockCommonTaskContext mockCommonTaskContext = new MockCommonTaskContext();
-    private final StubCapabilityContext stubCapabilityContext = new StubCapabilityContext();
-    private Path workingDir;
 
     @Inject
     public PushTaskTest(@ComponentImport @NotNull final PushTask octopusDeployTask) {
@@ -48,33 +45,7 @@ public class PushTaskTest {
         octopusDeployTask.setCapabilityContext(stubCapabilityContext);
     }
 
-    /**
-     * Create a directory that we will use as the working directory. Copy some files
-     * into it that we can work with.
-     *
-     * @throws IOException
-     */
-    @Before
-    public void setupWorkingDir() throws IOException {
-        workingDir = Files.createTempDirectory("bambooIntTest");
-        FileUtils.copyURLToFile(getClass().getResource("/first-bamboo-int.0.0.1.zip"),
-                new File(workingDir.toFile().getAbsolutePath() + File.separator + "first-bamboo-int.0.0.1.zip"));
-        FileUtils.copyURLToFile(getClass().getResource("/first-bamboo-int.0.0.1.zip"),
-                new File(workingDir.toFile().getAbsolutePath() + File.separator + "second-bamboo-int.0.0.1.zip"));
-        FileUtils.copyURLToFile(getClass().getResource("/Octo"),
-                new File(workingDir.toFile().getAbsolutePath() + File.separator + "Octo"));
 
-        mockCommonTaskContext.setWorkingDir(workingDir.toFile());
-        stubCapabilityContext.setOctoPath(new File(workingDir.toFile(), "Octo").getAbsolutePath());
-    }
-
-    /**
-     * Clean up the working directory
-     */
-    @After
-    public void cleanupWorkingDir() {
-        FileUtils.deleteQuietly(workingDir.toFile());
-    }
 
     /**
      * Ensures that the expected commands are passed to the mock

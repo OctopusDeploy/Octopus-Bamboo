@@ -34,7 +34,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * The Bamboo Task that is used to deploy artifacts to Octopus Deploy
+ * The Bamboo Task that is used to push artifacts to Octopus Deploy
  */
 @Component
 @ExportAsService({PushTask.class})
@@ -68,9 +68,10 @@ public class PushTask extends AbstractTaskConfigurator implements CommonTaskType
     /**
      * Constructor. Params are injected by Spring under normal usage.
      *
-     * @param processService      The service used the execute external applications
-     * @param capabilityContext      The service used get details of server capabilities
+     * @param processService    The service used to run external executables
+     * @param capabilityContext The service holding Bamboo's capabilities
      * @param commonTaskService The service used for common task operations
+     * @param logMutator The service used to mask api keys
      */
     @Inject
     public PushTask(@NotNull final ProcessService processService,

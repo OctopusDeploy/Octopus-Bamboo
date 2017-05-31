@@ -30,7 +30,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * Task used to deploy a release
+ * Task used to push a release
  */
 @Component
 @ExportAsService({PromoteReleaseTask.class})
@@ -38,17 +38,35 @@ import static com.google.common.base.Preconditions.checkState;
 public class PromoteReleaseTask implements CommonTaskType {
     private static final Logger LOGGER = LoggerFactory.getLogger(PromoteReleaseTask.class);
     @ComponentImport
-    private final ProcessService processService;
+    private ProcessService processService;
     @ComponentImport
-    private final CapabilityContext capabilityContext;
+    private CapabilityContext capabilityContext;
     private final CommonTaskService commonTaskService;
     private final LogMutator logMutator;
+
+    public ProcessService getProcessService() {
+        return processService;
+    }
+
+    public void setProcessService(final ProcessService processService) {
+        this.processService = processService;
+    }
+
+    public CapabilityContext getCapabilityContext() {
+        return capabilityContext;
+    }
+
+    public void setCapabilityContext(final CapabilityContext capabilityContext) {
+        this.capabilityContext = capabilityContext;
+    }
 
     /**
      * Constructor. Params are injected by Spring under normal usage.
      *
-     * @param feignService      The service that is used to interact with the API
+     * @param processService    The service used to run external executables
+     * @param capabilityContext The service holding Bamboo's capabilities
      * @param commonTaskService The service used for common task operations
+     * @param logMutator The service used to mask api keys
      */
     @Inject
     public PromoteReleaseTask(@NotNull final ProcessService processService,
@@ -98,7 +116,7 @@ public class PromoteReleaseTask implements CommonTaskType {
          */
         final List<String> commands = new ArrayList<String>();
 
-        commands.add("promote-release");
+        commands.add(OctoConstants.PROMOTE_RELEASE_COMMAND);
 
         commands.add("--server");
         commands.add(serverUrl);

@@ -90,6 +90,26 @@ public class MockCommonTaskContext implements CommonTaskContext {
         retValue.put(OctoConstants.PROJECT_NAME, OctoTestConstants.TEST_PROJECT);
         retValue.put(OctoConstants.RELEASE_VERSION, "0.0.1");
         retValue.put(OctoConstants.VERBOSE_LOGGING, "true");
+        retValue.put(OctoConstants.PACK_ID_NAME, OctoTestConstants.PACK_ID);
+        retValue.put(OctoConstants.PACK_OUT_FOLDER_NAME, OctoTestConstants.PACK_OUTPATH);
+        retValue.put(OctoConstants.PACK_BASE_PATH_NAME, OctoTestConstants.PACK_BASEPATH);
+        retValue.put(OctoConstants.PACK_FORMAT_NAME, OctoTestConstants.PACK_FORMAT);
+        retValue.put(OctoConstants.PACK_VERSION_NAME, OctoTestConstants.PACK_VERSION);
+        retValue.put(OctoConstants.PACK_OVERWRITE_NAME, OctoTestConstants.PACK_OVERWRITE);
+        retValue.put(OctoConstants.PACK_INCLUDE_NAME, OctoTestConstants.PACK_INCLUDES1
+            + "\n" + OctoTestConstants.PACK_INCLUDES2);
+        retValue.put(OctoConstants.CHANNEL_NAME, OctoTestConstants.TEST_CHANNEL);
+        retValue.put(OctoConstants.IGNORE_EXISTING_RELEASE_NAME, "true");
+        retValue.put(OctoConstants.SHOW_DEPLOYMENT_PROGRESS, "true");
+        retValue.put(OctoConstants.PROMOTE_FROM_NAME, OctoTestConstants.FROM_ENV);
+        retValue.put(OctoConstants.PROMOTE_TO_NAME, OctoTestConstants.TO_ENV1
+            + ", " + OctoTestConstants.TO_ENV2);
+        retValue.put(OctoConstants.ENVIRONMENT_NAME, OctoTestConstants.TEST_DEPLOY_TO1
+            + ", " + OctoTestConstants.TEST_DEPLOY_TO2);
+        retValue.put(OctoConstants.TENANTS_NAME, OctoTestConstants.TEST_TENANT1
+                + ", " + OctoTestConstants.TEST_TENANT1);
+        retValue.put(OctoConstants.TENANT_TAGS_NAME, OctoTestConstants.TEST_TENANT_TAG1
+                + ", " + OctoTestConstants.TEST_TENANT_TAG2);
         return retValue;
     }
 

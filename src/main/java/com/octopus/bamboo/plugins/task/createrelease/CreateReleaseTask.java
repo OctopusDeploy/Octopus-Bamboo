@@ -38,18 +38,35 @@ import static com.google.common.base.Preconditions.checkState;
 public class CreateReleaseTask implements CommonTaskType {
     private static final Logger LOGGER = LoggerFactory.getLogger(CreateReleaseTask.class);
     @ComponentImport
-    private final ProcessService processService;
+    private ProcessService processService;
     @ComponentImport
-    private final CapabilityContext capabilityContext;
+    private CapabilityContext capabilityContext;
     private final CommonTaskService commonTaskService;
     private final LogMutator logMutator;
+
+    public ProcessService getProcessService() {
+        return processService;
+    }
+
+    public void setProcessService(final ProcessService processService) {
+        this.processService = processService;
+    }
+
+    public CapabilityContext getCapabilityContext() {
+        return capabilityContext;
+    }
+
+    public void setCapabilityContext(final CapabilityContext capabilityContext) {
+        this.capabilityContext = capabilityContext;
+    }
 
     /**
      * Constructor. Params are injected by Spring under normal usage.
      *
-     * @param processService      The service used the execute external applications
-     * @param capabilityContext      The service used get details of server capabilities
+     * @param processService    The service used to run external executables
+     * @param capabilityContext The service holding Bamboo's capabilities
      * @param commonTaskService The service used for common task operations
+     * @param logMutator The service used to mask api keys
      */
     @Inject
     public CreateReleaseTask(@NotNull final ProcessService processService,
