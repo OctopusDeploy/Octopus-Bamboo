@@ -8,4 +8,5 @@ public class OctoTestConstants {
     public static final String DUMMY_API_KEY = "API-ABCDEFGHIJKLMNOPQRSTUVWXY";
     public static final String TEST_PROJECT = "Bamboo Integration Test";
     public static final String SPRING_PROFILE_SYSTEM_PROP = "spring.profiles.active";
+    public static final String DUMMY_OCTO_PATH = "Octo";
 }

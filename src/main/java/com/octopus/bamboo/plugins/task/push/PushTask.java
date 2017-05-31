@@ -42,12 +42,28 @@ import static com.google.common.base.Preconditions.checkState;
 public class PushTask extends AbstractTaskConfigurator implements CommonTaskType {
     private static final Logger LOGGER = LoggerFactory.getLogger(PushTask.class);
     @ComponentImport
-    private final ProcessService processService;
+    private ProcessService processService;
     @ComponentImport
-    private final CapabilityContext capabilityContext;
+    private CapabilityContext capabilityContext;
     private final CommonTaskService commonTaskService;
     private final FileService fileService;
     private final LogMutator logMutator;
+
+    public ProcessService getProcessService() {
+        return processService;
+    }
+
+    public void setProcessService(final ProcessService processService) {
+        this.processService = processService;
+    }
+
+    public CapabilityContext getCapabilityContext() {
+        return capabilityContext;
+    }
+
+    public void setCapabilityContext(final CapabilityContext capabilityContext) {
+        this.capabilityContext = capabilityContext;
+    }
 
     /**
      * Constructor. Params are injected by Spring under normal usage.
@@ -141,7 +157,7 @@ public class PushTask extends AbstractTaskConfigurator implements CommonTaskType
          */
         final List<String> commands = new ArrayList<String>();
 
-        commands.add("push");
+        commands.add(OctoConstants.PUSH_COMMAND);
 
         commands.add("--server");
         commands.add(serverUrl);

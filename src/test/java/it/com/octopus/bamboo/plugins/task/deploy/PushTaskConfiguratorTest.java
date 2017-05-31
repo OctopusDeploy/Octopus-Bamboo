@@ -15,11 +15,11 @@ import javax.validation.constraints.NotNull;
  * Integration tests for the deployment configuration
  */
 @RunWith(AtlassianPluginsTestRunner.class)
-public class TaskConfiguratorTest {
+public class PushTaskConfiguratorTest {
     private final TaskConfigurator taskConfigurator;
 
     @Inject
-    public TaskConfiguratorTest(@ComponentImport @NotNull @Qualifier("pushTaskConfigurator") final TaskConfigurator taskConfigurator) {
+    public PushTaskConfiguratorTest(@ComponentImport @NotNull @Qualifier("pushTaskConfigurator") final TaskConfigurator taskConfigurator) {
         this.taskConfigurator = taskConfigurator;
     }
 

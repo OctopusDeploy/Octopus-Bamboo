@@ -142,7 +142,7 @@ public class RecordingBuildLogger implements BuildLogger {
     @NotNull
     @Override
     public LogMutatorStack getMutatorStack() {
-        return null;
+        return new LogMutatorStack();
     }
 
     @Override

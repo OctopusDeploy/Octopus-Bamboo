@@ -4,6 +4,8 @@ package com.octopus.constants;
  * Constants used by the Bamboo plugin
  */
 public class OctoConstants {
+    public static final String PUSH_COMMAND = "push";
+
     /**
      * The address of the local test Octopus Deploy instance
      */
@@ -12,15 +14,6 @@ public class OctoConstants {
      * The name of the test profile
      */
     public static final String TEST_PROFILE = "test";
-    /**
-     * The header that holds the API key for the Octopus Deploy API
-     */
-    public static final String X_OCTOPUS_APIKEY = "X-Octopus-ApiKey";
-
-    /**
-     * The property key that defines the package id
-     */
-    public static final String PACKAGE_ID_PROP_KEY = "Octopus.Action.Package.PackageId";
 
     /**
      * The configuration key for the Octopus CLI instance
@@ -148,8 +141,6 @@ public class OctoConstants {
     public static final String ENVIRONMENT_NAME_ERROR_KEY = "octopus.environmentName.error";
     public static final String PACK_ID_ERROR_KEY = "octopus.packId.error";
     public static final String PACK_FORMAT_ERROR_KEY = "octopus.packFormat.error";
-
-
 
     public static final String PROMOTE_FROM_NAME_ERROR_KEY = "octopus.promoteFrom.error";
     public static final String PROMOTE_TO_NAME_ERROR_KEY = "octopus.promoteTo.error";
