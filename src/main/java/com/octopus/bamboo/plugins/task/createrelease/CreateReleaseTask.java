@@ -192,7 +192,7 @@ public class CreateReleaseTask implements CommonTaskType {
         final String cliPath = capabilityContext.getCapabilityValue(
                 OctoConstants.OCTOPUS_CLI_CAPABILITY + "." + octopusCli);
 
-        if (new File(cliPath).exists()) {
+        if (StringUtils.isNotBlank(cliPath) && new File(cliPath).exists()) {
             commands.add(0, cliPath);
 
             final ExternalProcess process = processService.executeExternalProcess(taskContext,

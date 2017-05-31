@@ -177,7 +177,7 @@ public class PromoteReleaseTask implements CommonTaskType {
         final String cliPath = capabilityContext.getCapabilityValue(
                 OctoConstants.OCTOPUS_CLI_CAPABILITY + "." + octopusCli);
 
-        if (new File(cliPath).exists()) {
+        if (StringUtils.isNotBlank(cliPath) && new File(cliPath).exists()) {
             commands.add(0, cliPath);
 
             final ExternalProcess process = processService.executeExternalProcess(taskContext,
@@ -193,7 +193,7 @@ public class PromoteReleaseTask implements CommonTaskType {
 
         commonTaskService.logError(
                 taskContext,
-                "OCTOPUS-BAMBOO-INPUT-ERROR-0003:The path of \"" + cliPath + "\" for the selected Octopus CLI does not exist.");
+                "OCTOPUS-BAMBOO-INPUT-ERROR-0003: The path of \"" + cliPath + "\" for the selected Octopus CLI does not exist.");
         return TaskResultBuilder.newBuilder(taskContext).failed().build();
     }
 }
