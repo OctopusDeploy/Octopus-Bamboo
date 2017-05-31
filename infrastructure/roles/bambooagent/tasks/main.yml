@@ -62,10 +62,20 @@
   - name: Set JAVA_HOME
     lineinfile: dest=/etc/environment state=present regexp='^JAVA_HOME' line='JAVA_HOME=/usr/lib/jvm/jre-1.8.0'
 
+  - name: create agent home dir
+    file:
+        path: /root/bamboo-agent-home
+        state: directory
+
+  - name: create agent home dir
+    file:
+        path: /root/bamboo-agent-home/bin
+        state: directory
+
   - name: set agent capabilities
     template:
       src: bamboo-capabilities.properties
-      dest: /opt/bamboo-capabilities.properties
+      dest: /root/bamboo-agent-home/bin/bamboo-capabilities.properties
       mode: 0644
 
   - name: add launching script
@@ -95,6 +105,18 @@
     unarchive:
         src: /tmp/octopus-tools.tar.gz
         dest: /opt/octocli
+        copy: no
+
+  - name: download maven
+    get_url:
+       url: "{{maven_download}}"
+       dest: /tmp/maven.tar.gz
+       mode: 0440
+
+  - name: extract maven cli
+    unarchive:
+        src: /tmp/maven.tar.gz
+        dest: /opt
         copy: no
 
   - name: start agent
