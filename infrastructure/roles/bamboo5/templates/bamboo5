@@ -19,7 +19,7 @@ APP={{bamboo_user}}
 # Name of the user to run as
 USER={{bamboo_user}}
 # Location of application's bin directory
-BASE=/opt/atlassian-bamboo-6.0.0
+BASE=/opt/{{bamboo5_directory}}
 
 case "$1" in
   # Start command

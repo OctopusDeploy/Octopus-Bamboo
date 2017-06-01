@@ -1,0 +1,55 @@
+---
+
+  - name: download bamboo
+    get_url:
+        url: "{{bamboo_download}}"
+        dest: /tmp/bamboo.tar.gz
+        mode: 0440
+
+  - name: extract bamboo
+    unarchive:
+        src: /tmp/bamboo.tar.gz
+        dest: /opt
+        copy: no
+
+  - name: create plugins directory
+    file:
+        path: "/opt/{{bamboo6_directory}}/plugins"
+        state: directory
+
+  - name: set bamboo permissions
+    file:
+      state: directory
+      path: "/opt/{{bamboo6_directory}}"
+      owner: "{{bamboo_user}}"
+      group: "{{bamboo_user}}"
+      recurse: true
+
+  - name: Fix up bamboo 6 home
+    lineinfile:
+      dest: "/opt/{{bamboo6_directory}}/atlassian-bamboo/WEB-INF/classes/bamboo-init.properties"
+      state: present
+      regexp: '^bamboo.home'
+      line: "bamboo.home=/opt/{{bamboo6_directory}}"
+
+  - name: install bamboo service
+    template:
+      src: bamboo6
+      dest: /etc/init.d/bamboo
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: copy plugin
+    copy:
+        src: "/mnt/c/Users/matth/Octopus/OctopusBamboo/target/OctopusBamboo.jar"
+        dest: "/opt/{{bamboo6_directory}}/plugins/OctopusBamboo.jar"
+        owner: "{{bamboo_user}}"
+        group: "{{bamboo_user}}"
+        mode: 0644
+
+  - name: start bamboo service
+    service:
+      name: bamboo
+      enabled: yes
+      state: restarted

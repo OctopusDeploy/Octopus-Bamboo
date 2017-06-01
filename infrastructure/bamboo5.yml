@@ -1,0 +1,9 @@
+---
+- name: bamboo
+  hosts: tag_Appplication_Bamboo5
+  remote_user: centos
+  become: true
+  become_user: root
+
+  roles:
+    - bamboo5

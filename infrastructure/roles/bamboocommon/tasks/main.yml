@@ -6,12 +6,12 @@
       state: stopped
     ignore_errors: yes
 
+  - name: create user to run bamboo
+    user: name={{bamboo_user}}
+
   - name: kill bamboo
     command: "pkill -9 -U {{bamboo_user}}"
     ignore_errors: yes
-
-  - name: create user to run bamboo
-    user: name={{bamboo_user}}
 
   - name: Add EPEL repository
     yum:
@@ -20,7 +20,7 @@
 
   - name: install useful packages
     yum:
-      name: wget,elinks,telnet,htop,mlocate,python-pip,vim,nano,jq,java-1.8.0-openjdk-devel,unzip,maven,libunwind,libicu
+      name: wget,elinks,telnet,htop,mlocate,python-pip,vim,nano,jq,java-1.8.0-openjdk-devel,unzip,maven,libunwind,libicu,git
 
   - name: download .NET Core
     get_url:
@@ -72,29 +72,23 @@
   - name: Set JAVA_HOME
     lineinfile: dest=/etc/environment state=present regexp='^JAVA_HOME' line='JAVA_HOME=/usr/lib/jvm/jre-1.8.0'
 
-  - name: download bamboo
-    get_url:
-        url: "{{bamboo_download}}"
-        dest: /tmp/bamboo.tar.gz
-        mode: 0440
-
-  - name: download bamboo
+  - name: download bamboo cli
     get_url:
         url: "{{bamboo_cli_download}}"
         dest: /tmp/atlassian-cli.zip
         mode: 0440
-
-  - name: extract bamboo
-    unarchive:
-        src: /tmp/bamboo.tar.gz
-        dest: /opt
-        copy: no
 
   - name: download octopus cli
     get_url:
         url: "{{octopus_cli_download}}"
         dest: /tmp/octopus-tools.tar.gz
         mode: 0440
+
+  - name: extract bamboo cli
+    unarchive:
+        src: /tmp/atlassian-cli.zip
+        dest: /opt
+        copy: no
 
   - name: create octopus cli directory
     file:
@@ -106,51 +100,3 @@
         src: /tmp/octopus-tools.tar.gz
         dest: /opt/octocli
         copy: no
-
-  - name: create plugins directory
-    file:
-        path: /opt/atlassian-bamboo-6.0.0/plugins
-        state: directory
-
-  - name: extract bamboo
-    unarchive:
-        src: /tmp/atlassian-cli.zip
-        dest: /opt
-        copy: no
-
-  - name: set bamboo permissions
-    file:
-      state: directory
-      path: /opt/atlassian-bamboo-6.0.0
-      owner: "{{bamboo_user}}"
-      group: "{{bamboo_user}}"
-      recurse: true
-
-  - name: Fix up bamboo home
-    lineinfile:
-      dest: /opt/atlassian-bamboo-6.0.0/atlassian-bamboo/WEB-INF/classes/bamboo-init.properties
-      state: present
-      regexp: '^bamboo.home'
-      line: 'bamboo.home=/opt/atlassian-bamboo-6.0.0'
-
-  - name: install bamboo service
-    template:
-      src: bamboo
-      dest: /etc/init.d/bamboo
-      owner: root
-      group: root
-      mode: 0755
-
-  - name: copy plugin
-    copy:
-        src: "/mnt/c/Users/matth/Octopus/OctopusBamboo/target/OctopusBamboo-1.0.0-SNAPSHOT.jar"
-        dest: "/opt/atlassian-bamboo-6.0.0/plugins/OctopusBamboo-1.0.0-SNAPSHOT.jar"
-        owner: "{{bamboo_user}}"
-        group: "{{bamboo_user}}"
-        mode: 0644
-
-  - name: start bamboo service
-    service:
-      name: bamboo
-      enabled: yes
-      state: restarted
