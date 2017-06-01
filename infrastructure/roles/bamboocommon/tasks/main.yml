@@ -100,3 +100,15 @@
         src: /tmp/octopus-tools.tar.gz
         dest: /opt/octocli
         copy: no
+
+  - name: download maven
+    get_url:
+       url: "{{maven_download}}"
+       dest: /tmp/maven.tar.gz
+       mode: 0440
+
+  - name: extract maven cli
+    unarchive:
+        src: /tmp/maven.tar.gz
+        dest: /opt
+        copy: no

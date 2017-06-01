@@ -1,0 +1,28 @@
+---
+  - name: create agent home dir
+    file:
+        path: /root/bamboo-agent-home
+        state: directory
+
+  - name: create agent home dir
+    file:
+        path: /root/bamboo-agent-home/bin
+        state: directory
+
+  - name: set agent capabilities
+    template:
+      src: bamboo-capabilities.properties
+      dest: /root/bamboo-agent-home/bin/bamboo-capabilities.properties
+      mode: 0644
+
+  - name: add launching script
+    template:
+      src: runagent.sh
+      dest: /opt/runagent.sh
+      mode: 0755
+
+  - name: get bamboo agent JAR
+    get_url:
+        url: https://s3.amazonaws.com/bamboo-support/atlassian-bamboo-agent-installer-5.15.7.jar
+        dest: /opt/atlassian-bamboo-agent-installer-5.15.7.jar
+        mode: 0440

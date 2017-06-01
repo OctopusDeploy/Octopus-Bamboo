@@ -41,29 +41,13 @@ import static com.google.common.base.Preconditions.checkState;
 @Named("pushTask")
 public class PushTask extends AbstractTaskConfigurator implements CommonTaskType {
     private static final Logger LOGGER = LoggerFactory.getLogger(PushTask.class);
+    private final CommonTaskService commonTaskService;
+    private final FileService fileService;
+    private final LogMutator logMutator;
     @ComponentImport
     private ProcessService processService;
     @ComponentImport
     private CapabilityContext capabilityContext;
-    private final CommonTaskService commonTaskService;
-    private final FileService fileService;
-    private final LogMutator logMutator;
-
-    public ProcessService getProcessService() {
-        return processService;
-    }
-
-    public void setProcessService(final ProcessService processService) {
-        this.processService = processService;
-    }
-
-    public CapabilityContext getCapabilityContext() {
-        return capabilityContext;
-    }
-
-    public void setCapabilityContext(final CapabilityContext capabilityContext) {
-        this.capabilityContext = capabilityContext;
-    }
 
     /**
      * Constructor. Params are injected by Spring under normal usage.
@@ -90,6 +74,22 @@ public class PushTask extends AbstractTaskConfigurator implements CommonTaskType
         this.commonTaskService = commonTaskService;
         this.fileService = fileService;
         this.logMutator = logMutator;
+    }
+
+    public ProcessService getProcessService() {
+        return processService;
+    }
+
+    public void setProcessService(final ProcessService processService) {
+        this.processService = processService;
+    }
+
+    public CapabilityContext getCapabilityContext() {
+        return capabilityContext;
+    }
+
+    public void setCapabilityContext(final CapabilityContext capabilityContext) {
+        this.capabilityContext = capabilityContext;
     }
 
     @NotNull
@@ -149,7 +149,7 @@ public class PushTask extends AbstractTaskConfigurator implements CommonTaskType
         if (files.isEmpty()) {
             commonTaskService.logError(taskContext, "OCTOPUS-BAMBOO-INPUT-ERROR-0001: The pattern \n"
                     + patterns
-                    + "\nfailed to match any files");
+                    + "\n failed to match any files");
             return commonTaskService.buildResult(taskContext, false);
         }
 

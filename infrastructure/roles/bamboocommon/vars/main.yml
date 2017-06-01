@@ -3,3 +3,4 @@ bamboo_user: bamboo
 bamboo_cli_download: https://bobswift.atlassian.net/wiki/download/attachments/16285777/atlassian-cli-6.5.0-distribution.zip
 octopus_cli_download: https://download.octopusdeploy.com/octopus-tools/4.15.3/OctopusTools.4.15.3.rhel.7-x64.tar.gz
 dot_net_download: https://go.microsoft.com/fwlink/?linkid=848821
+maven_download: http://apache.mirror.serversaustralia.com.au/maven/maven-3/3.5.0/binaries/apache-maven-3.5.0-bin.tar.gz

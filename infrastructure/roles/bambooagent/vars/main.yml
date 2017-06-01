@@ -1,5 +1,0 @@
----
-bamboo_server: http://54.82.98.60:8085/agentServer/
-octopus_cli_download: https://download.octopusdeploy.com/octopus-tools/4.15.3/OctopusTools.4.15.3.rhel.7-x64.tar.gz
-dot_net_download: https://go.microsoft.com/fwlink/?linkid=848821
-maven_download: http://apache.mirror.serversaustralia.com.au/maven/maven-3/3.5.0/binaries/apache-maven-3.5.0-bin.tar.gz
