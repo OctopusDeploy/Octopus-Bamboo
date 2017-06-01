@@ -1,17 +1,17 @@
 package com.octopus.bamboo.plugins.task.createrelease;
 
 import com.atlassian.bamboo.collections.ActionParametersMap;
-import com.atlassian.bamboo.task.AbstractTaskConfigurator;
 import com.atlassian.bamboo.task.TaskDefinition;
 import com.atlassian.bamboo.utils.error.ErrorCollection;
-import com.atlassian.bamboo.ww2.actions.build.admin.create.UIConfigSupport;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.struts.TextProvider;
 import com.octopus.constants.OctoConstants;
+import com.octopus.services.impl.BaseConfigurator;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -27,21 +27,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Component
 @ExportAsService({com.atlassian.bamboo.task.TaskConfigurator.class})
 @Named("createReleaseTaskConfigurator")
-public class CreateReleaseTaskConfigurator extends AbstractTaskConfigurator {
+public class CreateReleaseTaskConfigurator extends BaseConfigurator {
 
     @ComponentImport
     private final TextProvider textProvider;
-    @ComponentImport
-    private final UIConfigSupport uiConfigSupport;
 
     @Inject
     public CreateReleaseTaskConfigurator(@NotNull final TextProvider textProvider,
-                                         @NotNull final UIConfigSupport uiConfigSupport) {
-        checkNotNull(uiConfigSupport, "uiConfigSupport cannot be null");
-        checkNotNull(textProvider, "textProvider cannot be null");
-
-        this.textProvider = textProvider;
-        this.uiConfigSupport = uiConfigSupport;
+                                         @NotNull final ApplicationContext applicationContext) {
+        super(applicationContext);
+        this.textProvider = checkNotNull(textProvider, "textProvider cannot be null");
     }
 
     @Override
@@ -68,7 +63,7 @@ public class CreateReleaseTaskConfigurator extends AbstractTaskConfigurator {
 
     @Override
     public void populateContextForCreate(@NotNull final Map<String, Object> context) {
-        context.put(OctoConstants.UI_CONFIG_BEAN, this.uiConfigSupport);
+        context.put(OctoConstants.UI_CONFIG_BEAN, this.getUIConfigSupport());
     }
 
     @Override
@@ -92,7 +87,7 @@ public class CreateReleaseTaskConfigurator extends AbstractTaskConfigurator {
         context.put(OctoConstants.TENANTS_NAME, taskDefinition.getConfiguration().get(OctoConstants.TENANTS_NAME));
         context.put(OctoConstants.TENANT_TAGS_NAME, taskDefinition.getConfiguration().get(OctoConstants.TENANT_TAGS_NAME));
         context.put(OctoConstants.OCTOPUS_CLI, taskDefinition.getConfiguration().get(OctoConstants.OCTOPUS_CLI));
-        context.put(OctoConstants.UI_CONFIG_BEAN, this.uiConfigSupport);
+        context.put(OctoConstants.UI_CONFIG_BEAN, this.getUIConfigSupport());
     }
 
     @Override
