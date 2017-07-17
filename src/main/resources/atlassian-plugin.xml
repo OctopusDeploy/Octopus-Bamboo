@@ -45,7 +45,7 @@
 
     <taskType key="task.deployrelease" name="Octopus Deploy: Deploy Release"
               class="com.octopus.bamboo.plugins.task.deployrelease.DeployReleaseTask">
-        <description>Create a release within an Octopus Deploy project</description>
+        <description>Deploy a release to a Octopus Deploy project</description>
         <category name="deployment"/>
         <configuration class="com.octopus.bamboo.plugins.task.deployrelease.DeployReleaseTaskConfigurator"/>
         <resource type="freemarker" name="edit" location="freemarker/deployrelease.ftl"/>
@@ -67,7 +67,7 @@
 
     <taskType key="task.pack" name="Octopus Deploy: Pack Package"
               class="com.octopus.bamboo.plugins.task.pack.PackTask">
-        <description>Promote a release within an Octopus Deploy project</description>
+        <description>Create a package that can be pushed to Octopus Deploy</description>
         <category name="deployment"/>
         <configuration class="com.octopus.bamboo.plugins.task.pack.PackTaskConfigurator"/>
         <resource type="freemarker" name="edit" location="freemarker/pack.ftl"/>
