@@ -9,7 +9,7 @@ list=uiConfigBean.getExecutableLabels('octopuscli') extraUtility=addExecutableLi
 [@ww.textfield labelKey="octopus.projectName.key" name="projectName" required='true'/]
 <div class="description">[@s.text name='octopus.projectName.help' /]</div>
 [@ww.textfield labelKey="octopus.environmentName.key" name="environmentName" required='true'/]
-<div class="description">[@s.text name='octopus.environmentName.help' /]</div>
+<div class="description">[@s.text name='octopus.environmentNameMandatory.help' /]</div>
 [@ww.textfield labelKey="octopus.releaseVersion.key" name="releaseVersion" required='true'/]
 <div class="description">[@s.text name='octopus.deployReleaseVersion.help' /]</div>
 [@ww.textfield labelKey="octopus.tenants.key" name="tenants" required='false'/]
