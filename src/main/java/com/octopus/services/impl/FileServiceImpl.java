@@ -28,6 +28,13 @@ public class FileServiceImpl implements FileService {
         checkNotNull(workingDir);
         checkArgument(StringUtils.isNotBlank(pattern));
 
+        final File absoluteFile = new File(pattern);
+        if (absoluteFile.exists()) {
+            return new ArrayList<File>() {{
+                add(absoluteFile);
+            }};
+        }
+
         try {
             final List<File> retValue = new ArrayList<File>();
 

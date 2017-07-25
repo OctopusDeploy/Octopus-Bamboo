@@ -19,4 +19,13 @@ public class FileServiceImplTest {
                 FILE_SERVICE.getMatchingFile(new File("."), "**/FileServiceImplTest.java");
         Assert.assertFalse(files.isEmpty());
     }
+
+    @Test
+    public void testAbsolutePathMatching() {
+        final String path = new File(this.getClass().getResource("/first-bamboo-int.0.0.1.zip")
+                .getFile()).getAbsolutePath();
+        final List<File> files =
+                FILE_SERVICE.getMatchingFile(new File("."), path);
+        Assert.assertFalse(files.isEmpty());
+    }
 }
