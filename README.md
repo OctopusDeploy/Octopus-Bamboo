@@ -18,6 +18,9 @@ Run the command `atlas-run` to start an instance of Bamboo with the plugin deplo
 
 The credentials are admin/admin.
 
+## Building the Plugin
+Run the command `atlas-package` to build the plugin. The compiled plugin will be placed into the `target` directory.
+
 ## Updating the Atlassian Marketplace
 
 Keep in mind that the Bamboo plugin does not ship with the Octopus CLI tool. Updates to the CLI tool don't
