@@ -15,6 +15,7 @@ import com.atlassian.bamboo.v2.build.CommonContext;
 import com.atlassian.bamboo.v2.build.CurrentResult;
 import com.atlassian.bamboo.v2.build.trigger.TriggerReason;
 import com.atlassian.bamboo.variable.VariableContext;
+import com.atlassian.bamboo.vcs.configuration.PlanRepositoryDefinition;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -31,6 +32,11 @@ public class StubCommonContext implements CommonContext {
 
     public long getEntityId() {
         return 0;
+    }
+
+    @Override
+    public Long getEntityGroupId() {
+        return null;
     }
 
     public Key getEntityKey() {
@@ -107,6 +113,18 @@ public class StubCommonContext implements CommonContext {
 
     @NotNull
     public List<RepositoryDefinition> getRepositoryDefinitions() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public Map<Long, PlanRepositoryDefinition> getVcsRepositoryMap() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public List<PlanRepositoryDefinition> getVcsRepositories() {
         return null;
     }
 

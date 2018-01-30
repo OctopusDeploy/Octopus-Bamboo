@@ -19,7 +19,7 @@ Run the command `atlas-run` to start an instance of Bamboo with the plugin deplo
 The credentials are admin/admin.
 
 ## Building the Plugin
-Run the command `atlas-package` to build the plugin. The compiled plugin will be placed into the `target` directory.
+Run the command `atlas-package` to build the plugin. The compiled plugin will be saved as `target\bamboo.jar`.
 
 ## Updating the Atlassian Marketplace
 
