@@ -7,6 +7,12 @@ https://octopus.com/docs/api-and-integration/bamboo/bamboo-plugin
 This plugin used the Atlassian SDK. You can find more information about how to install and run the SDK from
 https://developer.atlassian.com/display/DOCS/Introduction+to+the+Atlassian+Plugin+SDK
 
+## Updating Bamboo Dependencies
+Edit the `pom.xml` file and set `<bamboo.version>6.2.1</bamboo.version>` to the latest Bamboo version. This in
+turn will mean `atlas-run` will load the specified Bamboo version.
+
+You can find the versions that are available at https://maven.atlassian.com/maven-external/com/atlassian/bamboo/atlassian-bamboo-web/.
+
 ## Running Bamboo
 Run the command `atlas-run` to start an instance of Bamboo with the plugin deployed.
 
