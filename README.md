@@ -8,8 +8,8 @@ This plugin used the Atlassian SDK. You can find more information about how to i
 https://developer.atlassian.com/display/DOCS/Introduction+to+the+Atlassian+Plugin+SDK
 
 ## Updating Bamboo Dependencies
-Edit the `pom.xml` file and set `<bamboo.version>6.2.1</bamboo.version>` to the latest Bamboo version. This in
-turn will mean `atlas-run` will load the specified Bamboo version.
+Edit the `pom.xml` file and set `<bamboo.version>6.2.1</bamboo.version>` and `<bamboo.data.version>6.2.1</bamboo.data.version>`
+to the latest Bamboo version. This in turn will mean `atlas-run` will load the specified Bamboo version.
 
 You can find the versions that are available at https://maven.atlassian.com/maven-external/com/atlassian/bamboo/atlassian-bamboo-web/.
 
