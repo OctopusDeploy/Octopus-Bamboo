@@ -6,7 +6,6 @@ import com.atlassian.bamboo.chains.ChainStorageTag;
 import com.atlassian.bamboo.credentials.CredentialsData;
 import com.atlassian.bamboo.plan.PlanKey;
 import com.atlassian.bamboo.repository.RepositoryDefinition;
-import com.atlassian.bamboo.task.RuntimeTaskContext;
 import com.atlassian.bamboo.task.TaskDefinition;
 import com.atlassian.bamboo.task.runtime.RuntimeTaskDefinition;
 import com.atlassian.bamboo.utils.error.ErrorCollection;
@@ -88,11 +87,6 @@ public class StubCommonContext implements CommonContext {
 
     @NotNull
     public List<RuntimeTaskDefinition> getRuntimeTaskDefinitions() {
-        return null;
-    }
-
-    @NotNull
-    public RuntimeTaskContext getRuntimeTaskContext() {
         return null;
     }
 
