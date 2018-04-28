@@ -46,9 +46,9 @@
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
-        <bamboo.version>6.3.1</bamboo.version>
-        <bamboo.data.version>6.3.1</bamboo.data.version>
-        <amps.version>6.3.3</amps.version>
+        <bamboo.version>6.5.0</bamboo.version>
+        <bamboo.data.version>6.5.0</bamboo.data.version>
+        <amps.version>6.3.7</amps.version>
         <!--
             The default version has a bug that prevents integration tests from working
             https://ecosystem.atlassian.net/browse/AMPS-1358

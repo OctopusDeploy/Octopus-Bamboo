@@ -2,11 +2,11 @@ package com.octopus.services.impl;
 
 import com.atlassian.bamboo.Key;
 import com.atlassian.bamboo.ResultKey;
+import com.atlassian.bamboo.build.docker.DockerPipelineConfiguration;
 import com.atlassian.bamboo.chains.ChainStorageTag;
 import com.atlassian.bamboo.credentials.CredentialsData;
 import com.atlassian.bamboo.plan.PlanKey;
 import com.atlassian.bamboo.repository.RepositoryDefinition;
-import com.atlassian.bamboo.task.RuntimeTaskContext;
 import com.atlassian.bamboo.task.TaskDefinition;
 import com.atlassian.bamboo.task.runtime.RuntimeTaskDefinition;
 import com.atlassian.bamboo.utils.error.ErrorCollection;
@@ -65,6 +65,11 @@ public class StubCommonContext implements CommonContext {
             public int getResultNumber() {
                 return 0;
             }
+
+            @Override
+            public long getResultNumberLong() {
+                return 0;
+            }
         };
     }
 
@@ -88,11 +93,6 @@ public class StubCommonContext implements CommonContext {
 
     @NotNull
     public List<RuntimeTaskDefinition> getRuntimeTaskDefinitions() {
-        return null;
-    }
-
-    @NotNull
-    public RuntimeTaskContext getRuntimeTaskContext() {
         return null;
     }
 
@@ -135,6 +135,12 @@ public class StubCommonContext implements CommonContext {
 
     @NotNull
     public Map<PlanKey, ChainStorageTag> getChainStorageTags() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public DockerPipelineConfiguration getDockerPipelineConfiguration() {
         return null;
     }
 }
