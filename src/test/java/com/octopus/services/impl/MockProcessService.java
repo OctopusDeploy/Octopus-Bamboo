@@ -2,6 +2,7 @@ package com.octopus.services.impl;
 
 import com.atlassian.bamboo.process.BackgroundTaskProcesses;
 import com.atlassian.bamboo.process.ExternalProcessBuilder;
+import com.atlassian.bamboo.process.ProcessContext;
 import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.CommonTaskContext;
 import com.atlassian.bamboo.task.TaskContext;
@@ -21,6 +22,12 @@ import java.util.List;
  */
 public class MockProcessService implements ProcessService {
     private List<String> commands;
+
+    @NotNull
+    @Override
+    public ExternalProcess createExternalProcess(@NotNull ProcessContext processContext, @NotNull ExternalProcessBuilder externalProcessBuilder) {
+        return null;
+    }
 
     @NotNull
     @Override
@@ -168,15 +175,7 @@ public class MockProcessService implements ProcessService {
 
     @NotNull
     @Override
-    public ExternalProcess createProcess(@NotNull final TaskContext taskContext,
-                                         @NotNull final ExternalProcessBuilder externalProcessBuilder) {
-        return null;
-    }
-
-    @NotNull
-    @Override
-    public ExternalProcess executeProcess(@NotNull final TaskContext taskContext,
-                                          @NotNull final ExternalProcessBuilder externalProcessBuilder) {
+    public ExternalProcess executeExternalProcess(@NotNull ProcessContext processContext, @NotNull ExternalProcessBuilder externalProcessBuilder) {
         return null;
     }
 
