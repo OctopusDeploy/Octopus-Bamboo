@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.octopus</groupId>
     <artifactId>bamboo</artifactId>
@@ -46,9 +45,9 @@
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
-        <bamboo.version>6.6.0</bamboo.version>
-        <bamboo.data.version>6.6.0</bamboo.data.version>
-        <amps.version>6.3.3</amps.version>
+        <bamboo.version>6.7.1</bamboo.version>
+        <bamboo.data.version>6.7.1</bamboo.data.version>
+        <amps.version>6.3.14</amps.version>
         <!--
             The default version has a bug that prevents integration tests from working
             https://ecosystem.atlassian.net/browse/AMPS-1358
@@ -138,9 +137,7 @@
                         <id>validate</id>
                         <phase>validate</phase>
                         <configuration>
-                            <configLocation>
-                                https://raw.githubusercontent.com/OctopusDeploy/JavaCodingStandards/master/checkstyle.xml
-                            </configLocation>
+                            <configLocation>https://raw.githubusercontent.com/OctopusDeploy/JavaCodingStandards/master/checkstyle.xml</configLocation>
                             <encoding>UTF-8</encoding>
                             <consoleOutput>true</consoleOutput>
                             <failsOnError>true</failsOnError>
@@ -166,22 +163,12 @@
                     <instructions>
                         <Atlassian-Plugin-Key>${atlassian.plugin.key}</Atlassian-Plugin-Key>
                         <!-- Add package to export here -->
-                        <Export-Package>com.octopus.bamboo.plugins.task.push, com.octopus.bamboo.plugins.task.pack,
-                            com.octopus.bamboo.plugins.task.deployrelease,
-                            com.octopus.bamboo.plugins.task.createrelease,
-                            com.octopus.bamboo.plugins.task.promoterelease
-                        </Export-Package>
+                        <Export-Package>com.octopus.bamboo.plugins.task.push, com.octopus.bamboo.plugins.task.pack, com.octopus.bamboo.plugins.task.deployrelease, com.octopus.bamboo.plugins.task.createrelease, com.octopus.bamboo.plugins.task.promoterelease</Export-Package>
                         <!--
                             We list out all the packages that can't be loaded
                             and were never needed for our plugin here.
                          -->
-                        <Import-Package>org.eclipse.gemini.blueprint.*;resolution:="optional",
-                            org.springframework.osgi.*;resolution:="optional", !com.sun.jdmk.comm, !com.ibm.uvm.tools,
-                            !org.apache.hadoop.io.compress, !com.sun.jndi.ldap, !sun.misc, !android.util,
-                            !org.eclipse.core.runtime, !org.eclipse.jdt.core.dom, !org.eclipse.jdt.core.dom.rewrite,
-                            !org.eclipse.jdt.internal.core.dom.rewrite,
-                            !org.eclipse.jdt.internal.corext.refactoring.structure *
-                        </Import-Package>
+                        <Import-Package>org.eclipse.gemini.blueprint.*;resolution:="optional", org.springframework.osgi.*;resolution:="optional", !com.sun.jdmk.comm, !com.ibm.uvm.tools, !org.apache.hadoop.io.compress, !com.sun.jndi.ldap, !sun.misc, !android.util, !org.eclipse.core.runtime, !org.eclipse.jdt.core.dom, !org.eclipse.jdt.core.dom.rewrite, !org.eclipse.jdt.internal.core.dom.rewrite, !org.eclipse.jdt.internal.corext.refactoring.structure *</Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <!-- Ensure plugin is spring powered -->
                         <Spring-Context>*</Spring-Context>

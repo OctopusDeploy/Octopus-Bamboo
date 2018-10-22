@@ -18,6 +18,8 @@ Run the command `atlas-run` to start an instance of Bamboo with the plugin deplo
 
 The credentials are admin/admin.
 
+If Bamboo fails to start running `atlas-clean` may resolve the issue.
+
 ## Building the Plugin
 Run the command `atlas-package` to build the plugin. The compiled plugin will be saved as `target\bamboo.jar`.
 
