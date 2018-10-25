@@ -99,6 +99,7 @@ public class PushTask extends AbstractTaskConfigurator implements CommonTaskType
         final String octopusCli = taskContext.getConfigurationMap().get(OctoConstants.OCTOPUS_CLI);
         final String serverUrl = taskContext.getConfigurationMap().get(OctoConstants.SERVER_URL);
         final String apiKey = taskContext.getConfigurationMap().get(OctoConstants.API_KEY);
+        final String spaceName = taskContext.getConfigurationMap().get(OctoConstants.SPACE_NAME);
         final String patterns = taskContext.getConfigurationMap().get(OctoConstants.PUSH_PATTERN);
         final String forceUpload = taskContext.getConfigurationMap().get(OctoConstants.FORCE);
         final Boolean forceUploadBoolean = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(forceUpload));
@@ -165,6 +166,11 @@ public class PushTask extends AbstractTaskConfigurator implements CommonTaskType
 
         commands.add("--apiKey");
         commands.add(apiKey);
+
+        if (StringUtils.isNotBlank(spaceName)) {
+            commands.add("--space");
+            commands.add(spaceName);
+        }
 
         if (forceUploadBoolean) {
             commands.add("--replace-existing");

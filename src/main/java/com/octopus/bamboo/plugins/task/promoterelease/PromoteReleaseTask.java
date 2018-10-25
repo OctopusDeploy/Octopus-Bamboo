@@ -91,6 +91,7 @@ public class PromoteReleaseTask implements CommonTaskType {
         final String octopusCli = taskContext.getConfigurationMap().get(OctoConstants.OCTOPUS_CLI);
         final String serverUrl = taskContext.getConfigurationMap().get(OctoConstants.SERVER_URL);
         final String apiKey = taskContext.getConfigurationMap().get(OctoConstants.API_KEY);
+        final String spaceName = taskContext.getConfigurationMap().get(OctoConstants.SPACE_NAME);
         final String projectName = taskContext.getConfigurationMap().get(OctoConstants.PROJECT_NAME);
         final String promoteFrom = taskContext.getConfigurationMap().get(OctoConstants.PROMOTE_FROM_NAME);
         final String promoteTo = taskContext.getConfigurationMap().get(OctoConstants.PROMOTE_TO_NAME);
@@ -123,6 +124,11 @@ public class PromoteReleaseTask implements CommonTaskType {
 
         commands.add("--apiKey");
         commands.add(apiKey);
+
+        if (StringUtils.isNotBlank(spaceName)) {
+            commands.add("--space");
+            commands.add(spaceName);
+        }
 
         commands.add("--project");
         commands.add(projectName);

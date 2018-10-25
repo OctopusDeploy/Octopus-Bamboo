@@ -47,6 +47,7 @@ public class PromoteReleaseTaskConfigurator extends BaseConfigurator {
         final Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
         config.put(OctoConstants.SERVER_URL, params.getString(OctoConstants.SERVER_URL));
         config.put(OctoConstants.API_KEY, params.getString(OctoConstants.API_KEY));
+        config.put(OctoConstants.SPACE_NAME, params.getString(OctoConstants.SPACE_NAME));
         config.put(OctoConstants.PROJECT_NAME, params.getString(OctoConstants.PROJECT_NAME));
         config.put(OctoConstants.PROMOTE_FROM_NAME, params.getString(OctoConstants.PROMOTE_FROM_NAME));
         config.put(OctoConstants.PROMOTE_TO_NAME, params.getString(OctoConstants.PROMOTE_TO_NAME));
@@ -74,6 +75,7 @@ public class PromoteReleaseTaskConfigurator extends BaseConfigurator {
 
         context.put(OctoConstants.SERVER_URL, taskDefinition.getConfiguration().get(OctoConstants.SERVER_URL));
         context.put(OctoConstants.API_KEY, taskDefinition.getConfiguration().get(OctoConstants.API_KEY));
+        context.put(OctoConstants.SPACE_NAME, taskDefinition.getConfiguration().get(OctoConstants.SPACE_NAME));
         context.put(OctoConstants.PROJECT_NAME, taskDefinition.getConfiguration().get(OctoConstants.PROJECT_NAME));
         context.put(OctoConstants.PROMOTE_FROM_NAME, taskDefinition.getConfiguration().get(OctoConstants.PROMOTE_FROM_NAME));
         context.put(OctoConstants.PROMOTE_TO_NAME, taskDefinition.getConfiguration().get(OctoConstants.PROMOTE_TO_NAME));

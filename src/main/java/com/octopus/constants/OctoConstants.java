@@ -47,6 +47,10 @@ public class OctoConstants {
      */
     public static final String API_KEY = "apiKey";
     /**
+     * The configuration key for the Octopus space name
+     */
+    public static final String SPACE_NAME = "spaceName";
+    /**
      * The configuration key for the Feign logging level
      */
     public static final String VERBOSE_LOGGING = "verboseLogging";
