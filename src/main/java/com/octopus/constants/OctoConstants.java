@@ -131,6 +131,14 @@ public class OctoConstants {
      */
     public static final String PACK_OVERWRITE_NAME = "packOverwrite";
     /**
+     * Collection of comment parsers
+     */
+    public static final String PACK_COMMENT_PARSERS_LIST = "packCommentParsers";
+    /**
+     * Selected comment parser
+     */
+    public static final String PACK_COMMENT_PARSER_NAME = "packCommentParser";
+    /**
      * The name of the capability that links to the octopus cli
      */
     public static final String OCTOPUS_CLI_CAPABILITY = "system.builder.octopuscli";

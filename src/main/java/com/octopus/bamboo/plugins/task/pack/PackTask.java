@@ -4,6 +4,7 @@ import com.atlassian.bamboo.build.logger.LogMutator;
 import com.atlassian.bamboo.process.ExternalProcessBuilder;
 import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.*;
+import com.atlassian.bamboo.v2.build.*;
 import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -100,6 +102,8 @@ public class PackTask extends AbstractTaskConfigurator implements CommonTaskType
         final String loggingLevel = taskContext.getConfigurationMap().get(OctoConstants.VERBOSE_LOGGING);
         final Boolean verboseLogging = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(loggingLevel));
 
+        final String commentParser = taskContext.getConfigurationMap().get(OctoConstants.PACK_COMMENT_PARSER_NAME);
+
         final String additionalArgs = taskContext.getConfigurationMap().get(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME);
 
         checkState(StringUtils.isNotBlank(octopusCli), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus CLI can not be blank");
@@ -159,6 +163,15 @@ public class PackTask extends AbstractTaskConfigurator implements CommonTaskType
         if (StringUtils.isNotBlank(additionalArgs)) {
             final String[] myArgs = Commandline.translateCommandline(additionalArgs);
             commands.addAll(Arrays.asList(myArgs));
+        }
+
+        if (!StringUtils.isEmpty(commentParser)) {
+            try {
+                final CommentWorkItemHandler commentHandler = new CommentWorkItemHandler();
+                commentHandler.processComments((TaskContext) taskContext, commentParser, basePath);
+            } catch (Exception ex) {
+                return TaskResultBuilder.createFailedWithErrorResult(taskContext);
+            }
         }
 
         final String cliPath = capabilityContext.getCapabilityValue(

@@ -16,6 +16,9 @@ list=uiConfigBean.getExecutableLabels('octopuscli') extraUtility=addExecutableLi
 <div class="description">[@s.text name='octopus.packOutFolder.help' /]</div>
 [@ww.checkbox labelKey="octopus.packOverwrite.key" name="packOverwrite" required='false'/]
 <div class="description">[@s.text name='octopus.packOverwrite.help' /]</div>
+[@ww.select cssClass="builderSelectWidget" labelKey='octopus.packCommentParser.key' name='packCommentParser'
+list="packCommentParsers" required='false' /]
+<div class="description">[@s.text name='octopus.packCommentParser.help' /]</div>
 [@ww.checkbox labelKey="octopus.verboseLogging.key" name="verboseLogging" required='false'/]
 [@ww.textfield labelKey="octopus.additionalArgs.key" name="additionalArgs" required='false'/]
 <div class="description">[@s.text name='octopus.additionalArgs.help' /]</div>
