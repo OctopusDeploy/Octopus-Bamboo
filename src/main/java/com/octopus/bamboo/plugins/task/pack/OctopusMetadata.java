@@ -3,10 +3,10 @@ package com.octopus.bamboo.plugins.task.pack;
 import java.util.List;
 
 public class OctopusMetadata {
-    public String BuildServerType;
+    public String BuildEnvironment;
     public List<WorkItem> WorkItems;
 
     public OctopusMetadata() {
-        BuildServerType = "Bamboo";
+        BuildEnvironment = "Bamboo";
     }
 }
