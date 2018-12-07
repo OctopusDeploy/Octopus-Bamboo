@@ -9,6 +9,7 @@ import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.utils.process.ExternalProcess;
 import com.google.common.base.Splitter;
+import com.octopus.bamboo.plugins.task.OctoTask;
 import com.octopus.constants.OctoConstants;
 import com.octopus.services.CommonTaskService;
 import com.octopus.services.FileService;
@@ -39,15 +40,9 @@ import static com.google.common.base.Preconditions.checkState;
 @Component
 @ExportAsService({PushTask.class})
 @Named("pushTask")
-public class PushTask extends AbstractTaskConfigurator implements CommonTaskType {
+public class PushTask extends OctoTask implements CommonTaskType {
     private static final Logger LOGGER = LoggerFactory.getLogger(PushTask.class);
-    private final CommonTaskService commonTaskService;
     private final FileService fileService;
-    private final LogMutator logMutator;
-    @ComponentImport
-    private ProcessService processService;
-    @ComponentImport
-    private CapabilityContext capabilityContext;
 
     /**
      * Constructor. Params are injected by Spring under normal usage.
@@ -63,17 +58,10 @@ public class PushTask extends AbstractTaskConfigurator implements CommonTaskType
                     @NotNull final CommonTaskService commonTaskService,
                     @NotNull final FileService fileService,
                     @NotNull final LogMutator logMutator) {
-        checkNotNull(processService, "processService cannot be null");
-        checkNotNull(capabilityContext, "capabilityContext cannot be null");
-        checkNotNull(commonTaskService, "commonTaskService cannot be null");
+        super(processService, capabilityContext, commonTaskService, logMutator);
         checkNotNull(fileService, "fileService cannot be null");
-        checkNotNull(logMutator, "logMutator cannot be null");
 
-        this.processService = processService;
-        this.capabilityContext = capabilityContext;
-        this.commonTaskService = commonTaskService;
         this.fileService = fileService;
-        this.logMutator = logMutator;
     }
 
     public ProcessService getProcessService() {
@@ -96,7 +84,6 @@ public class PushTask extends AbstractTaskConfigurator implements CommonTaskType
     public TaskResult execute(@NotNull final CommonTaskContext taskContext) throws TaskException {
         checkNotNull(taskContext, "taskContext cannot be null");
 
-        final String octopusCli = taskContext.getConfigurationMap().get(OctoConstants.OCTOPUS_CLI);
         final String serverUrl = taskContext.getConfigurationMap().get(OctoConstants.SERVER_URL);
         final String apiKey = taskContext.getConfigurationMap().get(OctoConstants.API_KEY);
         final String patterns = taskContext.getConfigurationMap().get(OctoConstants.PUSH_PATTERN);
@@ -106,7 +93,6 @@ public class PushTask extends AbstractTaskConfigurator implements CommonTaskType
         final Boolean verboseLogging = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(loggingLevel));
         final String additionalArgs = taskContext.getConfigurationMap().get(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME);
 
-        checkState(StringUtils.isNotBlank(octopusCli), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus CLI can not be blank");
         checkState(StringUtils.isNotBlank(serverUrl), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus URL can not be blank");
         checkState(StringUtils.isNotBlank(apiKey), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: API key can not be blank");
         checkState(StringUtils.isNotBlank(patterns), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Package paths can not be blank");
@@ -191,25 +177,6 @@ public class PushTask extends AbstractTaskConfigurator implements CommonTaskType
             }
         }
 
-        final String cliPath = capabilityContext.getCapabilityValue(
-                OctoConstants.OCTOPUS_CLI_CAPABILITY + "." + octopusCli);
-
-        if (StringUtils.isNotBlank(cliPath) && new File(cliPath).exists()) {
-            commands.add(0, cliPath);
-
-            final ExternalProcess process = processService.executeExternalProcess(taskContext,
-                    new ExternalProcessBuilder()
-                            .command(commands)
-                            .workingDirectory(taskContext.getWorkingDirectory()));
-
-            return TaskResultBuilder.newBuilder(taskContext)
-                    .checkReturnCode(process, 0)
-                    .build();
-        }
-
-        commonTaskService.logError(
-                taskContext,
-                "OCTOPUS-BAMBOO-INPUT-ERROR-0003: The path of \"" + cliPath + "\" for the selected Octopus CLI does not exist.");
-        return TaskResultBuilder.newBuilder(taskContext).failed().build();
+        return LaunchOcto(taskContext, commands);
     }
 }
