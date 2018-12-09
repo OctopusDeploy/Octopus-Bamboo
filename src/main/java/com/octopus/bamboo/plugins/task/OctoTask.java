@@ -21,11 +21,11 @@ import static com.google.common.base.Preconditions.checkState;
 public abstract class OctoTask extends AbstractTaskConfigurator {
 
     @ComponentImport
-    protected ProcessService processService;
+    private ProcessService processService;
     @ComponentImport
-    protected CapabilityContext capabilityContext;
-    protected final CommonTaskService commonTaskService;
-    protected final LogMutator logMutator;
+    private CapabilityContext capabilityContext;
+    private final CommonTaskService commonTaskService;
+    private final LogMutator logMutator;
 
     public ProcessService getProcessService() {
         return processService;
@@ -41,6 +41,14 @@ public abstract class OctoTask extends AbstractTaskConfigurator {
 
     public void setCapabilityContext(final CapabilityContext capabilityContext) {
         this.capabilityContext = capabilityContext;
+    }
+
+    protected CommonTaskService getCommonTaskService() {
+        return commonTaskService;
+    }
+
+    protected LogMutator getLogMutator() {
+        return logMutator;
     }
 
     /**
@@ -66,7 +74,7 @@ public abstract class OctoTask extends AbstractTaskConfigurator {
         this.logMutator = logMutator;
     }
 
-    public TaskResult LaunchOcto(@NotNull final CommonTaskContext taskContext,
+    public TaskResult launchOcto(@NotNull final CommonTaskContext taskContext,
                                  @NotNull final List<String> commands) {
 
         final String octopusCli = taskContext.getConfigurationMap().get(OctoConstants.OCTOPUS_CLI);

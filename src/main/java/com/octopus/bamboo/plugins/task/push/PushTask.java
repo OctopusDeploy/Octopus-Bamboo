@@ -61,22 +61,6 @@ public class PushTask extends OctoTask implements CommonTaskType {
         this.fileService = fileService;
     }
 
-    public ProcessService getProcessService() {
-        return processService;
-    }
-
-    public void setProcessService(final ProcessService processService) {
-        this.processService = processService;
-    }
-
-    public CapabilityContext getCapabilityContext() {
-        return capabilityContext;
-    }
-
-    public void setCapabilityContext(final CapabilityContext capabilityContext) {
-        this.capabilityContext = capabilityContext;
-    }
-
     @NotNull
     public TaskResult execute(@NotNull final CommonTaskContext taskContext) throws TaskException {
         checkNotNull(taskContext, "taskContext cannot be null");
@@ -94,7 +78,7 @@ public class PushTask extends OctoTask implements CommonTaskType {
         checkState(StringUtils.isNotBlank(apiKey), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: API key can not be blank");
         checkState(StringUtils.isNotBlank(patterns), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Package paths can not be blank");
 
-        taskContext.getBuildLogger().getMutatorStack().add(logMutator);
+        taskContext.getBuildLogger().getMutatorStack().add(getLogMutator());
 
          /*
             Get the list of matching files that need to be uploaded
@@ -130,10 +114,10 @@ public class PushTask extends OctoTask implements CommonTaskType {
             Fail if no files were matched
          */
         if (files.isEmpty()) {
-            commonTaskService.logError(taskContext, "OCTOPUS-BAMBOO-INPUT-ERROR-0001: The pattern \n"
+            getCommonTaskService().logError(taskContext, "OCTOPUS-BAMBOO-INPUT-ERROR-0001: The pattern \n"
                     + patterns
                     + "\n failed to match any files");
-            return commonTaskService.buildResult(taskContext, false);
+            return getCommonTaskService().buildResult(taskContext, false);
         }
 
         /*
@@ -167,13 +151,13 @@ public class PushTask extends OctoTask implements CommonTaskType {
                 commands.add("--package");
                 commands.add(file.getCanonicalPath());
             } catch (final IOException ex) {
-                commonTaskService.logError(
+                getCommonTaskService().logError(
                         taskContext,
                         "An exception was thrown while processing the file " + file.getAbsolutePath());
                 return TaskResultBuilder.newBuilder(taskContext).failed().build();
             }
         }
 
-        return LaunchOcto(taskContext, commands);
+        return launchOcto(taskContext, commands);
     }
 }

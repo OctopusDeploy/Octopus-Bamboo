@@ -12,11 +12,12 @@ public class CommentParserFactory {
         return parsers;
     }
 
-    public CommentParser getParser(String parser) throws Exception {
+    public CommentParser getParser(final String parser) throws Exception {
         switch (parser) {
             case JIRA_PARSER:
                 return new JiraCommentParser();
+            default:
+                throw new Exception("Unsupported parser value " + parser);
         }
-        throw new Exception("Unsupported parser value " + parser);
     }
 }

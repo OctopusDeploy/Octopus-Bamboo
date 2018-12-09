@@ -76,7 +76,7 @@ public class DeployReleaseTask extends OctoTask implements CommonTaskType {
         checkState(StringUtils.isNotBlank(environmentName), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Environment name can not be blank");
         checkState(StringUtils.isNotBlank(releaseVersion), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Version can not be blank");
 
-        taskContext.getBuildLogger().getMutatorStack().add(logMutator);
+        taskContext.getBuildLogger().getMutatorStack().add(getLogMutator());
 
         /*
             Build up the commands to be passed to the octopus cli
@@ -141,6 +141,6 @@ public class DeployReleaseTask extends OctoTask implements CommonTaskType {
             commands.addAll(Arrays.asList(myArgs));
         }
 
-        return LaunchOcto(taskContext, commands);
+        return launchOcto(taskContext, commands);
     }
 }

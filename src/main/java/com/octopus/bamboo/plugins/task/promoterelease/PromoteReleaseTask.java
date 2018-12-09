@@ -73,7 +73,7 @@ public class PromoteReleaseTask extends OctoTask implements CommonTaskType {
         checkState(StringUtils.isNotBlank(promoteFrom), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Promote from can not be blank");
         checkState(StringUtils.isNotBlank(promoteTo), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Promote to can not be blank");
 
-        taskContext.getBuildLogger().getMutatorStack().add(logMutator);
+        taskContext.getBuildLogger().getMutatorStack().add(getLogMutator());
 
         /*
             Build up the commands to be passed to the octopus cli
@@ -138,6 +138,6 @@ public class PromoteReleaseTask extends OctoTask implements CommonTaskType {
             commands.addAll(Arrays.asList(myArgs));
         }
 
-        return LaunchOcto(taskContext, commands);
+        return launchOcto(taskContext, commands);
     }
 }
