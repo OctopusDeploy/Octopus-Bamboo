@@ -62,7 +62,7 @@ public class PackTask extends OctoTask implements CommonTaskType {
 
         checkState(StringUtils.isNotBlank(id), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Package id can not be blank");
 
-        taskContext.getBuildLogger().getMutatorStack().add(logMutator);
+        taskContext.getBuildLogger().getMutatorStack().add(getLogMutator());
 
         /*
             Build up the commands to be passed to the octopus cli
@@ -118,6 +118,6 @@ public class PackTask extends OctoTask implements CommonTaskType {
             commands.addAll(Arrays.asList(myArgs));
         }
 
-        return LaunchOcto(taskContext, commands);
+        return launchOcto(taskContext, commands);
     }
 }

@@ -79,7 +79,7 @@ public class CreateReleaseTask extends OctoTask implements CommonTaskType {
         checkState(StringUtils.isNotBlank(apiKey), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: API key can not be blank");
         checkState(StringUtils.isNotBlank(projectName), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Project name can not be blank");
 
-        taskContext.getBuildLogger().getMutatorStack().add(logMutator);
+        taskContext.getBuildLogger().getMutatorStack().add(getLogMutator());
 
         /*
             Build up the commands to be passed to the octopus cli
@@ -157,6 +157,6 @@ public class CreateReleaseTask extends OctoTask implements CommonTaskType {
             commands.addAll(Arrays.asList(myArgs));
         }
 
-        return LaunchOcto(taskContext, commands);
+        return launchOcto(taskContext, commands);
     }
 }

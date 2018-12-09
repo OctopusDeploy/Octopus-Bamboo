@@ -19,10 +19,6 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-<<<<<<< HEAD
-import java.io.File;
-=======
->>>>>>> dbd6e5d... pass the OCTOEXTENSION version via the environment variables
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,10 +36,10 @@ public class PackTask extends OctoTask implements CommonTaskType {
     private static final Logger LOGGER = LoggerFactory.getLogger(PackTask.class);
 
     @Inject
-    public PackTask(@NotNull ProcessService processService,
-                    @NotNull CapabilityContext capabilityContext,
-                    @NotNull CommonTaskService commonTaskService,
-                    @NotNull LogMutator logMutator) {
+    public PackTask(@NotNull final ProcessService processService,
+                    @NotNull final CapabilityContext capabilityContext,
+                    @NotNull final CommonTaskService commonTaskService,
+                    @NotNull final LogMutator logMutator) {
         super(processService, capabilityContext, commonTaskService, logMutator);
     }
 
@@ -66,7 +62,7 @@ public class PackTask extends OctoTask implements CommonTaskType {
 
         checkState(StringUtils.isNotBlank(id), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Package id can not be blank");
 
-        taskContext.getBuildLogger().getMutatorStack().add(logMutator);
+        taskContext.getBuildLogger().getMutatorStack().add(getLogMutator());
 
         /*
             Build up the commands to be passed to the octopus cli
@@ -123,26 +119,7 @@ public class PackTask extends OctoTask implements CommonTaskType {
         }
 
 <<<<<<< HEAD
-        final String cliPath = capabilityContext.getCapabilityValue(
-                OctoConstants.OCTOPUS_CLI_CAPABILITY + "." + octopusCli);
-
-        if (StringUtils.isNotBlank(cliPath) && new File(cliPath).exists()) {
-            commands.add(0, cliPath);
-
-            final ExternalProcess process = processService.executeExternalProcess(taskContext,
-                    new ExternalProcessBuilder()
-                            .command(commands)
-                            .workingDirectory(taskContext.getWorkingDirectory()));
-
-            return TaskResultBuilder.newBuilder(taskContext)
-                    .checkReturnCode(process, 0)
-                    .build();
-        }
-
-        commonTaskService.logError(
-                taskContext,
-                "OCTOPUS-BAMBOO-INPUT-ERROR-0003: The path of \"" + cliPath + "\" for the selected Octopus CLI does not exist.");
-        return TaskResultBuilder.newBuilder(taskContext).failed().build();
+        return LaunchOcto(taskContext, commands);
 =======
         if (!StringUtils.isEmpty(commentParser)) {
             try {
@@ -153,7 +130,7 @@ public class PackTask extends OctoTask implements CommonTaskType {
             }
         }
 
-        return LaunchOcto(taskContext, commands);
->>>>>>> dbd6e5d... pass the OCTOEXTENSION version via the environment variables
+        return launchOcto(taskContext, commands);
+>>>>>>> 5d08146... cleaned up some more warnings
     }
 }
