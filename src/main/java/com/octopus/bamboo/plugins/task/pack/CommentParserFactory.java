@@ -6,10 +6,10 @@ import java.util.List;
 public class CommentParserFactory {
     private static final String JIRA_PARSER = "Jira";
 
-    private static final List<String> parsers = Arrays.asList("", JIRA_PARSER);
+    private static final List<String> PARSERS = Arrays.asList("", JIRA_PARSER);
 
     public static List<String> getParsers() {
-        return parsers;
+        return PARSERS;
     }
 
     public CommentParser getParser(final String parser) throws Exception {
