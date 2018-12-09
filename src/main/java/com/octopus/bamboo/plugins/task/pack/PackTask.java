@@ -36,10 +36,10 @@ public class PackTask extends OctoTask implements CommonTaskType {
     private static final Logger LOGGER = LoggerFactory.getLogger(PackTask.class);
 
     @Inject
-    public PackTask(@NotNull ProcessService processService,
-                    @NotNull CapabilityContext capabilityContext,
-                    @NotNull CommonTaskService commonTaskService,
-                    @NotNull LogMutator logMutator) {
+    public PackTask(@NotNull final ProcessService processService,
+                    @NotNull final CapabilityContext capabilityContext,
+                    @NotNull final CommonTaskService commonTaskService,
+                    @NotNull final LogMutator logMutator) {
         super(processService, capabilityContext, commonTaskService, logMutator);
     }
 
