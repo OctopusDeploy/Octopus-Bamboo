@@ -1,13 +1,10 @@
 package com.octopus.bamboo.plugins.task.push;
 
 import com.atlassian.bamboo.build.logger.LogMutator;
-import com.atlassian.bamboo.process.ExternalProcessBuilder;
 import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.*;
 import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
-import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.atlassian.utils.process.ExternalProcess;
 import com.google.common.base.Splitter;
 import com.octopus.bamboo.plugins.task.OctoTask;
 import com.octopus.constants.OctoConstants;
