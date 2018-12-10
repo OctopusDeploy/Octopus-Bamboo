@@ -18,11 +18,9 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
-public abstract class OctoTask extends AbstractTaskConfigurator {
+public abstract class OctoTask extends AbstractTaskConfigurator implements CommonTaskType {
 
-    @ComponentImport
     private ProcessService processService;
-    @ComponentImport
     private CapabilityContext capabilityContext;
     private final CommonTaskService commonTaskService;
     private final LogMutator logMutator;

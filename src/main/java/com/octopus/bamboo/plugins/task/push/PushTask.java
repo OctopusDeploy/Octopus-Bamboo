@@ -5,6 +5,7 @@ import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.*;
 import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.google.common.base.Splitter;
 import com.octopus.bamboo.plugins.task.OctoTask;
 import com.octopus.constants.OctoConstants;
@@ -37,7 +38,7 @@ import static com.google.common.base.Preconditions.checkState;
 @Component
 @ExportAsService({PushTask.class})
 @Named("pushTask")
-public class PushTask extends OctoTask implements CommonTaskType {
+public class PushTask extends OctoTask {
     private static final Logger LOGGER = LoggerFactory.getLogger(PushTask.class);
     private final FileService fileService;
 
@@ -50,8 +51,8 @@ public class PushTask extends OctoTask implements CommonTaskType {
      * @param logMutator The service used to mask api keys
      */
     @Inject
-    public PushTask(@NotNull final ProcessService processService,
-                    @NotNull final CapabilityContext capabilityContext,
+    public PushTask(@NotNull @ComponentImport final ProcessService processService,
+                    @NotNull @ComponentImport final CapabilityContext capabilityContext,
                     @NotNull final CommonTaskService commonTaskService,
                     @NotNull final FileService fileService,
                     @NotNull final LogMutator logMutator) {

@@ -5,6 +5,7 @@ import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.*;
 import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
+import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.google.common.base.Splitter;
 import com.octopus.bamboo.plugins.task.OctoTask;
 import com.octopus.constants.OctoConstants;
@@ -32,12 +33,12 @@ import static com.google.common.base.Preconditions.checkState;
 @Component
 @ExportAsService({PackTask.class})
 @Named("pushTask")
-public class PackTask extends OctoTask implements CommonTaskType {
+public class PackTask extends OctoTask {
     private static final Logger LOGGER = LoggerFactory.getLogger(PackTask.class);
 
     @Inject
-    public PackTask(@NotNull final ProcessService processService,
-                    @NotNull final CapabilityContext capabilityContext,
+    public PackTask(@NotNull @ComponentImport final ProcessService processService,
+                    @NotNull @ComponentImport final CapabilityContext capabilityContext,
                     @NotNull final CommonTaskService commonTaskService,
                     @NotNull final LogMutator logMutator) {
         super(processService, capabilityContext, commonTaskService, logMutator);
