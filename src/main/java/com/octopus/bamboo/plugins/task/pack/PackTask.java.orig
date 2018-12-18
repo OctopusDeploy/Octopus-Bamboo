@@ -5,7 +5,6 @@ import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.*;
 import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
-import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.google.common.base.Splitter;
 import com.octopus.bamboo.plugins.task.OctoTask;
 import com.octopus.constants.OctoConstants;
@@ -33,12 +32,12 @@ import static com.google.common.base.Preconditions.checkState;
 @Component
 @ExportAsService({PackTask.class})
 @Named("pushTask")
-public class PackTask extends OctoTask {
+public class PackTask extends OctoTask implements CommonTaskType {
     private static final Logger LOGGER = LoggerFactory.getLogger(PackTask.class);
 
     @Inject
-    public PackTask(@NotNull @ComponentImport final ProcessService processService,
-                    @NotNull @ComponentImport final CapabilityContext capabilityContext,
+    public PackTask(@NotNull final ProcessService processService,
+                    @NotNull final CapabilityContext capabilityContext,
                     @NotNull final CommonTaskService commonTaskService,
                     @NotNull final LogMutator logMutator) {
         super(processService, capabilityContext, commonTaskService, logMutator);
@@ -119,6 +118,19 @@ public class PackTask extends OctoTask {
             commands.addAll(Arrays.asList(myArgs));
         }
 
+<<<<<<< HEAD
+        return LaunchOcto(taskContext, commands);
+=======
+        if (!StringUtils.isEmpty(commentParser)) {
+            try {
+                final CommentWorkItemHandler commentHandler = new CommentWorkItemHandler();
+                commentHandler.processComments((TaskContext) taskContext, commentParser, basePath);
+            } catch (Exception ex) {
+                return TaskResultBuilder.createFailedWithErrorResult(taskContext);
+            }
+        }
+
         return launchOcto(taskContext, commands);
+>>>>>>> 5d08146... cleaned up some more warnings
     }
 }

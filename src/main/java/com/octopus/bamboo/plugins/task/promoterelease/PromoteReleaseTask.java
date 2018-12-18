@@ -1,14 +1,13 @@
 package com.octopus.bamboo.plugins.task.promoterelease;
 
 import com.atlassian.bamboo.build.logger.LogMutator;
-import com.atlassian.bamboo.process.ExternalProcessBuilder;
 import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.*;
 import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.atlassian.utils.process.ExternalProcess;
 import com.google.common.base.Splitter;
+import com.octopus.bamboo.plugins.task.OctoTask;
 import com.octopus.constants.OctoConstants;
 import com.octopus.services.CommonTaskService;
 import org.apache.commons.lang.BooleanUtils;
@@ -21,12 +20,10 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
@@ -35,30 +32,8 @@ import static com.google.common.base.Preconditions.checkState;
 @Component
 @ExportAsService({PromoteReleaseTask.class})
 @Named("promoteReleaseTask")
-public class PromoteReleaseTask implements CommonTaskType {
+public class PromoteReleaseTask extends OctoTask {
     private static final Logger LOGGER = LoggerFactory.getLogger(PromoteReleaseTask.class);
-    @ComponentImport
-    private ProcessService processService;
-    @ComponentImport
-    private CapabilityContext capabilityContext;
-    private final CommonTaskService commonTaskService;
-    private final LogMutator logMutator;
-
-    public ProcessService getProcessService() {
-        return processService;
-    }
-
-    public void setProcessService(final ProcessService processService) {
-        this.processService = processService;
-    }
-
-    public CapabilityContext getCapabilityContext() {
-        return capabilityContext;
-    }
-
-    public void setCapabilityContext(final CapabilityContext capabilityContext) {
-        this.capabilityContext = capabilityContext;
-    }
 
     /**
      * Constructor. Params are injected by Spring under normal usage.
@@ -69,26 +44,17 @@ public class PromoteReleaseTask implements CommonTaskType {
      * @param logMutator The service used to mask api keys
      */
     @Inject
-    public PromoteReleaseTask(@NotNull final ProcessService processService,
-                              @NotNull final CapabilityContext capabilityContext,
+    public PromoteReleaseTask(@NotNull @ComponentImport final ProcessService processService,
+                              @NotNull @ComponentImport final CapabilityContext capabilityContext,
                               @NotNull final CommonTaskService commonTaskService,
                               @NotNull final LogMutator logMutator) {
-        checkNotNull(processService, "processService cannot be null");
-        checkNotNull(capabilityContext, "capabilityContext cannot be null");
-        checkNotNull(commonTaskService, "commonTaskService cannot be null");
-        checkNotNull(logMutator, "logMutator cannot be null");
-
-        this.processService = processService;
-        this.capabilityContext = capabilityContext;
-        this.commonTaskService = commonTaskService;
-        this.logMutator = logMutator;
+        super(processService, capabilityContext, commonTaskService, logMutator);
     }
 
     @NotNull
     @Override
     public TaskResult execute(@NotNull final CommonTaskContext taskContext) throws TaskException {
 
-        final String octopusCli = taskContext.getConfigurationMap().get(OctoConstants.OCTOPUS_CLI);
         final String serverUrl = taskContext.getConfigurationMap().get(OctoConstants.SERVER_URL);
         final String apiKey = taskContext.getConfigurationMap().get(OctoConstants.API_KEY);
         final String projectName = taskContext.getConfigurationMap().get(OctoConstants.PROJECT_NAME);
@@ -102,14 +68,13 @@ public class PromoteReleaseTask implements CommonTaskType {
         final String tenants = taskContext.getConfigurationMap().get(OctoConstants.TENANTS_NAME);
         final String tenantTags = taskContext.getConfigurationMap().get(OctoConstants.TENANT_TAGS_NAME);
 
-        checkState(StringUtils.isNotBlank(octopusCli), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus CLI can not be blank");
         checkState(StringUtils.isNotBlank(serverUrl), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus URL can not be blank");
         checkState(StringUtils.isNotBlank(apiKey), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: API key can not be blank");
         checkState(StringUtils.isNotBlank(projectName), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Project name can not be blank");
         checkState(StringUtils.isNotBlank(promoteFrom), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Promote from can not be blank");
         checkState(StringUtils.isNotBlank(promoteTo), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Promote to can not be blank");
 
-        taskContext.getBuildLogger().getMutatorStack().add(logMutator);
+        taskContext.getBuildLogger().getMutatorStack().add(getLogMutator());
 
         /*
             Build up the commands to be passed to the octopus cli
@@ -174,26 +139,6 @@ public class PromoteReleaseTask implements CommonTaskType {
             commands.addAll(Arrays.asList(myArgs));
         }
 
-        final String cliPath = capabilityContext.getCapabilityValue(
-                OctoConstants.OCTOPUS_CLI_CAPABILITY + "." + octopusCli);
-
-        if (StringUtils.isNotBlank(cliPath) && new File(cliPath).exists()) {
-            commands.add(0, cliPath);
-
-            final ExternalProcess process = processService.executeExternalProcess(taskContext,
-                    new ExternalProcessBuilder()
-                            .command(commands)
-                            .workingDirectory(taskContext.getWorkingDirectory()));
-
-
-            return TaskResultBuilder.newBuilder(taskContext)
-                    .checkReturnCode(process, 0)
-                    .build();
-        }
-
-        commonTaskService.logError(
-                taskContext,
-                "OCTOPUS-BAMBOO-INPUT-ERROR-0003: The path of \"" + cliPath + "\" for the selected Octopus CLI does not exist.");
-        return TaskResultBuilder.newBuilder(taskContext).failed().build();
+        return launchOcto(taskContext, commands);
     }
 }
