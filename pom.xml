@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.octopus</groupId>
     <artifactId>bamboo</artifactId>
-    <version>1.0.4-SNAPSHOT</version>
+    <version>1.0.5</version>
     <organization>
         <name>Octopus Deploy</name>
         <url>http://www.optopus.com/</url>
