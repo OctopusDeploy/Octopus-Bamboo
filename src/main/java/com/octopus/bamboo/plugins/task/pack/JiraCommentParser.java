@@ -20,6 +20,8 @@ public class JiraCommentParser extends CommentParser {
         while (jiraMatcher.find()) {
             final WorkItem workItem = new WorkItem();
             workItem.Id = jiraMatcher.group(0);
+            workItem.IssueTrackerId = "issuetracker-jira";
+            workItem.LinkUrl = "browse/" + jiraMatcher.group(0);
             workItem.LinkText = jiraMatcher.group(0);
 
             buildLogger.addBuildLogEntry("Located Jira work item " + workItem.Id);
