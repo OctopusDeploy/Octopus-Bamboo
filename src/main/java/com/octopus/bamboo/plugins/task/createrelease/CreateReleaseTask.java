@@ -61,6 +61,7 @@ public class CreateReleaseTask extends OctoTask {
 
         final String serverUrl = taskContext.getConfigurationMap().get(OctoConstants.SERVER_URL);
         final String apiKey = taskContext.getConfigurationMap().get(OctoConstants.API_KEY);
+        final String spaceName = taskContext.getConfigurationMap().get(OctoConstants.SPACE_NAME);
         final String projectName = taskContext.getConfigurationMap().get(OctoConstants.PROJECT_NAME);
         final String channelName = taskContext.getConfigurationMap().get(OctoConstants.CHANNEL_NAME);
         final String releaseVersion = taskContext.getConfigurationMap().get(OctoConstants.RELEASE_VERSION);
@@ -93,6 +94,11 @@ public class CreateReleaseTask extends OctoTask {
 
         commands.add("--apiKey");
         commands.add(apiKey);
+
+        if (StringUtils.isNotBlank(spaceName)) {
+            commands.add("--space");
+            commands.add(spaceName);
+        }
 
         commands.add("--project");
         commands.add(projectName);
