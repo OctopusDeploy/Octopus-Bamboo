@@ -6,6 +6,8 @@ list=uiConfigBean.getExecutableLabels('octopuscli') extraUtility=addExecutableLi
 <div class="description">[@s.text name='octopus.serverUrl.help' /]</div>
 [@ww.password labelKey="octopus.apiKey.key" name="apiKey" required='true' showPassword='true'/]
 <div class="description">[@s.text name='octopus.apiKey.help' /]</div>
+[@ww.textfield labelKey="octopus.spaceName.key" name="spaceName" /]
+<div class="description">[@s.text name='octopus.spaceName.help' /]</div>
 [@ww.textarea labelKey="octopus.pushPattern.key" name="pushPattern" required='true'/]
 <div class="description">[@s.text name='octopus.pushPattern.help' /]</div>
 [@ww.checkbox labelKey="octopus.force.key" name="force" required='false'/]

@@ -46,6 +46,7 @@ public class PushTaskConfigurator extends BaseConfigurator {
         final Map<String, String> config = super.generateTaskConfigMap(params, previousTaskDefinition);
         config.put(OctoConstants.SERVER_URL, params.getString(OctoConstants.SERVER_URL));
         config.put(OctoConstants.API_KEY, params.getString(OctoConstants.API_KEY));
+        config.put(OctoConstants.SPACE_NAME, params.getString(OctoConstants.SPACE_NAME));
         config.put(OctoConstants.PUSH_PATTERN, params.getString(OctoConstants.PUSH_PATTERN));
         config.put(OctoConstants.FORCE, params.getString(OctoConstants.FORCE));
         config.put(OctoConstants.VERBOSE_LOGGING, params.getString(OctoConstants.VERBOSE_LOGGING));
@@ -69,6 +70,7 @@ public class PushTaskConfigurator extends BaseConfigurator {
 
         context.put(OctoConstants.SERVER_URL, taskDefinition.getConfiguration().get(OctoConstants.SERVER_URL));
         context.put(OctoConstants.API_KEY, taskDefinition.getConfiguration().get(OctoConstants.API_KEY));
+        context.put(OctoConstants.SPACE_NAME, taskDefinition.getConfiguration().get(OctoConstants.SPACE_NAME));
         context.put(OctoConstants.PUSH_PATTERN, taskDefinition.getConfiguration().get(OctoConstants.PUSH_PATTERN));
         context.put(OctoConstants.FORCE, taskDefinition.getConfiguration().get(OctoConstants.FORCE));
         context.put(OctoConstants.VERBOSE_LOGGING, taskDefinition.getConfiguration().get(OctoConstants.VERBOSE_LOGGING));
