@@ -45,9 +45,9 @@
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
-        <bamboo.version>6.7.1</bamboo.version>
-        <bamboo.data.version>6.7.1</bamboo.data.version>
-        <amps.version>6.3.14</amps.version>
+        <bamboo.version>6.8.0</bamboo.version>
+        <bamboo.data.version>6.8.0</bamboo.data.version>
+        <amps.version>8.0.0</amps.version>
         <!--
             The default version has a bug that prevents integration tests from working
             https://ecosystem.atlassian.net/browse/AMPS-1358
@@ -150,7 +150,7 @@
             </plugin>
             <plugin>
                 <groupId>com.atlassian.maven.plugins</groupId>
-                <artifactId>maven-bamboo-plugin</artifactId>
+                <artifactId>bamboo-maven-plugin</artifactId>
                 <version>${amps.version}</version>
                 <extensions>true</extensions>
                 <configuration>
