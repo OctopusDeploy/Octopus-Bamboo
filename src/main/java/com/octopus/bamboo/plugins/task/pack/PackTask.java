@@ -59,8 +59,6 @@ public class PackTask extends OctoTask {
         final String loggingLevel = taskContext.getConfigurationMap().get(OctoConstants.VERBOSE_LOGGING);
         final Boolean verboseLogging = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(loggingLevel));
 
-        final String commentParser = taskContext.getConfigurationMap().get(OctoConstants.PACK_COMMENT_PARSER_NAME);
-
         final String additionalArgs = taskContext.getConfigurationMap().get(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME);
 
         checkState(StringUtils.isNotBlank(id), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Package id can not be blank");
@@ -119,15 +117,6 @@ public class PackTask extends OctoTask {
         if (StringUtils.isNotBlank(additionalArgs)) {
             final String[] myArgs = Commandline.translateCommandline(additionalArgs);
             commands.addAll(Arrays.asList(myArgs));
-        }
-
-        if (!StringUtils.isEmpty(commentParser)) {
-            try {
-                final CommentWorkItemHandler commentHandler = new CommentWorkItemHandler();
-                commentHandler.processComments((TaskContext) taskContext, commentParser, basePath);
-            } catch (Exception ex) {
-                return TaskResultBuilder.createFailedWithErrorResult(taskContext);
-            }
         }
 
         return launchOcto(taskContext, commands);

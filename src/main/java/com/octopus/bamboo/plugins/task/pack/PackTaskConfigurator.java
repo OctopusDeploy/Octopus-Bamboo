@@ -7,6 +7,7 @@ import com.atlassian.bamboo.utils.error.ErrorCollection;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.struts.TextProvider;
+import com.octopus.bamboo.plugins.task.octopusmetadata.CommentParserFactory;
 import com.octopus.constants.OctoConstants;
 import com.octopus.services.impl.BaseConfigurator;
 import org.apache.commons.lang.StringUtils;
@@ -53,7 +54,6 @@ public class PackTaskConfigurator extends BaseConfigurator {
         config.put(OctoConstants.PACK_INCLUDE_NAME, params.getString(OctoConstants.PACK_INCLUDE_NAME));
         config.put(OctoConstants.PACK_OUT_FOLDER_NAME, params.getString(OctoConstants.PACK_OUT_FOLDER_NAME));
         config.put(OctoConstants.PACK_OVERWRITE_NAME, params.getString(OctoConstants.PACK_OVERWRITE_NAME));
-        config.put(OctoConstants.PACK_COMMENT_PARSER_NAME, params.getString(OctoConstants.PACK_COMMENT_PARSER_NAME));
         config.put(OctoConstants.VERBOSE_LOGGING, params.getString(OctoConstants.VERBOSE_LOGGING));
         config.put(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME, params.getString(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME));
         config.put(OctoConstants.OCTOPUS_CLI, params.getString(OctoConstants.OCTOPUS_CLI));
@@ -65,7 +65,6 @@ public class PackTaskConfigurator extends BaseConfigurator {
         context.put(OctoConstants.UI_CONFIG_BEAN, this.getUIConfigSupport());
         context.put(OctoConstants.PACK_FORMAT_NAME, OctoConstants.PACK_ZIP_FORMAT);
         context.put(OctoConstants.PACK_FORMATS_LIST, Arrays.asList(OctoConstants.PACK_ZIP_FORMAT, OctoConstants.PACK_NUGET_FORMAT));
-        context.put(OctoConstants.PACK_COMMENT_PARSERS_LIST, CommentParserFactory.getParsers());
     }
 
     @Override
@@ -85,13 +84,11 @@ public class PackTaskConfigurator extends BaseConfigurator {
         context.put(OctoConstants.PACK_INCLUDE_NAME, taskDefinition.getConfiguration().get(OctoConstants.PACK_INCLUDE_NAME));
         context.put(OctoConstants.PACK_OUT_FOLDER_NAME, taskDefinition.getConfiguration().get(OctoConstants.PACK_OUT_FOLDER_NAME));
         context.put(OctoConstants.PACK_OVERWRITE_NAME, taskDefinition.getConfiguration().get(OctoConstants.PACK_OVERWRITE_NAME));
-        context.put(OctoConstants.PACK_COMMENT_PARSER_NAME, taskDefinition.getConfiguration().get(OctoConstants.PACK_COMMENT_PARSER_NAME));
         context.put(OctoConstants.VERBOSE_LOGGING, taskDefinition.getConfiguration().get(OctoConstants.VERBOSE_LOGGING));
         context.put(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME, taskDefinition.getConfiguration().get(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME));
         context.put(OctoConstants.OCTOPUS_CLI, taskDefinition.getConfiguration().get(OctoConstants.OCTOPUS_CLI));
         context.put(OctoConstants.UI_CONFIG_BEAN, this.getUIConfigSupport());
         context.put(OctoConstants.PACK_FORMATS_LIST, Arrays.asList(OctoConstants.PACK_ZIP_FORMAT, OctoConstants.PACK_NUGET_FORMAT));
-        context.put(OctoConstants.PACK_COMMENT_PARSERS_LIST, CommentParserFactory.getParsers());
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.octopus.bamboo.plugins.task.pack;
+package com.octopus.bamboo.plugins.task.octopusmetadata;
 
 import com.atlassian.bamboo.build.logger.BuildLogger;
 
@@ -10,6 +10,10 @@ import java.util.regex.Pattern;
 public class JiraCommentParser extends CommentParser {
     private static final String JIRA_ID_REGEX = "[A-Z]*-\\d+";
 
+    public String getIssueTrackerSuffix() {
+        return "jira";
+    }
+
     public List<WorkItem> parse(final String comment, final BuildLogger buildLogger) {
         buildLogger.addBuildLogEntry("Parsing comments for Jira work items");
         final List<WorkItem> workItems = new ArrayList<WorkItem>();
@@ -20,8 +24,7 @@ public class JiraCommentParser extends CommentParser {
         while (jiraMatcher.find()) {
             final WorkItem workItem = new WorkItem();
             workItem.Id = jiraMatcher.group(0);
-            workItem.IssueTrackerId = "issuetracker-jira";
-            workItem.LinkUrl = "browse/" + jiraMatcher.group(0);
+            workItem.LinkData = jiraMatcher.group(0);
             workItem.LinkText = jiraMatcher.group(0);
 
             buildLogger.addBuildLogEntry("Located Jira work item " + workItem.Id);
