@@ -71,6 +71,7 @@ public class OctopusMetadataTaskConfigurator extends BaseConfigurator {
         context.put(OctoConstants.FORCE, taskDefinition.getConfiguration().get(OctoConstants.FORCE));
         context.put(OctoConstants.PACK_ID_NAME, taskDefinition.getConfiguration().get(OctoConstants.PACK_ID_NAME));
         context.put(OctoConstants.PACK_VERSION_NAME, taskDefinition.getConfiguration().get(OctoConstants.PACK_VERSION_NAME));
+        context.put(OctoConstants.COMMENT_PARSER_NAME, taskDefinition.getConfiguration().get(OctoConstants.COMMENT_PARSER_NAME));
         context.put(OctoConstants.OCTOPUS_CLI, taskDefinition.getConfiguration().get(OctoConstants.OCTOPUS_CLI));
         context.put(OctoConstants.UI_CONFIG_BEAN, this.getUIConfigSupport());
         context.put(OctoConstants.COMMENT_PARSERS_LIST, CommentParserFactory.getParsers());
