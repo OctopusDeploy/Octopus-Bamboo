@@ -20,6 +20,16 @@ The credentials are admin/admin.
 
 If Bamboo fails to start running `atlas-clean` may resolve the issue.
 
+## Debugging Bamboo
+
+Run the command `atlas-debug` to start an instance of Bamboo with the plugin deployed and debugging enabled.
+
+Create a Remote Debug configuration as below.
+
+![](debug-config.png)
+
+Once the atlas command has the server to the point where it is fully running, you can start the Remote Debug configuration and IntelliJ will attach to the running process.
+
 ## Building the Plugin
 Run the command `atlas-package` to build the plugin. The compiled plugin will be saved as `target\bamboo.jar`.
 
