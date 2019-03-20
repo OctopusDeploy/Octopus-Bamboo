@@ -9,16 +9,24 @@ https://developer.atlassian.com/display/DOCS/Introduction+to+the+Atlassian+Plugi
 
 ## Updating Bamboo Dependencies
 Edit the `pom.xml` file and set `<bamboo.version>6.2.1</bamboo.version>` and `<bamboo.data.version>6.2.1</bamboo.data.version>`
-to the latest Bamboo version. This in turn will mean `atlas-run` will load the specified Bamboo version.
+(the actual versions will be different to these examples) to the latest Bamboo version. This in turn will mean `atlas-run`
+will load the specified Bamboo version.
 
 You can find the versions that are available at https://maven.atlassian.com/maven-external/com/atlassian/bamboo/atlassian-bamboo-web/.
 
 ## Running Bamboo
 Run the command `atlas-run` to start an instance of Bamboo with the plugin deployed.
 
-The credentials are admin/admin.
+The credentials are `admin` / `admin`.
 
 If Bamboo fails to start running `atlas-clean` may resolve the issue.
+
+Note there is a bug in AMPS 8.0.0 that means `atlas-run` doesn't work.
+See https://ecosystem.atlassian.net/browse/AMPS-1479 for details. The workaround
+is to run
+```
+mvn com.atlassian.maven.plugins:amps-dispatcher-maven-plugin:8.0.0:run -gs C:/Applications/Atlassian/atlassian-plugin-sdk-8.0.4/apache-maven-3.5.4/conf/settings.xml
+```
 
 ## Building the Plugin
 Run the command `atlas-package` to build the plugin. The compiled plugin will be saved as `target\bamboo.jar`.
