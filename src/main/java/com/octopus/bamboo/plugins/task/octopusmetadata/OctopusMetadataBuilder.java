@@ -40,12 +40,12 @@ public class OctopusMetadataBuilder {
             }
 
             if (workItems.size() > 0) {
-                buildLogger.addBuildLogEntry("Found work items in comments, adding " + workItems.size() + " work items to octopus.metadata");
+                buildLogger.addBuildLogEntry("Found work-items in comments, adding " + workItems.size() + " work-items to octopus.metadata");
 
                 metadata.WorkItems = workItems;
 
             } else {
-                buildLogger.addBuildLogEntry("No work items found in comments");
+                buildLogger.addBuildLogEntry("No work-items found in comments");
             }
         }
 

@@ -78,7 +78,7 @@
 
     <taskType key="task.octopusmetadata" name="Octopus Deploy: Octopus Metadata"
               class="com.octopus.bamboo.plugins.task.octopusmetadata.OctopusMetadataTask">
-        <description>Collect information related to the build, including work items from commit messages, and store in custom metadata in Octopus.</description>
+        <description>Collect information related to the build, including work-items from commit messages, and store in custom metadata in Octopus.</description>
         <category name="deployment"/>
         <configuration class="com.octopus.bamboo.plugins.task.octopusmetadata.OctopusMetadataTaskConfigurator"/>
         <resource type="freemarker" name="edit" location="freemarker/octopusmetadata.ftl"/>

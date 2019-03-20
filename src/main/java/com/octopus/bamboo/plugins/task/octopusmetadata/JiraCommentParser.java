@@ -15,7 +15,7 @@ public class JiraCommentParser extends CommentParser {
     }
 
     public List<WorkItem> parse(final String comment, final BuildLogger buildLogger) {
-        buildLogger.addBuildLogEntry("Parsing comments for Jira work items");
+        buildLogger.addBuildLogEntry("Parsing comments for Jira work-items");
         final List<WorkItem> workItems = new ArrayList<WorkItem>();
 
         final Pattern jiraId = Pattern.compile(JIRA_ID_REGEX);
@@ -27,7 +27,7 @@ public class JiraCommentParser extends CommentParser {
             workItem.LinkData = jiraMatcher.group(0);
             workItem.LinkText = jiraMatcher.group(0);
 
-            buildLogger.addBuildLogEntry("Located Jira work item " + workItem.Id);
+            buildLogger.addBuildLogEntry("Located Jira work-item " + workItem.Id);
 
             workItems.add(workItem);
         }
