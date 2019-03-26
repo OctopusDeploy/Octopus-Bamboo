@@ -1,7 +1,6 @@
 package com.octopus.bamboo.plugins.task.octopusmetadata;
 
-public class WorkItem {
+public class Commit {
     public String Id;
-    public String LinkData;
-    public String LinkText;
+    public String Comment;
 }

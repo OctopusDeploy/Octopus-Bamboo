@@ -29,6 +29,7 @@ import javax.inject.Named;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -47,8 +48,7 @@ public class OctopusMetadataTask extends OctoTask {
         super(processService, capabilityContext, commonTaskService, logMutator);
     }
 
-    public AdministrationConfiguration getAdministrationConfiguration()
-    {
+    public AdministrationConfiguration getAdministrationConfiguration() {
         return (AdministrationConfiguration) ContainerManager.getComponent("administrationConfiguration");
     }
 
@@ -103,15 +103,21 @@ public class OctopusMetadataTask extends OctoTask {
         final String metaFile = Paths.get(taskContext.getRootDirectory().getPath(), "octopus.metadata").toAbsolutePath().toString();
 
         try {
-            final BuildContext buildContext = ((TaskContext)taskContext).getBuildContext();
+            final BuildContext buildContext = ((TaskContext) taskContext).getBuildContext();
             final BuildChanges buildChanges = buildContext.getBuildChanges();
             final List<CommitContext> commits = buildChanges.getChanges();
 
-            String comments = "";
+            List<Commit> commitList = new ArrayList<Commit>();
             String commitNumber = "";
             for (final CommitContext commit : commits) {
                 final String comment = commit.getComment();
-                comments += comment;
+
+                final Commit c = new Commit();
+                c.Id = commit.getChangeSetId();
+                c.Comment = comment;
+
+                commitList.add(c);
+
                 commitNumber = commit.getChangeSetId();
             }
 
@@ -119,16 +125,24 @@ public class OctopusMetadataTask extends OctoTask {
 
             final PlanRepositoryDefinition vcsRepoDef = buildContext.getVcsRepositoryMap().get(buildContext.getRelevantRepositoryIds().toArray()[0]);
 
-            final String vscRoot = "";
+            final Map<String, String> configuration = vcsRepoDef.getVcsLocation().getConfiguration();
+
+            String vcsRoot = "";
+            for (final String key : configuration.keySet()){
+                if (key.contains("repositoryUrl")) {
+                    vcsRoot = configuration.get(key);
+                }
+            }
+
             final String vcsCommitNumber = commitNumber;
             PlanResultKey planResultKey = buildContext.getPlanResultKey();
             final String buildId = Integer.toString(planResultKey.getBuildNumber());
             final String buildNumber = planResultKey.getKey();
 
             final OctopusPackageMetadata metadata = builder.build(
-                    vscRoot,
+                    vcsRoot,
                     vcsCommitNumber,
-                    comments,
+                    commitList,
                     commentParser,
                     getAdministrationConfiguration().getBaseUrl(),
                     buildId,

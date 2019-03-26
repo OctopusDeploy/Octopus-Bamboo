@@ -7,7 +7,6 @@ import com.atlassian.bamboo.utils.error.ErrorCollection;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.struts.TextProvider;
-import com.octopus.bamboo.plugins.task.octopusmetadata.CommentParserFactory;
 import com.octopus.constants.OctoConstants;
 import com.octopus.services.impl.BaseConfigurator;
 import org.apache.commons.lang.StringUtils;

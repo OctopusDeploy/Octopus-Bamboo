@@ -11,8 +11,7 @@ import java.io.IOException;
 public class OctopusMetadataWriter {
     private BuildLogger buildLogger;
 
-    public OctopusMetadataWriter(BuildLogger buildLogger) {
-
+    public OctopusMetadataWriter(final BuildLogger buildLogger) {
         this.buildLogger = buildLogger;
     }
 
