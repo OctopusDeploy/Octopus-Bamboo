@@ -10,9 +10,11 @@ import java.io.IOException;
 
 public class OctopusMetadataWriter {
     private BuildLogger buildLogger;
+    private Boolean verboseLogging;
 
-    public OctopusMetadataWriter(final BuildLogger buildLogger) {
+    public OctopusMetadataWriter(final BuildLogger buildLogger, Boolean verboseLogging) {
         this.buildLogger = buildLogger;
+        this.verboseLogging = verboseLogging;
     }
 
     public void writeToFile(final OctopusPackageMetadata octopusPackageMetadata, final String metaFile) throws IOException {
@@ -21,15 +23,23 @@ public class OctopusMetadataWriter {
                     .setPrettyPrinting()
                     .disableHtmlEscaping()
                     .create();
-            buildLogger.addBuildLogEntry("Serializing Octopus metadata");
+
+            if (verboseLogging) {
+                buildLogger.addBuildLogEntry("Serializing Octopus metadata");
+            }
 
             final String jsonData = gson.toJson(octopusPackageMetadata);
-            buildLogger.addBuildLogEntry("Serialized Octopus metadata - " + jsonData);
+            if (verboseLogging) {
+                buildLogger.addBuildLogEntry("Serialized Octopus metadata - " + jsonData);
+            }
 
             BufferedWriter bw = new BufferedWriter(new FileWriter(metaFile));
             bw.write(jsonData);
             bw.close();
-            buildLogger.addBuildLogEntry("Wrote " + metaFile);
+
+            if (verboseLogging) {
+                buildLogger.addBuildLogEntry("Wrote " + metaFile);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             buildLogger.addErrorLogEntry("Error writing the octopus.metadata file");

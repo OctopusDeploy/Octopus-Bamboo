@@ -47,6 +47,7 @@ public class OctopusMetadataTaskConfigurator extends BaseConfigurator {
         config.put(OctoConstants.PACK_VERSION_NAME, params.getString(OctoConstants.PACK_VERSION_NAME));
         config.put(OctoConstants.COMMENT_PARSER_NAME, params.getString(OctoConstants.COMMENT_PARSER_NAME));
         config.put(OctoConstants.FORCE, params.getString(OctoConstants.FORCE));
+        config.put(OctoConstants.VERBOSE_LOGGING, params.getString(OctoConstants.VERBOSE_LOGGING));
         config.put(OctoConstants.OCTOPUS_CLI, params.getString(OctoConstants.OCTOPUS_CLI));
         return config;
     }
@@ -68,10 +69,11 @@ public class OctopusMetadataTaskConfigurator extends BaseConfigurator {
         context.put(OctoConstants.SERVER_URL, taskDefinition.getConfiguration().get(OctoConstants.SERVER_URL));
         context.put(OctoConstants.API_KEY, taskDefinition.getConfiguration().get(OctoConstants.API_KEY));
         context.put(OctoConstants.SPACE_NAME, taskDefinition.getConfiguration().get(OctoConstants.SPACE_NAME));
-        context.put(OctoConstants.FORCE, taskDefinition.getConfiguration().get(OctoConstants.FORCE));
         context.put(OctoConstants.PACK_ID_NAME, taskDefinition.getConfiguration().get(OctoConstants.PACK_ID_NAME));
         context.put(OctoConstants.PACK_VERSION_NAME, taskDefinition.getConfiguration().get(OctoConstants.PACK_VERSION_NAME));
         context.put(OctoConstants.COMMENT_PARSER_NAME, taskDefinition.getConfiguration().get(OctoConstants.COMMENT_PARSER_NAME));
+        context.put(OctoConstants.FORCE, taskDefinition.getConfiguration().get(OctoConstants.FORCE));
+        context.put(OctoConstants.VERBOSE_LOGGING, taskDefinition.getConfiguration().get(OctoConstants.VERBOSE_LOGGING));
         context.put(OctoConstants.OCTOPUS_CLI, taskDefinition.getConfiguration().get(OctoConstants.OCTOPUS_CLI));
         context.put(OctoConstants.UI_CONFIG_BEAN, this.getUIConfigSupport());
         context.put(OctoConstants.COMMENT_PARSERS_LIST, CommentParserFactory.getParsers());

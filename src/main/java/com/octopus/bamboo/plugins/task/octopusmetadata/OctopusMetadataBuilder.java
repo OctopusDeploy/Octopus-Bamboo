@@ -1,17 +1,11 @@
 package com.octopus.bamboo.plugins.task.octopusmetadata;
 
-import com.atlassian.bamboo.build.logger.BuildLogger;
 import java.util.List;
 
 public class OctopusMetadataBuilder {
 
-    private BuildLogger buildLogger;
-
-    public OctopusMetadataBuilder(final BuildLogger buildLogger) {
-        this.buildLogger = buildLogger;
-    }
-
     public OctopusPackageMetadata build(
+            final String vcsType,
             final String vcsRoot,
             final String vcsCommitNumber,
             final List<Commit> commits,
@@ -25,7 +19,8 @@ public class OctopusMetadataBuilder {
         metadata.Commits = commits;
         metadata.CommentParser = commentParser;
         metadata.BuildNumber = buildId;
-        metadata.BuildLink = serverUrl + "/browse/" + buildNumber;
+        metadata.BuildUrl = serverUrl + "/browse/" + buildNumber;
+        metadata.VcsType = vcsType;
         metadata.VcsRoot = vcsRoot;
         metadata.VcsCommitNumber = vcsCommitNumber;
 

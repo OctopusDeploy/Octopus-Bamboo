@@ -17,3 +17,4 @@ list=uiConfigBean.getExecutableLabels('octopuscli') extraUtility=addExecutableLi
 [@ww.select cssClass="builderSelectWidget" labelKey='octopus.commentParser.key' name='commentParser'
 list="commentParsers" required='false' /]
 <div class="description">[@s.text name='octopus.commentParser.help' /]</div>
+[@ww.checkbox labelKey="octopus.verboseLogging.key" name="verboseLogging" required='false'/]

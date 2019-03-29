@@ -61,6 +61,9 @@ public class OctopusMetadataTask extends OctoTask {
         final String spaceName = taskContext.getConfigurationMap().get(OctoConstants.SPACE_NAME);
         final String forceUpload = taskContext.getConfigurationMap().get(OctoConstants.FORCE);
         final Boolean forceUploadBoolean = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(forceUpload));
+        final String loggingLevel = taskContext.getConfigurationMap().get(OctoConstants.VERBOSE_LOGGING);
+        final Boolean verboseLogging = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(loggingLevel));
+
         final String id = taskContext.getConfigurationMap().get(OctoConstants.PACK_ID_NAME);
         final String version = taskContext.getConfigurationMap().get(OctoConstants.PACK_VERSION_NAME);
 
@@ -121,11 +124,16 @@ public class OctopusMetadataTask extends OctoTask {
                 commitNumber = commit.getChangeSetId();
             }
 
-            final OctopusMetadataBuilder builder = new OctopusMetadataBuilder(buildLogger);
+            final OctopusMetadataBuilder builder = new OctopusMetadataBuilder();
 
             final PlanRepositoryDefinition vcsRepoDef = buildContext.getVcsRepositoryMap().get(buildContext.getRelevantRepositoryIds().toArray()[0]);
 
             final Map<String, String> configuration = vcsRepoDef.getVcsLocation().getConfiguration();
+
+            String vcsType = "Unknown";
+            if (vcsRepoDef.getPluginKey().contains("git")) {
+                vcsType = "Git";
+            }
 
             String vcsRoot = "";
             for (final String key : configuration.keySet()){
@@ -140,6 +148,7 @@ public class OctopusMetadataTask extends OctoTask {
             final String buildNumber = planResultKey.getKey();
 
             final OctopusPackageMetadata metadata = builder.build(
+                    vcsType,
                     vcsRoot,
                     vcsCommitNumber,
                     commitList,
@@ -148,9 +157,11 @@ public class OctopusMetadataTask extends OctoTask {
                     buildId,
                     buildNumber);
 
-            buildLogger.addBuildLogEntry("Creating " + metaFile);
+            if (verboseLogging) {
+                buildLogger.addBuildLogEntry("Creating " + metaFile);
+            }
 
-            final OctopusMetadataWriter writer = new OctopusMetadataWriter(buildLogger);
+            final OctopusMetadataWriter writer = new OctopusMetadataWriter(buildLogger, verboseLogging);
             writer.writeToFile(metadata, metaFile);
 
         } catch (Exception ex) {

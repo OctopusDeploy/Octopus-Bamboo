@@ -6,7 +6,8 @@ public class OctopusPackageMetadata {
     public String BuildEnvironment;
     public String CommentParser;
     public String BuildNumber;
-    public String BuildLink;
+    public String BuildUrl;
+    public String VcsType;
     public String VcsRoot;
     public String VcsCommitNumber;
 
