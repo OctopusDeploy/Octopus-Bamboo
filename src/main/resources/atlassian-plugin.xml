@@ -76,4 +76,15 @@
                     primaryCapabilityProvider="false"/>
     </taskType>
 
+    <taskType key="task.octopusmetadata" name="Octopus Deploy: Octopus Metadata"
+              class="com.octopus.bamboo.plugins.task.octopusmetadata.OctopusMetadataTask">
+        <description>Collect information related to the build, including work-items from commit messages, and store in custom metadata in Octopus.</description>
+        <category name="deployment"/>
+        <configuration class="com.octopus.bamboo.plugins.task.octopusmetadata.OctopusMetadataTaskConfigurator"/>
+        <resource type="freemarker" name="edit" location="freemarker/octopusmetadata.ftl"/>
+        <resource type="download" name="icon" location="images/pluginLogo.png"/>
+        <executable key="octopuscli" nameKey="octopus.cli.key" pathHelpKey="octopus.cli.help"
+                    primaryCapabilityProvider="false"/>
+    </taskType>
+
 </atlassian-plugin>

@@ -28,6 +28,16 @@ is to run
 mvn com.atlassian.maven.plugins:amps-dispatcher-maven-plugin:8.0.0:run -gs C:/Applications/Atlassian/atlassian-plugin-sdk-8.0.4/apache-maven-3.5.4/conf/settings.xml
 ```
 
+## Debugging Bamboo
+
+Run the command `atlas-debug` to start an instance of Bamboo with the plugin deployed and debugging enabled.
+
+Create a Remote Debug configuration as below.
+
+![](debug-config.png)
+
+Once the atlas command has the server to the point where it is fully running, you can start the Remote Debug configuration and IntelliJ will attach to the running process.
+
 ## Building the Plugin
 Run the command `atlas-package` to build the plugin. The compiled plugin will be saved as `target\bamboo.jar`.
 
