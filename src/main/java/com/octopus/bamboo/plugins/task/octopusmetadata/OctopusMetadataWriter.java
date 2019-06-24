@@ -12,7 +12,7 @@ public class OctopusMetadataWriter {
     private BuildLogger buildLogger;
     private Boolean verboseLogging;
 
-    public OctopusMetadataWriter(final BuildLogger buildLogger, Boolean verboseLogging) {
+    public OctopusMetadataWriter(final BuildLogger buildLogger, final Boolean verboseLogging) {
         this.buildLogger = buildLogger;
         this.verboseLogging = verboseLogging;
     }
