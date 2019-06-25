@@ -53,6 +53,8 @@ public class DeployReleaseTaskConfigurator extends BaseConfigurator {
         config.put(OctoConstants.VERBOSE_LOGGING, params.getString(OctoConstants.VERBOSE_LOGGING));
         config.put(OctoConstants.RELEASE_VERSION, params.getString(OctoConstants.RELEASE_VERSION));
         config.put(OctoConstants.SHOW_DEPLOYMENT_PROGRESS, params.getString(OctoConstants.SHOW_DEPLOYMENT_PROGRESS));
+        config.put(OctoConstants.DEPLOYMENT_TIMEOUT, params.getString(OctoConstants.DEPLOYMENT_TIMEOUT));
+        config.put(OctoConstants.CANCEL_DEPLOYMENT_ON_TIMEOUT, params.getString(OctoConstants.CANCEL_DEPLOYMENT_ON_TIMEOUT));
         config.put(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME, params.getString(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME));
         config.put(OctoConstants.TENANTS_NAME, params.getString(OctoConstants.TENANTS_NAME));
         config.put(OctoConstants.TENANT_TAGS_NAME, params.getString(OctoConstants.TENANT_TAGS_NAME));
@@ -81,6 +83,8 @@ public class DeployReleaseTaskConfigurator extends BaseConfigurator {
         context.put(OctoConstants.VERBOSE_LOGGING, taskDefinition.getConfiguration().get(OctoConstants.VERBOSE_LOGGING));
         context.put(OctoConstants.RELEASE_VERSION, taskDefinition.getConfiguration().get(OctoConstants.RELEASE_VERSION));
         context.put(OctoConstants.SHOW_DEPLOYMENT_PROGRESS, taskDefinition.getConfiguration().get(OctoConstants.SHOW_DEPLOYMENT_PROGRESS));
+        context.put(OctoConstants.DEPLOYMENT_TIMEOUT, taskDefinition.getConfiguration().get(OctoConstants.DEPLOYMENT_TIMEOUT));
+        context.put(OctoConstants.CANCEL_DEPLOYMENT_ON_TIMEOUT, taskDefinition.getConfiguration().get(OctoConstants.CANCEL_DEPLOYMENT_ON_TIMEOUT));
         context.put(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME, taskDefinition.getConfiguration().get(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME));
         context.put(OctoConstants.TENANTS_NAME, taskDefinition.getConfiguration().get(OctoConstants.TENANTS_NAME));
         context.put(OctoConstants.TENANT_TAGS_NAME, taskDefinition.getConfiguration().get(OctoConstants.TENANT_TAGS_NAME));
