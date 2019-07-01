@@ -3,7 +3,7 @@ package com.octopus.bamboo.plugins.task.octopusmetadata;
 import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.build.logger.LogMutator;
 import com.atlassian.bamboo.commit.CommitContext;
-import com.atlassian.bamboo.configuration.AdministrationConfiguration;
+import com.atlassian.bamboo.configuration.AdministrationConfigurationAccessor;
 import com.atlassian.bamboo.plan.PlanResultKey;
 import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.*;
@@ -13,7 +13,6 @@ import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
 import com.atlassian.bamboo.vcs.configuration.PlanRepositoryDefinition;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
-import com.atlassian.spring.container.ContainerManager;
 import com.octopus.bamboo.plugins.task.OctoTask;
 import com.octopus.constants.OctoConstants;
 import com.octopus.services.CommonTaskService;
@@ -39,17 +38,16 @@ import static com.google.common.base.Preconditions.checkState;
 @Named("octopusMetadataTask")
 public class OctopusMetadataTask extends OctoTask {
     private static final Logger LOGGER = LoggerFactory.getLogger(OctopusMetadataTask.class);
+    private AdministrationConfigurationAccessor administrationConfigurationAccessor;
 
     @Inject
     public OctopusMetadataTask(@NotNull @ComponentImport final ProcessService processService,
                     @NotNull @ComponentImport final CapabilityContext capabilityContext,
+                    @NotNull @ComponentImport final AdministrationConfigurationAccessor administrationConfigurationAccessor,
                     @NotNull final CommonTaskService commonTaskService,
                     @NotNull final LogMutator logMutator) {
         super(processService, capabilityContext, commonTaskService, logMutator);
-    }
-
-    public AdministrationConfiguration getAdministrationConfiguration() {
-        return (AdministrationConfiguration) ContainerManager.getComponent("administrationConfiguration");
+        this.administrationConfigurationAccessor = administrationConfigurationAccessor;
     }
 
     @NotNull
@@ -146,6 +144,7 @@ public class OctopusMetadataTask extends OctoTask {
             PlanResultKey planResultKey = buildContext.getPlanResultKey();
             final String buildId = Integer.toString(planResultKey.getBuildNumber());
             final String buildNumber = planResultKey.getKey();
+            final String bambooServerUrl = administrationConfigurationAccessor.getAdministrationConfiguration().getBaseUrl();
 
             final OctopusPackageMetadata metadata = builder.build(
                     vcsType,
@@ -153,7 +152,7 @@ public class OctopusMetadataTask extends OctoTask {
                     vcsCommitNumber,
                     commitList,
                     commentParser,
-                    getAdministrationConfiguration().getBaseUrl(),
+                    bambooServerUrl,
                     buildId,
                     buildNumber);
 
