@@ -103,6 +103,14 @@ public class OctoConstants {
      */
     public static final String SHOW_DEPLOYMENT_PROGRESS = "showProgress";
     /**
+     * The configuration key for the deployment timeout option
+     */
+    public static final String DEPLOYMENT_TIMEOUT = "deploymentTimeout";
+    /**
+     * The configuration key for the cancel on timeout option
+     */
+    public static final String CANCEL_DEPLOYMENT_ON_TIMEOUT = "cancelOnTimeout";
+    /**
      * The configuration key for the tenants option
      */
     public static final String TENANTS_NAME = "tenants";

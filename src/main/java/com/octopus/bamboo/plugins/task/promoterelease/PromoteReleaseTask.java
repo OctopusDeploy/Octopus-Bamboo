@@ -65,6 +65,11 @@ public class PromoteReleaseTask extends OctoTask {
         final Boolean verboseLogging = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(loggingLevel));
         final String deploymentProgress = taskContext.getConfigurationMap().get(OctoConstants.SHOW_DEPLOYMENT_PROGRESS);
         final Boolean deploymentProgressEnabled = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(deploymentProgress));
+
+        final String deploymentTimeout = taskContext.getConfigurationMap().get(OctoConstants.DEPLOYMENT_TIMEOUT);
+        final String cancelOnTimeout = taskContext.getConfigurationMap().get(OctoConstants.CANCEL_DEPLOYMENT_ON_TIMEOUT);
+        final Boolean cancelOnTimeoutEnabled = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(cancelOnTimeout));
+
         final String additionalArgs = taskContext.getConfigurationMap().get(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME);
         final String tenants = taskContext.getConfigurationMap().get(OctoConstants.TENANTS_NAME);
         final String tenantTags = taskContext.getConfigurationMap().get(OctoConstants.TENANT_TAGS_NAME);
@@ -116,6 +121,15 @@ public class PromoteReleaseTask extends OctoTask {
 
         if (deploymentProgressEnabled) {
             commands.add("--progress");
+
+            if (!deploymentTimeout.isEmpty()) {
+                commands.add("--deploymenttimeout");
+                commands.add(deploymentTimeout);
+            }
+
+            if (cancelOnTimeoutEnabled) {
+                commands.add("--cancelontimeout");
+            }
         }
 
         if (StringUtils.isNotBlank(tenants)) {
