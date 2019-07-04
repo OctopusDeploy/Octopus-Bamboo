@@ -23,7 +23,8 @@
 [@ui.bambooSection title='Package']
     [@ww.textarea labelKey="octopus.pushPattern.key" name="pushPattern" required='true' class="long-field"/]
     <div class="description">[@s.text name='octopus.pushPattern.help' /]</div>
-    [@ww.checkbox labelKey="octopus.force.key" name="force" required='false'/]
+    [@ww.select cssClass="builderSelectWidget" labelKey="octopus.overwriteMode.key" required="true" name="overwriteMode"
+        list="overwriteModes" /]
     <div class="description">[@s.text name='octopus.force.help' /]</div>
 [/@ui.bambooSection]
 

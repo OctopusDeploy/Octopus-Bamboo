@@ -63,9 +63,13 @@ public class OctoConstants {
      */
     public static final String PUSH_PATTERN = "pushPattern";
     /**
-     * The configuration key for the force upload option
+     * The configuration key for the force upload option. This is now OBSOLETE, use OVERWRITE_MODE
      */
     public static final String FORCE = "force";
+    /**
+     * The configuration key for the overwrite mode.
+     */
+    public static final String OVERWRITE_MODE = "overwriteMode";
     /**
      * The configuration key for the release version option
      */
