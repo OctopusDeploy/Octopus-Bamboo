@@ -8,7 +8,7 @@ public class OverwriteModes {
         Map<String, String> overwriteModes = new LinkedHashMap<>();
         overwriteModes.put(OverwriteMode.FailIfExists.name(), "Fail if exists");
         overwriteModes.put(OverwriteMode.OverwriteExisting.name(), "Overwrite existing");
-        overwriteModes.put(OverwriteMode.IgnoreIfExists.name(), "Ignore existing");
+        overwriteModes.put(OverwriteMode.IgnoreIfExists.name(), "Ignore if exists");
         return overwriteModes;
     }
 }
