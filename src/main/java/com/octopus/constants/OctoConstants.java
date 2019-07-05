@@ -179,6 +179,8 @@ public class OctoConstants {
      */
     public static final String PACK_NUGET_FORMAT = "nuget";
 
+    public static final String OVERWRITE_MODES = "overwriteModes";
+
     public static final String API_KEY_ERROR_KEY = "octopus.apiKey.error";
     public static final String SERVER_URL_ERROR_KEY = "octopus.serverUrl.error";
     public static final String PUSH_PATTERN_ERROR_KEY = "octopus.pushPattern.error";

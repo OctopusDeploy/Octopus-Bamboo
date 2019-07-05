@@ -7,6 +7,7 @@ import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.struts.TextProvider;
 import com.octopus.bamboo.plugins.task.OverwriteMode;
+import com.octopus.bamboo.plugins.task.OverwriteModes;
 import com.octopus.constants.OctoConstants;
 import com.octopus.services.impl.BaseConfigurator;
 import org.apache.commons.lang.BooleanUtils;
@@ -59,18 +60,10 @@ public class PushTaskConfigurator extends BaseConfigurator {
         return config;
     }
 
-    public Map<String, String> getOverwriteModes() {
-        Map<String, String> overwriteModes = new LinkedHashMap<String, String>();
-        overwriteModes.put(OverwriteMode.FailIfExists.name(), "Fail if exists");
-        overwriteModes.put(OverwriteMode.OverwriteExisting.name(), "Overwrite existing");
-        overwriteModes.put(OverwriteMode.IgnoreIfExists.name(), "Ignore existing");
-        return overwriteModes;
-    }
-
     @Override
     public void populateContextForCreate(@NotNull final Map<String, Object> context) {
         context.put(OctoConstants.UI_CONFIG_BEAN, this.getUIConfigSupport());
-        context.put("overwriteModes", this.getOverwriteModes());
+        context.put(OctoConstants.OVERWRITE_MODES, OverwriteModes.getOverwriteModes());
     }
 
     @Override
@@ -107,7 +100,7 @@ public class PushTaskConfigurator extends BaseConfigurator {
         context.put(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME, configuration.get(OctoConstants.ADDITIONAL_COMMAND_LINE_ARGS_NAME));
         context.put(OctoConstants.OCTOPUS_CLI, configuration.get(OctoConstants.OCTOPUS_CLI));
         context.put(OctoConstants.UI_CONFIG_BEAN, this.getUIConfigSupport());
-        context.put("overwriteModes", this.getOverwriteModes());
+        context.put(OctoConstants.OVERWRITE_MODES, OverwriteModes.getOverwriteModes());
     }
 
     @Override

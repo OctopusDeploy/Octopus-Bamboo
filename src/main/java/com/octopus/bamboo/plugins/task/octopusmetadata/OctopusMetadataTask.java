@@ -4,6 +4,7 @@ import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.build.logger.LogMutator;
 import com.atlassian.bamboo.commit.CommitContext;
 import com.atlassian.bamboo.configuration.AdministrationConfigurationAccessor;
+import com.atlassian.bamboo.configuration.ConfigurationMap;
 import com.atlassian.bamboo.plan.PlanResultKey;
 import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.*;
@@ -14,6 +15,7 @@ import com.atlassian.bamboo.vcs.configuration.PlanRepositoryDefinition;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.octopus.bamboo.plugins.task.OctoTask;
+import com.octopus.bamboo.plugins.task.OverwriteMode;
 import com.octopus.constants.OctoConstants;
 import com.octopus.services.CommonTaskService;
 import org.apache.commons.lang.BooleanUtils;
@@ -54,18 +56,35 @@ public class OctopusMetadataTask extends OctoTask {
     public TaskResult execute(@NotNull final CommonTaskContext taskContext) throws TaskException {
         checkNotNull(taskContext, "taskContext cannot be null");
 
-        final String serverUrl = taskContext.getConfigurationMap().get(OctoConstants.SERVER_URL);
-        final String apiKey = taskContext.getConfigurationMap().get(OctoConstants.API_KEY);
-        final String spaceName = taskContext.getConfigurationMap().get(OctoConstants.SPACE_NAME);
-        final String forceUpload = taskContext.getConfigurationMap().get(OctoConstants.FORCE);
-        final Boolean forceUploadBoolean = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(forceUpload));
-        final String loggingLevel = taskContext.getConfigurationMap().get(OctoConstants.VERBOSE_LOGGING);
+        ConfigurationMap configurationMap = taskContext.getConfigurationMap();
+
+        final String serverUrl = configurationMap.get(OctoConstants.SERVER_URL);
+        final String apiKey = configurationMap.get(OctoConstants.API_KEY);
+        final String spaceName = configurationMap.get(OctoConstants.SPACE_NAME);
+
+        final String overwriteModeString = configurationMap.get(OctoConstants.OVERWRITE_MODE);
+        OverwriteMode overwriteMode = OverwriteMode.FailIfExists;
+
+        // if we don't have a overwriteMode defined then the step still has "legacy data" for forceUpload.
+        if (StringUtils.isEmpty(overwriteModeString)) {
+            final String forceUpload = configurationMap.get(OctoConstants.FORCE);
+            final Boolean forceUploadBoolean = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(forceUpload));
+
+            if (forceUploadBoolean) {
+                overwriteMode = OverwriteMode.OverwriteExisting;
+            }
+        }
+        else {
+            overwriteMode = OverwriteMode.valueOf(overwriteModeString);
+        }
+
+        final String loggingLevel = configurationMap.get(OctoConstants.VERBOSE_LOGGING);
         final Boolean verboseLogging = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(loggingLevel));
 
-        final String id = taskContext.getConfigurationMap().get(OctoConstants.PACK_ID_NAME);
-        final String version = taskContext.getConfigurationMap().get(OctoConstants.PACK_VERSION_NAME);
+        final String id = configurationMap.get(OctoConstants.PACK_ID_NAME);
+        final String version = configurationMap.get(OctoConstants.PACK_VERSION_NAME);
 
-        final String commentParser = taskContext.getConfigurationMap().get(OctoConstants.COMMENT_PARSER_NAME);
+        final String commentParser = configurationMap.get(OctoConstants.COMMENT_PARSER_NAME);
 
         checkState(StringUtils.isNotBlank(serverUrl), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus URL can not be blank");
         checkState(StringUtils.isNotBlank(apiKey), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: API key can not be blank");
@@ -171,8 +190,9 @@ public class OctopusMetadataTask extends OctoTask {
         commands.add("--metadata-file");
         commands.add(metaFile);
 
-        if (forceUploadBoolean) {
-            commands.add("--replace-existing");
+        if (overwriteMode != OverwriteMode.FailIfExists) {
+            commands.add("--overwrite-mode");
+            commands.add(overwriteMode.name());
         }
 
         return launchOcto(taskContext, commands);

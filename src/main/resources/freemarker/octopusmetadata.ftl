@@ -25,8 +25,9 @@
     <div class="description">[@s.text name='octopus.packId.help' /]</div>
     [@ww.textfield labelKey="octopus.packVersion.key" name="packVersion" required='false'/]
     <div class="description">[@s.text name='octopus.packVersion.help' /]</div>
-    [@ww.checkbox labelKey="octopus.force.key" name="force" required='false'/]
-    <div class="description">[@s.text name='octopus.force.help' /]</div>
+    [@ww.select cssClass="builderSelectWidget" labelKey="octopus.overwriteMode.key" required="true" name="overwriteMode"
+        list="overwriteModes" /]
+    <div class="description">[@s.text name='octopus.overwriteModeMetadata.help' /]</div>
     [@ww.select cssClass="builderSelectWidget" labelKey='octopus.commentParser.key' name='commentParser'
         list="commentParsers" required='false' /]
     <div class="description">[@s.text name='octopus.commentParser.help' /]</div>

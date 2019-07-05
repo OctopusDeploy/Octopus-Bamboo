@@ -25,7 +25,7 @@
     <div class="description">[@s.text name='octopus.pushPattern.help' /]</div>
     [@ww.select cssClass="builderSelectWidget" labelKey="octopus.overwriteMode.key" required="true" name="overwriteMode"
         list="overwriteModes" /]
-    <div class="description">[@s.text name='octopus.force.help' /]</div>
+    <div class="description">[@s.text name='octopus.overwriteModePush.help' /]</div>
 [/@ui.bambooSection]
 
 [@ui.bambooSection title='Advanced']

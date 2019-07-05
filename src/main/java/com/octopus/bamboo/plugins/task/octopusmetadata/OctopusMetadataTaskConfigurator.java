@@ -6,8 +6,11 @@ import com.atlassian.bamboo.utils.error.ErrorCollection;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.atlassian.struts.TextProvider;
+import com.octopus.bamboo.plugins.task.OverwriteMode;
+import com.octopus.bamboo.plugins.task.OverwriteModes;
 import com.octopus.constants.OctoConstants;
 import com.octopus.services.impl.BaseConfigurator;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,6 +50,7 @@ public class OctopusMetadataTaskConfigurator extends BaseConfigurator {
         config.put(OctoConstants.PACK_VERSION_NAME, params.getString(OctoConstants.PACK_VERSION_NAME));
         config.put(OctoConstants.COMMENT_PARSER_NAME, params.getString(OctoConstants.COMMENT_PARSER_NAME));
         config.put(OctoConstants.FORCE, params.getString(OctoConstants.FORCE));
+        config.put(OctoConstants.OVERWRITE_MODE, params.getString(OctoConstants.OVERWRITE_MODE));
         config.put(OctoConstants.VERBOSE_LOGGING, params.getString(OctoConstants.VERBOSE_LOGGING));
         config.put(OctoConstants.OCTOPUS_CLI, params.getString(OctoConstants.OCTOPUS_CLI));
         return config;
@@ -56,6 +60,7 @@ public class OctopusMetadataTaskConfigurator extends BaseConfigurator {
     public void populateContextForCreate(@NotNull final Map<String, Object> context) {
         context.put(OctoConstants.COMMENT_PARSERS_LIST, CommentParserFactory.getParsers());
         context.put(OctoConstants.UI_CONFIG_BEAN, this.getUIConfigSupport());
+        context.put(OctoConstants.OVERWRITE_MODES, OverwriteModes.getOverwriteModes());
     }
 
     @Override
@@ -66,17 +71,36 @@ public class OctopusMetadataTaskConfigurator extends BaseConfigurator {
 
         super.populateContextForEdit(context, taskDefinition);
 
-        context.put(OctoConstants.SERVER_URL, taskDefinition.getConfiguration().get(OctoConstants.SERVER_URL));
-        context.put(OctoConstants.API_KEY, taskDefinition.getConfiguration().get(OctoConstants.API_KEY));
-        context.put(OctoConstants.SPACE_NAME, taskDefinition.getConfiguration().get(OctoConstants.SPACE_NAME));
-        context.put(OctoConstants.PACK_ID_NAME, taskDefinition.getConfiguration().get(OctoConstants.PACK_ID_NAME));
-        context.put(OctoConstants.PACK_VERSION_NAME, taskDefinition.getConfiguration().get(OctoConstants.PACK_VERSION_NAME));
-        context.put(OctoConstants.COMMENT_PARSER_NAME, taskDefinition.getConfiguration().get(OctoConstants.COMMENT_PARSER_NAME));
-        context.put(OctoConstants.FORCE, taskDefinition.getConfiguration().get(OctoConstants.FORCE));
-        context.put(OctoConstants.VERBOSE_LOGGING, taskDefinition.getConfiguration().get(OctoConstants.VERBOSE_LOGGING));
-        context.put(OctoConstants.OCTOPUS_CLI, taskDefinition.getConfiguration().get(OctoConstants.OCTOPUS_CLI));
+        Map<String, String> configuration = taskDefinition.getConfiguration();
+
+        context.put(OctoConstants.SERVER_URL, configuration.get(OctoConstants.SERVER_URL));
+        context.put(OctoConstants.API_KEY, configuration.get(OctoConstants.API_KEY));
+        context.put(OctoConstants.SPACE_NAME, configuration.get(OctoConstants.SPACE_NAME));
+        context.put(OctoConstants.PACK_ID_NAME, configuration.get(OctoConstants.PACK_ID_NAME));
+        context.put(OctoConstants.PACK_VERSION_NAME, configuration.get(OctoConstants.PACK_VERSION_NAME));
+        context.put(OctoConstants.COMMENT_PARSER_NAME, configuration.get(OctoConstants.COMMENT_PARSER_NAME));
+
+        String overwriteModeString = configuration.get(OctoConstants.OVERWRITE_MODE);
+
+        if (StringUtils.isEmpty(overwriteModeString)) {
+            final String forceUpload = configuration.get(OctoConstants.FORCE);
+            final Boolean forceUploadBoolean = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(forceUpload));
+
+            if (forceUploadBoolean) {
+                overwriteModeString = OverwriteMode.OverwriteExisting.name();
+            }
+            else {
+                overwriteModeString = OverwriteMode.FailIfExists.name();
+            }
+        }
+
+        context.put(OctoConstants.OVERWRITE_MODE, overwriteModeString);
+
+        context.put(OctoConstants.VERBOSE_LOGGING, configuration.get(OctoConstants.VERBOSE_LOGGING));
+        context.put(OctoConstants.OCTOPUS_CLI, configuration.get(OctoConstants.OCTOPUS_CLI));
         context.put(OctoConstants.UI_CONFIG_BEAN, this.getUIConfigSupport());
         context.put(OctoConstants.COMMENT_PARSERS_LIST, CommentParserFactory.getParsers());
+        context.put(OctoConstants.OVERWRITE_MODES, OverwriteModes.getOverwriteModes());
     }
 
     @Override
