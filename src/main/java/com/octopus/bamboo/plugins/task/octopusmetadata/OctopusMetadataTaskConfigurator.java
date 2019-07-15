@@ -86,12 +86,7 @@ public class OctopusMetadataTaskConfigurator extends BaseConfigurator {
             final String forceUpload = configuration.get(OctoConstants.FORCE);
             final Boolean forceUploadBoolean = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(forceUpload));
 
-            if (forceUploadBoolean) {
-                overwriteModeString = OverwriteMode.OverwriteExisting.name();
-            }
-            else {
-                overwriteModeString = OverwriteMode.FailIfExists.name();
-            }
+            overwriteModeString = forceUploadBoolean ? OverwriteMode.OverwriteExisting.name() : OverwriteMode.FailIfExists.name();
         }
 
         context.put(OctoConstants.OVERWRITE_MODE, overwriteModeString);
