@@ -63,9 +63,13 @@ public class OctoConstants {
      */
     public static final String PUSH_PATTERN = "pushPattern";
     /**
-     * The configuration key for the force upload option
+     * The configuration key for the force upload option. This is now OBSOLETE, use OVERWRITE_MODE
      */
     public static final String FORCE = "force";
+    /**
+     * The configuration key for the overwrite mode.
+     */
+    public static final String OVERWRITE_MODE = "overwriteMode";
     /**
      * The configuration key for the release version option
      */
@@ -174,6 +178,8 @@ public class OctoConstants {
      * NUGET pack format
      */
     public static final String PACK_NUGET_FORMAT = "nuget";
+
+    public static final String OVERWRITE_MODES = "overwriteModes";
 
     public static final String API_KEY_ERROR_KEY = "octopus.apiKey.error";
     public static final String SERVER_URL_ERROR_KEY = "octopus.serverUrl.error";
