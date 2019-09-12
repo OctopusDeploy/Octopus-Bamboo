@@ -5,6 +5,7 @@ import com.atlassian.bamboo.build.logger.LogMutator;
 import com.atlassian.bamboo.commit.CommitContext;
 import com.atlassian.bamboo.configuration.AdministrationConfigurationAccessor;
 import com.atlassian.bamboo.configuration.ConfigurationMap;
+import com.atlassian.bamboo.deployments.execution.DeploymentTaskContext;
 import com.atlassian.bamboo.plan.PlanResultKey;
 import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.*;
@@ -123,7 +124,12 @@ public class OctopusMetadataTask extends OctoTask {
         final String metaFile = Paths.get(taskContext.getRootDirectory().getPath(), "octopus.metadata").toAbsolutePath().toString();
 
         try {
-            final BuildContext buildContext = ((TaskContext) taskContext).getBuildContext();
+            if (taskContext instanceof DeploymentTaskContext) {
+                buildLogger.addErrorLogEntry("The Octopus Package Metadata step is not supported for Deployments, it is only supported in Builds.");
+                throw new TaskException("Deployment tasks not supported");
+            }
+
+            final BuildContext buildContext = ((TaskContext)taskContext).getBuildContext();
             final BuildChanges buildChanges = buildContext.getBuildChanges();
             final List<CommitContext> commits = buildChanges.getChanges();
 
