@@ -1,4 +1,4 @@
-package com.octopus.bamboo.plugins.task.octopusmetadata;
+package com.octopus.bamboo.plugins.task.octopusbuildinformation;
 
 import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.google.gson.Gson;
@@ -8,16 +8,16 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class OctopusMetadataWriter {
+public class OctopusBuildInformationWriter {
     private BuildLogger buildLogger;
     private Boolean verboseLogging;
 
-    public OctopusMetadataWriter(final BuildLogger buildLogger, final Boolean verboseLogging) {
+    public OctopusBuildInformationWriter(final BuildLogger buildLogger, final Boolean verboseLogging) {
         this.buildLogger = buildLogger;
         this.verboseLogging = verboseLogging;
     }
 
-    public void writeToFile(final OctopusPackageMetadata octopusPackageMetadata, final String metaFile) throws IOException {
+    public void writeToFile(final OctopusBuildInformation octopusBuildInformation, final String metaFile) throws IOException {
         try {
             final Gson gson = new GsonBuilder()
                     .setPrettyPrinting()
@@ -25,12 +25,12 @@ public class OctopusMetadataWriter {
                     .create();
 
             if (verboseLogging) {
-                buildLogger.addBuildLogEntry("Serializing Octopus metadata");
+                buildLogger.addBuildLogEntry("Serializing Octopus build information");
             }
 
-            final String jsonData = gson.toJson(octopusPackageMetadata);
+            final String jsonData = gson.toJson(octopusBuildInformation);
             if (verboseLogging) {
-                buildLogger.addBuildLogEntry("Serialized Octopus metadata - " + jsonData);
+                buildLogger.addBuildLogEntry("Serialized Octopus build information - " + jsonData);
             }
 
             BufferedWriter bw = new BufferedWriter(new FileWriter(metaFile));
@@ -42,7 +42,7 @@ public class OctopusMetadataWriter {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            buildLogger.addErrorLogEntry("Error writing the octopus.metadata file");
+            buildLogger.addErrorLogEntry("Error writing the octopus.buildinformation file");
             throw e;
         }
     }

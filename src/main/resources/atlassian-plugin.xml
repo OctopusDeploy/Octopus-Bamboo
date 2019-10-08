@@ -76,12 +76,12 @@
                     primaryCapabilityProvider="false"/>
     </taskType>
 
-    <taskType key="task.octopusmetadata" name="Octopus Deploy: Octopus Metadata"
-              class="com.octopus.bamboo.plugins.task.octopusmetadata.OctopusMetadataTask">
+    <taskType key="task.octopusmetadata" name="Octopus Deploy: Octopus Build Information"
+              class="com.octopus.bamboo.plugins.task.octopusbuildinformation.OctopusBuildInformationTask">
         <description>Collect information related to the build, including work-items from commit messages, and store in custom metadata in Octopus.</description>
         <category name="deployment"/>
-        <configuration class="com.octopus.bamboo.plugins.task.octopusmetadata.OctopusMetadataTaskConfigurator"/>
-        <resource type="freemarker" name="edit" location="freemarker/octopusmetadata.ftl"/>
+        <configuration class="com.octopus.bamboo.plugins.task.octopusbuildinformation.OctopusBuildInformationTaskConfigurator"/>
+        <resource type="freemarker" name="edit" location="freemarker/octopusbuildinformation.ftl"/>
         <resource type="download" name="icon" location="images/pluginLogo.png"/>
         <executable key="octopuscli" nameKey="octopus.cli.key" pathHelpKey="octopus.cli.help"
                     primaryCapabilityProvider="false"/>

@@ -1,4 +1,4 @@
-package com.octopus.bamboo.plugins.task.octopusmetadata;
+package com.octopus.bamboo.plugins.task.octopusbuildinformation;
 
 import com.atlassian.bamboo.collections.ActionParametersMap;
 import com.atlassian.bamboo.task.TaskDefinition;
@@ -26,13 +26,13 @@ import static com.google.common.base.Preconditions.checkNotNull;
 @Component
 @ExportAsService({com.atlassian.bamboo.task.TaskConfigurator.class})
 @Named("octopusMetadataTaskConfigurator")
-public class OctopusMetadataTaskConfigurator extends BaseConfigurator {
+public class OctopusBuildInformationTaskConfigurator extends BaseConfigurator {
     @ComponentImport
     private final TextProvider textProvider;
 
     @Inject
-    public OctopusMetadataTaskConfigurator(@NotNull final TextProvider textProvider,
-                                @NotNull final ApplicationContext applicationContext) {
+    public OctopusBuildInformationTaskConfigurator(@NotNull final TextProvider textProvider,
+                                                   @NotNull final ApplicationContext applicationContext) {
         super(applicationContext);
         this.textProvider = checkNotNull(textProvider, "textProvider cannot be null");
     }
@@ -48,7 +48,6 @@ public class OctopusMetadataTaskConfigurator extends BaseConfigurator {
         config.put(OctoConstants.SPACE_NAME, params.getString(OctoConstants.SPACE_NAME));
         config.put(OctoConstants.PACK_ID_NAME, params.getString(OctoConstants.PACK_ID_NAME));
         config.put(OctoConstants.PACK_VERSION_NAME, params.getString(OctoConstants.PACK_VERSION_NAME));
-        config.put(OctoConstants.COMMENT_PARSER_NAME, params.getString(OctoConstants.COMMENT_PARSER_NAME));
         config.put(OctoConstants.FORCE, params.getString(OctoConstants.FORCE));
         config.put(OctoConstants.OVERWRITE_MODE, params.getString(OctoConstants.OVERWRITE_MODE));
         config.put(OctoConstants.VERBOSE_LOGGING, params.getString(OctoConstants.VERBOSE_LOGGING));
@@ -58,7 +57,6 @@ public class OctopusMetadataTaskConfigurator extends BaseConfigurator {
 
     @Override
     public void populateContextForCreate(@NotNull final Map<String, Object> context) {
-        context.put(OctoConstants.COMMENT_PARSERS_LIST, CommentParserFactory.getParsers());
         context.put(OctoConstants.UI_CONFIG_BEAN, this.getUIConfigSupport());
         context.put(OctoConstants.OVERWRITE_MODES, OverwriteModes.getOverwriteModes());
     }
@@ -78,7 +76,6 @@ public class OctopusMetadataTaskConfigurator extends BaseConfigurator {
         context.put(OctoConstants.SPACE_NAME, configuration.get(OctoConstants.SPACE_NAME));
         context.put(OctoConstants.PACK_ID_NAME, configuration.get(OctoConstants.PACK_ID_NAME));
         context.put(OctoConstants.PACK_VERSION_NAME, configuration.get(OctoConstants.PACK_VERSION_NAME));
-        context.put(OctoConstants.COMMENT_PARSER_NAME, configuration.get(OctoConstants.COMMENT_PARSER_NAME));
 
         String overwriteModeString = configuration.get(OctoConstants.OVERWRITE_MODE);
 
@@ -94,7 +91,6 @@ public class OctopusMetadataTaskConfigurator extends BaseConfigurator {
         context.put(OctoConstants.VERBOSE_LOGGING, configuration.get(OctoConstants.VERBOSE_LOGGING));
         context.put(OctoConstants.OCTOPUS_CLI, configuration.get(OctoConstants.OCTOPUS_CLI));
         context.put(OctoConstants.UI_CONFIG_BEAN, this.getUIConfigSupport());
-        context.put(OctoConstants.COMMENT_PARSERS_LIST, CommentParserFactory.getParsers());
         context.put(OctoConstants.OVERWRITE_MODES, OverwriteModes.getOverwriteModes());
     }
 
