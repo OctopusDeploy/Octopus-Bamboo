@@ -28,9 +28,6 @@
     [@ww.select cssClass="builderSelectWidget" labelKey="octopus.overwriteMode.key" required="true" name="overwriteMode"
         list="overwriteModes" /]
     <div class="description">[@s.text name='octopus.overwriteModeMetadata.help' /]</div>
-    [@ww.select cssClass="builderSelectWidget" labelKey='octopus.commentParser.key' name='commentParser'
-        list="commentParsers" required='false' /]
-    <div class="description">[@s.text name='octopus.commentParser.help' /]</div>
 [/@ui.bambooSection]
 
 [@ui.bambooSection title='Advanced']

@@ -1,4 +1,4 @@
-package com.octopus.bamboo.plugins.task.octopusmetadata;
+package com.octopus.bamboo.plugins.task.octopusbuildinformation;
 
 import com.atlassian.bamboo.build.logger.BuildLogger;
 import com.atlassian.bamboo.build.logger.LogMutator;
@@ -7,12 +7,14 @@ import com.atlassian.bamboo.configuration.AdministrationConfigurationAccessor;
 import com.atlassian.bamboo.configuration.ConfigurationMap;
 import com.atlassian.bamboo.deployments.execution.DeploymentTaskContext;
 import com.atlassian.bamboo.plan.PlanResultKey;
+import com.atlassian.bamboo.plan.branch.VcsBranch;
 import com.atlassian.bamboo.process.ProcessService;
 import com.atlassian.bamboo.task.*;
 import com.atlassian.bamboo.v2.build.BuildChanges;
 import com.atlassian.bamboo.v2.build.BuildContext;
 import com.atlassian.bamboo.v2.build.agent.capability.CapabilityContext;
 import com.atlassian.bamboo.vcs.configuration.PlanRepositoryDefinition;
+import com.atlassian.bamboo.vcs.configuration.VcsBranchDefinition;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
 import com.octopus.bamboo.plugins.task.OctoTask;
@@ -32,23 +34,24 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
 
 @Component
-@ExportAsService({OctopusMetadataTask.class})
+@ExportAsService({OctopusBuildInformationTask.class})
 @Named("octopusMetadataTask")
-public class OctopusMetadataTask extends OctoTask {
-    private static final Logger LOGGER = LoggerFactory.getLogger(OctopusMetadataTask.class);
+public class OctopusBuildInformationTask extends OctoTask {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OctopusBuildInformationTask.class);
     private AdministrationConfigurationAccessor administrationConfigurationAccessor;
 
     @Inject
-    public OctopusMetadataTask(@NotNull @ComponentImport final ProcessService processService,
-                    @NotNull @ComponentImport final CapabilityContext capabilityContext,
-                    @NotNull @ComponentImport final AdministrationConfigurationAccessor administrationConfigurationAccessor,
-                    @NotNull final CommonTaskService commonTaskService,
-                    @NotNull final LogMutator logMutator) {
+    public OctopusBuildInformationTask(@NotNull @ComponentImport final ProcessService processService,
+                                       @NotNull @ComponentImport final CapabilityContext capabilityContext,
+                                       @NotNull @ComponentImport final AdministrationConfigurationAccessor administrationConfigurationAccessor,
+                                       @NotNull final CommonTaskService commonTaskService,
+                                       @NotNull final LogMutator logMutator) {
         super(processService, capabilityContext, commonTaskService, logMutator);
         this.administrationConfigurationAccessor = administrationConfigurationAccessor;
     }
@@ -85,8 +88,6 @@ public class OctopusMetadataTask extends OctoTask {
         final String id = configurationMap.get(OctoConstants.PACK_ID_NAME);
         final String version = configurationMap.get(OctoConstants.PACK_VERSION_NAME);
 
-        final String commentParser = configurationMap.get(OctoConstants.COMMENT_PARSER_NAME);
-
         checkState(StringUtils.isNotBlank(serverUrl), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus URL can not be blank");
         checkState(StringUtils.isNotBlank(apiKey), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: API key can not be blank");
         checkState(StringUtils.isNotBlank(id), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Package id can not be blank");
@@ -100,7 +101,7 @@ public class OctopusMetadataTask extends OctoTask {
          */
         final List<String> commands = new ArrayList<String>();
 
-        commands.add(OctoConstants.OCTOPUS_METADATA_COMMAND);
+        commands.add(OctoConstants.OCTOPUS_BUILD_INFORMATION_COMMAND);
 
         commands.add("--server");
         commands.add(serverUrl);
@@ -121,11 +122,11 @@ public class OctopusMetadataTask extends OctoTask {
             commands.add(version);
         }
 
-        final String metaFile = Paths.get(taskContext.getRootDirectory().getPath(), "octopus.metadata").toAbsolutePath().toString();
+        final String dataFile = Paths.get(taskContext.getRootDirectory().getPath(), "octopus.buildinformation").toAbsolutePath().toString();
 
         try {
             if (taskContext instanceof DeploymentTaskContext) {
-                buildLogger.addErrorLogEntry("The Octopus Package Metadata step is not supported for Deployments, it is only supported in Builds.");
+                buildLogger.addErrorLogEntry("The Octopus Package Build Information step is not supported for Deployments, it is only supported in Builds.");
                 throw new TaskException("Deployment tasks not supported");
             }
 
@@ -147,21 +148,35 @@ public class OctopusMetadataTask extends OctoTask {
                 commitNumber = commit.getChangeSetId();
             }
 
-            final OctopusMetadataBuilder builder = new OctopusMetadataBuilder();
-
-            final PlanRepositoryDefinition vcsRepoDef = buildContext.getVcsRepositoryMap().get(buildContext.getRelevantRepositoryIds().toArray()[0]);
-
-            final Map<String, String> configuration = vcsRepoDef.getVcsLocation().getConfiguration();
+            final OctopusBuildInformationBuilder builder = new OctopusBuildInformationBuilder();
 
             String vcsType = "Unknown";
-            if (vcsRepoDef.getPluginKey().contains("git")) {
-                vcsType = "Git";
-            }
-
             String vcsRoot = "";
-            for (final String key : configuration.keySet()){
-                if (key.contains("repositoryUrl")) {
-                    vcsRoot = configuration.get(key);
+            String branch = "";
+            Set<Long> relevantRepositoryIds = buildContext.getRelevantRepositoryIds();
+
+            if (relevantRepositoryIds.size() > 0) {
+                final PlanRepositoryDefinition vcsRepoDef = buildContext.getVcsRepositoryMap().get(relevantRepositoryIds.toArray()[0]);
+
+                final Map<String, String> configuration = vcsRepoDef.getVcsLocation().getConfiguration();
+
+                if (vcsRepoDef.getPluginKey().contains("git")) {
+                    vcsType = "Git";
+                }
+
+                VcsBranchDefinition vcsBranchDefinition = vcsRepoDef.getBranch();
+                if (vcsBranchDefinition != null) {
+                    VcsBranch vcsBranch = vcsBranchDefinition.getVcsBranch();
+                    if (vcsBranch != null) {
+                        branch = vcsBranch.getDisplayName();
+                    }
+                }
+                for (final String key : configuration.keySet()) {
+                    if (key.contains("repositoryUrl")) {
+                        vcsRoot = configuration.get(key);
+                    } else if (key.contains("github.repository")) {
+                        vcsRoot = "https://github.com/" + configuration.get(key);
+                    }
                 }
             }
 
@@ -171,30 +186,30 @@ public class OctopusMetadataTask extends OctoTask {
             final String buildNumber = planResultKey.getKey();
             final String bambooServerUrl = administrationConfigurationAccessor.getAdministrationConfiguration().getBaseUrl();
 
-            final OctopusPackageMetadata metadata = builder.build(
+            final OctopusBuildInformation buildInformation = builder.build(
                     vcsType,
                     vcsRoot,
                     vcsCommitNumber,
                     commitList,
-                    commentParser,
+                    branch,
                     bambooServerUrl,
                     buildId,
                     buildNumber);
 
             if (verboseLogging) {
-                buildLogger.addBuildLogEntry("Creating " + metaFile);
+                buildLogger.addBuildLogEntry("Creating " + dataFile);
             }
 
-            final OctopusMetadataWriter writer = new OctopusMetadataWriter(buildLogger, verboseLogging);
-            writer.writeToFile(metadata, metaFile);
+            final OctopusBuildInformationWriter writer = new OctopusBuildInformationWriter(buildLogger, verboseLogging);
+            writer.writeToFile(buildInformation, dataFile);
 
         } catch (Exception ex) {
             buildLogger.addErrorLogEntry("Error processing comment messages", ex);
             return null;
         }
 
-        commands.add("--metadata-file");
-        commands.add(metaFile);
+        commands.add("--file");
+        commands.add(dataFile);
 
         if (overwriteMode != OverwriteMode.FailIfExists) {
             commands.add("--overwrite-mode");

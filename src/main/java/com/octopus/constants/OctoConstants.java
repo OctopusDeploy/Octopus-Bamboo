@@ -15,7 +15,7 @@ public class OctoConstants {
     /**
      * https://octopus.com/docs/packaging-applications/nuget-packages/using-octo.exe
      */
-    public static final String OCTOPUS_METADATA_COMMAND = "push-metadata";
+    public static final String OCTOPUS_BUILD_INFORMATION_COMMAND = "build-information";
     /**
      * https://octopus.com/docs/api-and-integration/octo.exe-command-line/creating-releases
      */
@@ -150,14 +150,6 @@ public class OctoConstants {
      * The configuration key for the pack overwrite option
      */
     public static final String PACK_OVERWRITE_NAME = "packOverwrite";
-    /**
-     * Collection of comment parsers
-     */
-    public static final String COMMENT_PARSERS_LIST = "commentParsers";
-    /**
-     * Selected comment parser
-     */
-    public static final String COMMENT_PARSER_NAME = "commentParser";
     /**
      * The name of the capability that links to the octopus cli
      */

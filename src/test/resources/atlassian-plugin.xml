@@ -8,7 +8,7 @@
     <!-- from our base plugin -->
     <component-import key="pushTask" interface="com.octopus.bamboo.plugins.task.push.PushTask"/>
     <component-import key="packTask" interface="com.octopus.bamboo.plugins.task.pack.PackTask"/>
-    <component-import key="octopusMetadataTask" interface="com.octopus.bamboo.plugins.task.octopusmetadata.OctopusMetadataTask"/>
+    <component-import key="octopusMetadataTask" interface="com.octopus.bamboo.plugins.task.octopusbuildinformation.OctopusBuildInformationTask"/>
     <component-import key="createReleaseTask" interface="com.octopus.bamboo.plugins.task.createrelease.CreateReleaseTask"/>
     <component-import key="deployReleaseTask" interface="com.octopus.bamboo.plugins.task.deployrelease.DeployReleaseTask"/>
     <component-import key="promoteReleaseTask" interface="com.octopus.bamboo.plugins.task.promoterelease.PromoteReleaseTask"/>
