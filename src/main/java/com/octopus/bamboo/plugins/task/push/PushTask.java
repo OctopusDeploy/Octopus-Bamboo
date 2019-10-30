@@ -17,7 +17,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang3.EnumUtils;
 import org.apache.tools.ant.types.Commandline;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -87,8 +86,7 @@ public class PushTask extends OctoTask {
             if (forceUploadBoolean) {
                 overwriteMode = OverwriteMode.OverwriteExisting;
             }
-        }
-        else {
+        } else {
             overwriteMode = OverwriteMode.valueOf(overwriteModeString);
         }
 
