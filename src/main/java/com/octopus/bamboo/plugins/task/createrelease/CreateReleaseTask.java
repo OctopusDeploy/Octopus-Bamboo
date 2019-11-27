@@ -139,7 +139,7 @@ public class CreateReleaseTask extends OctoTask {
         if (deploymentProgressEnabled) {
             commands.add("--progress");
 
-            if (!deploymentTimeout.isEmpty()) {
+            if (StringUtils.isNotBlank(deploymentTimeout)) {
                 commands.add("--deploymenttimeout");
                 commands.add(deploymentTimeout);
             }
