@@ -21,7 +21,7 @@
 [/@ui.bambooSection]
 
 [@ui.bambooSection title='Package']
-    [@ww.textfield labelKey="octopus.buildInfo.packId.key" name="packId" required='true'/]
+    [@ww.textarea labelKey="octopus.buildInfo.packId.key" name="packId" required='true'/]
     <div class="description">[@s.text name='octopus.buildInfo.packId.help' /]</div>
     [@ww.textfield labelKey="octopus.packVersion.key" name="packVersion" required='false'/]
     <div class="description">[@s.text name='octopus.packVersion.help' /]</div>
