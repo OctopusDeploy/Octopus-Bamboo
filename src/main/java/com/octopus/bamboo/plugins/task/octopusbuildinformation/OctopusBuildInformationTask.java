@@ -17,6 +17,7 @@ import com.atlassian.bamboo.vcs.configuration.PlanRepositoryDefinition;
 import com.atlassian.bamboo.vcs.configuration.VcsBranchDefinition;
 import com.atlassian.plugin.spring.scanner.annotation.export.ExportAsService;
 import com.atlassian.plugin.spring.scanner.annotation.imports.ComponentImport;
+import com.google.common.base.Splitter;
 import com.octopus.bamboo.plugins.task.OctoTask;
 import com.octopus.bamboo.plugins.task.OverwriteMode;
 import com.octopus.constants.OctoConstants;
@@ -85,12 +86,12 @@ public class OctopusBuildInformationTask extends OctoTask {
         final String loggingLevel = configurationMap.get(OctoConstants.VERBOSE_LOGGING);
         final Boolean verboseLogging = BooleanUtils.isTrue(BooleanUtils.toBooleanObject(loggingLevel));
 
-        final String id = configurationMap.get(OctoConstants.PACK_ID_NAME);
+        final String packageIds = configurationMap.get(OctoConstants.PACK_ID_NAME);
         final String version = configurationMap.get(OctoConstants.PACK_VERSION_NAME);
 
         checkState(StringUtils.isNotBlank(serverUrl), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus URL can not be blank");
         checkState(StringUtils.isNotBlank(apiKey), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: API key can not be blank");
-        checkState(StringUtils.isNotBlank(id), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Package id can not be blank");
+        checkState(StringUtils.isNotBlank(packageIds), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Package IDs can not be blank");
         checkState(StringUtils.isNotBlank(version), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Package version can not be blank");
 
         BuildLogger buildLogger = taskContext.getBuildLogger();
@@ -114,8 +115,14 @@ public class OctopusBuildInformationTask extends OctoTask {
             commands.add(spaceName);
         }
 
-        commands.add("--package-id");
-        commands.add(id);
+        final Iterable<String> packageIdsSplit = Splitter.on("\n")
+                .trimResults()
+                .omitEmptyStrings()
+                .split(packageIds);
+        for (final String packageId : packageIdsSplit) {
+            commands.add("--package-id");
+            commands.add(packageId);
+        }
 
         if (StringUtils.isNotBlank(version)) {
             commands.add("--version");

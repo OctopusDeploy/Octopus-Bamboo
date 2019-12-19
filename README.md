@@ -38,6 +38,31 @@ Create a Remote Debug configuration as below.
 
 Once the atlas command has the server to the point where it is fully running, you can start the Remote Debug configuration and IntelliJ will attach to the running process.
 
+## Testing changes on a remote Bamboo build agent
+_Taken directly from Atlassian's [Bamboo remote agent installation guide](https://confluence.atlassian.com/bamboo/bamboo-remote-agent-installation-guide-289276832.html)._
+
+##### 1. Enable remote agent support
+
+- Click the ![cog](cog.png) icon in the Bamboo header and choose **Overview**.
+- In the left-hand panel, under Build Resources, click **Agents**.
+- Click either **Enable Remote Agent Support** or **Disable Remote Agent Support**.
+
+##### 2. Download and install the remote agent
+- Create a directory on the agent machine (e.g. `bamboo-agent-home`) to serve as the Bamboo agent home for the remote agent.
+- Click the ![cog](cog.png) icon in the Bamboo header and choose **Overview**.
+- In the left-hand panel, under Build Resource, click **Agents** in the left panel.
+  - The _'Agents'_ screen displays showing the lists of all local agents and all remote agents that currently exist on your Bamboo system.
+- If not already enabled, click the **Enable remote agent support** link 
+- Click **Install Remote Agent**. The _'Installing a remote agent'_ screen will display
+- Click **DOWNLOAD Remote Agent JAR** and save the JAR file to the directory on the agent machine that you created above.
+- Copy the command under _'Running a Remote Agent'_ to the clipboard for use in Step 3 that follows.
+
+##### 3. Launch the remote agent
+Once installed, run the remote agent by executing the command line obtained above. This command will look something like this:
+```
+java -jar atlassian-bamboo-agent-installer-<version>.jar http://bamboo-host-server:6990/bamboo/agentServer/
+```
+
 ## Building the Plugin
 Run the command `atlas-package` to build the plugin. The compiled plugin will be saved as `target\bamboo.jar`.
 
