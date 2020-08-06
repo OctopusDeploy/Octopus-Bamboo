@@ -6,6 +6,7 @@ import com.atlassian.bamboo.build.docker.DockerPipelineConfiguration;
 import com.atlassian.bamboo.chains.ChainStorageTag;
 import com.atlassian.bamboo.credentials.CredentialsData;
 import com.atlassian.bamboo.plan.PlanKey;
+import com.atlassian.bamboo.plan.artifact.CommonArtifactContext;
 import com.atlassian.bamboo.repository.RepositoryDefinition;
 import com.atlassian.bamboo.task.TaskDefinition;
 import com.atlassian.bamboo.task.runtime.RuntimeTaskDefinition;
@@ -78,6 +79,12 @@ public class StubCommonContext implements CommonContext {
     }
 
     public CurrentResult getCurrentResult() {
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public CommonArtifactContext getArtifactContext() {
         return null;
     }
 
