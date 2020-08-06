@@ -28,7 +28,7 @@ public class RecordingBuildLogger implements BuildLogger {
     public List<LogEntry> findErrorLogs(@NotNull final String message) {
         checkNotNull(message);
 
-        final List<LogEntry> retValue = new ArrayList<>(this.getErrorLog());
+        final List<LogEntry> retValue = new ArrayList<>(errorlogs);
 
         CollectionUtils.filter(
                 retValue,
@@ -45,7 +45,7 @@ public class RecordingBuildLogger implements BuildLogger {
     public List<LogEntry> findLogs(@NotNull final String message) {
         checkNotNull(message);
 
-        final List<LogEntry> retValue = new ArrayList<>(this.getBuildLog());
+        final List<LogEntry> retValue = new ArrayList<>(buildlogs);
 
         CollectionUtils.filter(
                 retValue,
@@ -61,25 +61,13 @@ public class RecordingBuildLogger implements BuildLogger {
 
     @NotNull
     @Override
-    public List<LogEntry> getBuildLog() {
-        return buildlogs;
-    }
-
-    @NotNull
-    @Override
-    public List<LogEntry> getErrorLog() {
-        return errorlogs;
-    }
-
-    @NotNull
-    @Override
     public List<LogEntry> getLastNLogEntries(int i) {
         return null;
     }
 
     @Override
-    public List<String> getStringErrorLogs() {
-        return null;
+    public int getLogEntryCount() {
+        return 0;
     }
 
     @NotNull
@@ -93,11 +81,6 @@ public class RecordingBuildLogger implements BuildLogger {
     public String addBuildLogEntry(@NotNull String s) {
         buildlogs.add(new SimpleLogEntry(s));
         return s;
-    }
-
-    @Override
-    public String addBuildLogHeader(String s, boolean b) {
-        return null;
     }
 
     @NotNull
@@ -124,11 +107,6 @@ public class RecordingBuildLogger implements BuildLogger {
     }
 
     @Override
-    public void clearBuildLog() {
-
-    }
-
-    @Override
     public long getTimeOfLastLog() {
         return 0;
     }
@@ -148,5 +126,10 @@ public class RecordingBuildLogger implements BuildLogger {
     @Override
     public void close() {
 
+    }
+
+    @Override
+    public boolean isPersistent() {
+        return false;
     }
 }
