@@ -150,4 +150,9 @@ public class StubCommonContext implements CommonContext {
     public DockerPipelineConfiguration getDockerPipelineConfiguration() {
         return null;
     }
+
+    @Override
+    public boolean isVerboseLoggingOn() {
+        return false;
+    }
 }
