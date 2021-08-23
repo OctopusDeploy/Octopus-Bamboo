@@ -80,6 +80,9 @@ public class CreateReleaseTask extends OctoTask {
         final String tenants = taskContext.getConfigurationMap().get(OctoConstants.TENANTS_NAME);
         final String tenantTags = taskContext.getConfigurationMap().get(OctoConstants.TENANT_TAGS_NAME);
 
+        final String gitRef = taskContext.getConfigurationMap().get(OctoConstants.GIT_REF);
+        final String gitCommit = taskContext.getConfigurationMap().get(OctoConstants.GIT_COMMIT);
+
         checkState(StringUtils.isNotBlank(serverUrl), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Octopus URL can not be blank");
         checkState(StringUtils.isNotBlank(apiKey), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: API key can not be blank");
         checkState(StringUtils.isNotBlank(projectName), "OCTOPUS-BAMBOO-INPUT-ERROR-0002: Project name can not be blank");
@@ -115,6 +118,16 @@ public class CreateReleaseTask extends OctoTask {
         if (StringUtils.isNotBlank(channelName)) {
             commands.add("--channel");
             commands.add(channelName);
+        }
+
+        if (StringUtils.isNotBlank(gitRef)) {
+            commands.add("--gitRef");
+            commands.add(gitRef);
+        }
+
+        if (StringUtils.isNotBlank(gitCommit)) {
+            commands.add("--gitCommit");
+            commands.add(gitCommit);
         }
 
         if (ignoreExisting) {

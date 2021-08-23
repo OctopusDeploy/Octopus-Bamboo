@@ -83,6 +83,16 @@ public class OctoConstants {
      */
     public static final String CHANNEL_NAME = "channelName";
     /**
+     * The configuration key for the git commit option
+     */
+    public static final String GIT_COMMIT = "gitCommit";
+
+    /**
+     * The configuration key for the git ref option
+     */
+    public static final String GIT_REF = "gitRef";
+
+    /**
      * The configuration key for the environment name option
      */
     public static final String ENVIRONMENT_NAME = "environmentName";
