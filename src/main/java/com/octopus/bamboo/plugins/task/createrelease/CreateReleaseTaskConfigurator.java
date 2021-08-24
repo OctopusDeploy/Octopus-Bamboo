@@ -50,6 +50,8 @@ public class CreateReleaseTaskConfigurator extends BaseConfigurator {
         config.put(OctoConstants.SPACE_NAME, params.getString(OctoConstants.SPACE_NAME));
         config.put(OctoConstants.PROJECT_NAME, params.getString(OctoConstants.PROJECT_NAME));
         config.put(OctoConstants.CHANNEL_NAME, params.getString(OctoConstants.CHANNEL_NAME));
+        config.put(OctoConstants.GIT_REF, params.getString(OctoConstants.GIT_REF));
+        config.put(OctoConstants.GIT_COMMIT, params.getString(OctoConstants.GIT_COMMIT));
         config.put(OctoConstants.VERBOSE_LOGGING, params.getString(OctoConstants.VERBOSE_LOGGING));
         config.put(OctoConstants.RELEASE_VERSION, params.getString(OctoConstants.RELEASE_VERSION));
         config.put(OctoConstants.ENVIRONMENT_NAME, params.getString(OctoConstants.ENVIRONMENT_NAME));

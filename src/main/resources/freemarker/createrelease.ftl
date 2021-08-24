@@ -29,6 +29,10 @@
     <div class="description">[@s.text name='octopus.channelName.help' /]</div>
     [@ww.checkbox labelKey="octopus.ignoreExisting.key" name="ignoreExisting" required='false'/]
     <div class="description">[@s.text name='octopus.ignoreExisting.help' /]</div>
+    [@ww.textfield labelKey="octopus.gitRef.key" name="gitRef" required='false'/]
+    <div class="description">[@s.text name='octopus.gitRef.help' /]</div>
+    [@ww.textfield labelKey="octopus.gitCommit.key" name="gitCommit" required='false'/]
+    <div class="description">[@s.text name='octopus.gitCommit.help' /]</div>
 [/@ui.bambooSection]
 
 [@ui.bambooSection title='Deployment']
