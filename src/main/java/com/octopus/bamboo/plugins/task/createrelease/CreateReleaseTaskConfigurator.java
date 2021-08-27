@@ -88,6 +88,8 @@ public class CreateReleaseTaskConfigurator extends BaseConfigurator {
         context.put(OctoConstants.RELEASE_VERSION, taskDefinition.getConfiguration().get(OctoConstants.RELEASE_VERSION));
         context.put(OctoConstants.ENVIRONMENT_NAME, taskDefinition.getConfiguration().get(OctoConstants.ENVIRONMENT_NAME));
         context.put(OctoConstants.IGNORE_EXISTING_RELEASE_NAME, taskDefinition.getConfiguration().get(OctoConstants.IGNORE_EXISTING_RELEASE_NAME));
+        context.put(OctoConstants.GIT_COMMIT, taskDefinition.getConfiguration().get(OctoConstants.GIT_COMMIT));
+        context.put(OctoConstants.GIT_REF, taskDefinition.getConfiguration().get(OctoConstants.GIT_REF));
         context.put(OctoConstants.SHOW_DEPLOYMENT_PROGRESS, taskDefinition.getConfiguration().get(OctoConstants.SHOW_DEPLOYMENT_PROGRESS));
         context.put(OctoConstants.DEPLOYMENT_TIMEOUT, taskDefinition.getConfiguration().get(OctoConstants.DEPLOYMENT_TIMEOUT));
         context.put(OctoConstants.CANCEL_DEPLOYMENT_ON_TIMEOUT, taskDefinition.getConfiguration().get(OctoConstants.CANCEL_DEPLOYMENT_ON_TIMEOUT));
