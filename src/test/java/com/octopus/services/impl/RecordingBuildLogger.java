@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -24,6 +25,7 @@ public class RecordingBuildLogger implements BuildLogger {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecordingBuildLogger.class);
     private final List<LogEntry> buildlogs = new ArrayList<>();
     private final List<LogEntry> errorlogs = new ArrayList<>();
+    private final AtomicLong timeOfLastLog = new AtomicLong(0L);
 
     public List<LogEntry> findErrorLogs(@NotNull final String message) {
         checkNotNull(message);
@@ -108,7 +110,14 @@ public class RecordingBuildLogger implements BuildLogger {
 
     @Override
     public long getTimeOfLastLog() {
-        return 0;
+        return timeOfLastLog.get();
+    }
+
+
+    // NOTE: This is an override, but only exists in Bamboo 8+, thus is left out for Bamboo 7 compatibility
+    public void setTimeOfLastLog(final long l) {
+        timeOfLastLog.set(l);
+
     }
 
     @NotNull
