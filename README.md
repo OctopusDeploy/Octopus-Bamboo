@@ -73,9 +73,8 @@ require that the Bamboo plugin be republished.
 
 To update the marketplace, use the following steps.
 
-1. Build the JAR file. You can do this locally, or get the JAR file artifact from TeamCity. Note that you will need
-   to increment the version inside the pom.xml file before building (`<version>1.0.3</version>`). This version is used 
-   by the store to show the latest artifact to end users.
+1. Build the JAR file. You can do this locally, or get the JAR file artifact from TeamCity. 
+    - Note that if you are building locally you will need to increment the version inside the pom.xml file before building (`<version>1.0.3</version>`). This version is used by the store to show the latest artifact to end users.
 2. Browse to https://marketplace.atlassian.com/manage/plugins/com.octopus.bamboo/versions. Use the atlassian@octopus.com
    account - credentials are in the password manager.
 3. Click the `Create version` button.
