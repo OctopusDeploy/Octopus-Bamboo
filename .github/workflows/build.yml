@@ -90,7 +90,7 @@ jobs:
       - name: Compress package for Octopus
         run: |
           mkdir artifacts
-          gzip -c target/bamboo.jar > artifacts/bamboo.${{ needs.build.outputs.nuGetVersion }}.zip
+          zip artifacts/bamboo.${{ needs.build.outputs.nuGetVersion }}.zip target/bamboo.jar
 
       - name: Install Octopus CLI 🐙
         uses: OctopusDeploy/install-octopus-cli-action@v1
@@ -126,5 +126,3 @@ jobs:
           project: 'Bamboo Plugin'
           package_version: ${{ needs.build.outputs.nuGetVersion }}
           release_notes_file: ${{ (github.event_name == 'release' && steps.fetch-release-notes.outputs.release-note-file) || ''}}
-          git_ref: ${{ (github.ref_type == 'tag' && 'main' ) || (github.head_ref || github.ref) }}
-          git_commit: ${{ github.event.after || github.event.pull_request.head.sha }}
