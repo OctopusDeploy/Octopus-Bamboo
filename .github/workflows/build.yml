@@ -17,6 +17,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04
+    # conditionally skip build on PR merge of release-please, because the release creation is going to trigger the real build
+    if: ${{ github.ref_name != 'main' || github.event.head_commit.author.username != 'team-integrations-fnm-bot' }}
+    outputs:
+      nuGetVersion: ${{ steps.git-version.outputs.nuGetVersion }}
+
     steps:
       - uses: actions/checkout@v2
         with:
@@ -84,7 +89,8 @@ jobs:
 
       - name: Compress package for Octopus
         run: |
-          gzip -c "target/bamboo.jar" > "artifacts/bamboo.${{ needs.build.outputs.nuGetVersion }}.zip"
+          mkdir artifacts
+          gzip -c target/bamboo.jar > artifacts/bamboo.${{ needs.build.outputs.nuGetVersion }}.zip
 
       - name: Install Octopus CLI 🐙
         uses: OctopusDeploy/install-octopus-cli-action@v1
