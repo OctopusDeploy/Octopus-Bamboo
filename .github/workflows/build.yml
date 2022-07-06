@@ -67,7 +67,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: bamboo.${{ needs.build.outputs.nuGetVersion }}
+          name: bamboo.${{ steps.git-version.outputs.nuGetVersion }}
           path: '**/target/*.jar'
 
   publish:
