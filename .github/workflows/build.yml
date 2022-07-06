@@ -6,8 +6,8 @@ on:
   push:
     branches:
       - '**'
-    tags-ignore:
-      - '**'
+  release:
+    types: [published]
   schedule:
     # Daily 5am australian/brisbane time
     - cron: '19 0 * * *'
@@ -62,5 +62,63 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: package
+          name: bamboo.${{ needs.build.outputs.nuGetVersion }}
           path: '**/target/*.jar'
+
+  publish:
+    name: Publish the packages
+    needs: [build]
+    runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
+    env:
+      OCTOPUS_CLI_SERVER: ${{ secrets.OCTOPUS_URL }}
+      OCTOPUS_CLI_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+      OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+      OCTOPUS_HOST: ${{ secrets.OCTOPUS_URL }}
+      OCTOPUS_SPACE: Spaces-62
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: bamboo.${{ needs.build.outputs.nuGetVersion }}
+          path: .
+
+      - name: Compress package for Octopus
+        run: |
+          gzip -c "target/bamboo.jar" > "artifacts/bamboo.${{ needs.build.outputs.nuGetVersion }}.zip"
+
+      - name: Install Octopus CLI 🐙
+        uses: OctopusDeploy/install-octopus-cli-action@v1
+        with:
+          version: latest
+      
+      - name: Push build information 🐙
+        uses: OctopusDeploy/push-build-information-action@v1
+        with:
+          debug: true
+          packages: bamboo
+          version: ${{ needs.build.outputs.nuGetVersion }}
+
+      - name: Push package to feed 🐙
+        uses: OctopusDeploy/push-package-action@v1
+        with:
+          space: Integrations
+          packages: 'artifacts/bamboo.${{ needs.build.outputs.nuGetVersion }}.zip'
+
+      - name: Fetch Release Notes
+        id: fetch-release-notes
+        if: github.event_name == 'release'
+        run: |
+          echo "::debug::${{github.event_name}}"
+          OUTPUT_FILE="release_notes.txt"
+          jq --raw-output '.release.body' ${{ github.event_path }} | sed 's#\r#  #g' > $OUTPUT_FILE
+          echo "::set-output name=release-note-file::$OUTPUT_FILE"
+
+      - name: Create a release in Octopus Deploy 🐙
+        uses: OctopusDeploy/create-release-action@v1
+        with:
+          space: Integrations
+          project: 'Bamboo Plugin'
+          package_version: ${{ needs.build.outputs.nuGetVersion }}
+          release_notes_file: ${{ (github.event_name == 'release' && steps.fetch-release-notes.outputs.release-note-file) || ''}}
+          git_ref: ${{ (github.ref_type == 'tag' && 'main' ) || (github.head_ref || github.ref) }}
+          git_commit: ${{ github.event.after || github.event.pull_request.head.sha }}
