@@ -61,9 +61,9 @@ jobs:
         run: |
           mvn versions:set -DnewVersion=${{ steps.git-version.outputs.nuGetVersion }}
 
-      - name: Test 🏗
+      - name: Unit Test 🏗
         run : |
-          atlas-integration-test
+          atlas-unit-test
 
       - name: Publish 📁
         run: |
