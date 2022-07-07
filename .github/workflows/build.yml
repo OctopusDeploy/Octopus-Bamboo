@@ -90,7 +90,7 @@ jobs:
       - name: Compress package for Octopus
         run: |
           mkdir artifacts
-          zip artifacts/bamboo.${{ needs.build.outputs.nuGetVersion }}.zip target/bamboo.jar
+          zip -j artifacts/bamboo.${{ needs.build.outputs.nuGetVersion }}.zip target/bamboo.jar
 
       - name: Install Octopus CLI 🐙
         uses: OctopusDeploy/install-octopus-cli-action@v1
