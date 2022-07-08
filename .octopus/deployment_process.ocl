@@ -5,12 +5,14 @@ step "Push package to Atlassian Marketplace" {
         properties = {
             Octopus.Action.Script.ScriptBody = <<-EOT
                 echo "Uploading new artifact version '#{Octopus.Release.Number}'"
+                artifactDir=$(get_octopusvariable "Octopus.Action.Package[bamboo].ExtractedPath")
+                ls $artifactDir
                 uploadedAsset=$(curl --request POST \
                   --url 'https://marketplace.atlassian.com/rest/2/assets/artifact?file=bamboo.jar' \
                   --user "#{ATLASSIAN_MARKETPLACE_USERNAME}:#{ATLASSIAN_MARKETPLACE_APIKEY}" \
                   --header 'Accept: application/json' \
                   --header 'Content-Type: application/binary' \
-                  --data-binary '@$(get_octopusvariable "Octopus.Action.Package[bamboo].ExtractedPath")/bamboo.jar')
+                  --data-binary '@$artifactDir/bamboo.jar')
                 
                 echo '##octopus[stdout-verbose]'
                 echo $uploadedAsset | jq
