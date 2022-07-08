@@ -14,7 +14,7 @@ step "Push package to Atlassian Marketplace" {
                   --data-binary "@$(get_octopusvariable "Octopus.Action.Package[bamboo].ExtractedPath")/bamboo.jar")
                 
                 echo '##octopus[stdout-verbose]'
-                echo $uploadedAsset | jq
+                echo $uploadedAsset
                 echo '##octopus[stdout-default]'
                 
                 assetUri=$(echo $uploadedAsset | jq '._links.self.href')
@@ -43,6 +43,7 @@ step "Publish new app version to Atlassian Marketplace" {
 
     action {
         action_type = "Octopus.Script"
+        is_disabled = true
         properties = {
             Octopus.Action.Script.ScriptBody = <<-EOT
                 latestAppVersion=$(curl --request GET --url 'https://marketplace.atlassian.com/rest/2/addons/#{addonKey}/versions/latest' --header 'Accept: application/json') | jq
