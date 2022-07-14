@@ -116,7 +116,7 @@ jobs:
           version: ${{ needs.build.outputs.nuGetVersion }}
 
       - name: Push package to feed 🐙
-        uses: OctopusDeploy/push-package-action@v1
+        uses: OctopusDeploy/push-package-action@v2
         with:
           space: Integrations
           packages: 'artifacts/bamboo.${{ needs.build.outputs.nuGetVersion }}.zip'
@@ -131,7 +131,7 @@ jobs:
           echo "::set-output name=release-note-file::$OUTPUT_FILE"
 
       - name: Create a release in Octopus Deploy 🐙
-        uses: OctopusDeploy/create-release-action@v1
+        uses: OctopusDeploy/create-release-action@v2
         with:
           space: Integrations
           project: 'Bamboo Plugin'
