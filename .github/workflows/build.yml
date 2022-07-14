@@ -91,7 +91,7 @@ jobs:
       OCTOPUS_CLI_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
       OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
       OCTOPUS_HOST: ${{ secrets.OCTOPUS_URL }}
-      OCTOPUS_SPACE: Spaces-62
+      OCTOPUS_SPACE: Integrations
     steps:
       - uses: actions/download-artifact@v3
         with:
@@ -118,7 +118,6 @@ jobs:
       - name: Push package to feed 🐙
         uses: OctopusDeploy/push-package-action@v2
         with:
-          space: Integrations
           packages: 'artifacts/bamboo.${{ needs.build.outputs.nuGetVersion }}.zip'
 
       - name: Fetch Release Notes
@@ -133,7 +132,6 @@ jobs:
       - name: Create a release in Octopus Deploy 🐙
         uses: OctopusDeploy/create-release-action@v2
         with:
-          space: Integrations
           project: 'Bamboo Plugin'
           package_version: ${{ needs.build.outputs.nuGetVersion }}
           release_notes_file: ${{ (github.event_name == 'release' && steps.fetch-release-notes.outputs.release-note-file) || ''}}
