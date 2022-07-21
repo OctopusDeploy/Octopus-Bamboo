@@ -12,7 +12,7 @@ step "push-package-to-atlassian-marketplace" {
                   --user "#{ATLASSIAN_MARKETPLACE_USERNAME}:#{ATLASSIAN_MARKETPLACE_APIKEY}" \
                   --header 'Accept: application/json' \
                   --header 'Content-Type: application/binary' \
-                  --data-binary "@$(get_octopusvariable "Octopus.Action.Package[bamboo].ExtractedPath")/bamboo.jar")
+                  --data-binary "@./bamboo/bamboo.jar")
                 
                 echo '##octopus[stdout-verbose]'
                 echo $uploadedAsset | jq
@@ -23,7 +23,7 @@ step "push-package-to-atlassian-marketplace" {
                 set_octopusvariable "AssetUri" "$assetUri"
             EOT
             Octopus.Action.Script.ScriptSource = "Inline"
-            Octopus.Action.Script.Syntax = "PowerShell"
+            Octopus.Action.Script.Syntax = "Bash"
         }
         worker_pool = "hosted-ubuntu"
 
