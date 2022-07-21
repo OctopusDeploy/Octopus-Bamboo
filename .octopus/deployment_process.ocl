@@ -47,7 +47,7 @@ step "publish-new-app-version-to-atlassian-marketplace" {
         action_type = "Octopus.Script"
         properties = {
             Octopus.Action.Script.ScriptBody = <<-EOT
-                latestAppVersion=$(curl --request GET --url 'https://marketplace.atlassian.com/rest/2/addons/#{addonKey}/versions/latest' --header 'Accept: application/json') | jq
+                latestAppVersion=$(curl --request GET --url 'https://marketplace.atlassian.com/rest/2/addons/#{addonKey}/versions/latest' --header 'Accept: application/json') | jq '.'
                 
                 newAppVersion=$(echo $latestAppVersion \
                     | jq 'del(._links.self)' \
