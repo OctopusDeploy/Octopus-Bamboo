@@ -64,5 +64,9 @@ jobs:
       run: |
         mvn versions:set -DnewVersion=0.0.1
 
+    - name: Publish 📁
+      run: |
+        atlas-package
+
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
