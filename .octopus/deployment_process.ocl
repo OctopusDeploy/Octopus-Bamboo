@@ -15,7 +15,7 @@ step "push-package-to-atlassian-marketplace" {
                   --data-binary "@./bamboo/bamboo.jar")
                 
                 echo '##octopus[stdout-verbose]'
-                echo $uploadedAsset | jq || echo $uploadedAsset && exit 1
+                echo $uploadedAsset | jq '.' || echo $uploadedAsset && exit 1
                 echo '##octopus[stdout-default]'
                 
                 assetUri=$(echo $uploadedAsset | jq '._links.self.href')
@@ -63,7 +63,7 @@ step "publish-new-app-version-to-atlassian-marketplace" {
                 
                 echo "Creating new app version '#{Octopus.Release.Number}'"
                 echo '##octopus[stdout-verbose]'
-                echo $newAppVersion | jq
+                echo $newAppVersion | jq '.'
                 echo '##octopus[stdout-default]'
                 
                 curl --request POST \
