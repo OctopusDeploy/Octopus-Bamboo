@@ -1,0 +1,139 @@
+name: Build, Test, Package and Push
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on pull request events and merges/pushes to main
+  push:
+    branches:
+      - '**'
+  release:
+    types: [published]
+  schedule:
+    # Daily 5am australian/brisbane time
+    - cron: '19 0 * * *'
+    # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    # conditionally skip build on PR merge of release-please, because the release creation is going to trigger the real build
+    if: ${{ github.ref_name != 'main' || github.event.head_commit.author.username != 'team-integrations-fnm-bot' }}
+    outputs:
+      nuGetVersion: ${{ steps.git-version.outputs.nuGetVersion }}
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # all
+
+      - name: Cache the Maven packages to speed up build
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Install Atlas SDK
+        shell: bash
+        run: |
+          sudo sh -c 'echo "deb https://packages.atlassian.com/debian/atlassian-sdk-deb/ stable contrib" >> /etc/apt/sources.list'
+          wget https://packages.atlassian.com/api/gpg/key/public
+          sudo apt-key add public
+          sudo apt-get update
+          sudo apt-get install atlassian-plugin-sdk
+          atlas-version
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.13
+        with:
+          versionSpec: '5.x'
+
+      - name: Call GitVersion
+        uses: gittools/actions/gitversion/execute@v0.9.13
+
+      - name: Determine Version
+        id: git-version
+        run: |
+          if [ "${{ github.event_name }}" == "schedule" ]
+          then
+            echo "::set-output name=nuGetVersion::${GITVERSION_MAJORMINORPATCH}-nightly-${{ github.run_number }}"
+            echo "Version: ${GITVERSION_MAJORMINORPATCH}-nightly-${{ github.run_number }}"
+          else
+            echo "::set-output name=nuGetVersion::${GITVERSION_FULLSEMVER}"
+            echo "Version: ${GITVERSION_FULLSEMVER}"
+          fi
+
+      - name: Build 🏗
+        run: |
+          mvn versions:set -DnewVersion=${{ steps.git-version.outputs.nuGetVersion }}
+
+      - name: Unit Test 🏗
+        run : |
+          atlas-unit-test
+
+      - name: Publish 📁
+        run: |
+          atlas-package
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: bamboo.${{ steps.git-version.outputs.nuGetVersion }}
+          path: '**/target/*.jar'
+
+  publish:
+    name: Publish the packages
+    needs: [build]
+    runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
+    env:
+      OCTOPUS_CLI_SERVER: ${{ secrets.OCTOPUS_URL }}
+      OCTOPUS_CLI_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+      OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+      OCTOPUS_HOST: ${{ secrets.OCTOPUS_URL }}
+      OCTOPUS_SPACE: Integrations
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: bamboo.${{ needs.build.outputs.nuGetVersion }}
+          path: .
+
+      - name: Compress package for Octopus
+        run: |
+          mkdir artifacts
+          zip -j artifacts/bamboo.${{ needs.build.outputs.nuGetVersion }}.zip target/bamboo.jar
+
+      - name: Install Octopus CLI 🐙
+        uses: OctopusDeploy/install-octopus-cli-action@v1
+        with:
+          version: latest
+      
+      - name: Push build information 🐙
+        uses: OctopusDeploy/push-build-information-action@v1
+        with:
+          debug: true
+          packages: bamboo
+          version: ${{ needs.build.outputs.nuGetVersion }}
+
+      - name: Push package to feed 🐙
+        uses: OctopusDeploy/push-package-action@v2
+        with:
+          packages: 'artifacts/bamboo.${{ needs.build.outputs.nuGetVersion }}.zip'
+
+      - name: Fetch Release Notes
+        id: fetch-release-notes
+        if: github.event_name == 'release'
+        run: |
+          echo "::debug::${{github.event_name}}"
+          OUTPUT_FILE="release_notes.txt"
+          jq --raw-output '.release.body' ${{ github.event_path }} | sed 's#\r#  #g' > $OUTPUT_FILE
+          echo "::set-output name=release-note-file::$OUTPUT_FILE"
+
+      - name: Create a release in Octopus Deploy 🐙
+        uses: OctopusDeploy/create-release-action@v2
+        with:
+          project: 'Bamboo Plugin'
+          package_version: ${{ needs.build.outputs.nuGetVersion }}
+          release_notes_file: ${{ (github.event_name == 'release' && steps.fetch-release-notes.outputs.release-note-file) || ''}}
+          git_ref: ${{ (github.ref_type == 'tag' && 'main' ) || (github.head_ref || github.ref) }}
+          git_commit: ${{ github.event.after || github.event.pull_request.head.sha }}
