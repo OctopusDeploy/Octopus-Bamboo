@@ -23,7 +23,7 @@ step "push-package-to-atlassian-marketplace" {
                 set_octopusvariable "AssetUri" "$assetUri"
             EOT
             Octopus.Action.Script.ScriptSource = "Inline"
-            Octopus.Action.Script.Syntax = "Bash"
+            Octopus.Action.Script.Syntax = "PowerShell"
         }
         worker_pool = "hosted-ubuntu"
 
