@@ -6,6 +6,6 @@ versioning_strategy {
 
     donor_package {
         package = "bamboo"
-        step = "Push package to Atlassian Marketplace"
+        step = "push-package-to-atlassian-marketplace"
     }
 }

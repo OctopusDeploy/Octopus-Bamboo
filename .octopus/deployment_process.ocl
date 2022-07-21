@@ -1,4 +1,5 @@
-step "Push package to Atlassian Marketplace" {
+step "push-package-to-atlassian-marketplace" {
+    name = "Push package to Atlassian Marketplace"
 
     action {
         action_type = "Octopus.Script"
@@ -24,11 +25,11 @@ step "Push package to Atlassian Marketplace" {
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "Bash"
         }
-        worker_pool = "Hosted Ubuntu"
+        worker_pool = "hosted-ubuntu"
 
         packages "bamboo" {
             acquisition_location = "Server"
-            feed = "Octopus Server (built-in)"
+            feed = "octopus-server-built-in"
             package_id = "bamboo"
             properties = {
                 Extract = "True"
@@ -39,7 +40,8 @@ step "Push package to Atlassian Marketplace" {
     }
 }
 
-step "Publish new app version to Atlassian Marketplace" {
+step "publish-new-app-version-to-atlassian-marketplace" {
+    name = "Publish new app version to Atlassian Marketplace"
 
     action {
         action_type = "Octopus.Script"
@@ -73,6 +75,6 @@ step "Publish new app version to Atlassian Marketplace" {
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "Bash"
         }
-        worker_pool = "Hosted Ubuntu"
+        worker_pool = "hosted-ubuntu"
     }
 }
