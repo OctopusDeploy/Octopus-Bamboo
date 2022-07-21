@@ -59,7 +59,7 @@ step "publish-new-app-version-to-atlassian-marketplace" {
                     | jq '.status="#{appVersionStatus}"' \
                     | jq 'del(.release)' \
                     | jq '.text.releaseSummary="#{Octopus.Release.Number}"' \
-                    | jq '.text.releaseNotes="#{Octopus.Release.Notes | MarkdownToHtml}"')
+                    | jq '.text.releaseNotes="#{Octopus.Release.Notes | MarkdownToHtml | JsonEscape }"')
                 
                 echo "Creating new app version '#{Octopus.Release.Number}'"
                 echo '##octopus[stdout-verbose]'
