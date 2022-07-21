@@ -1,0 +1,11 @@
+connectivity_policy {
+    allow_deployments_to_no_targets = true
+}
+
+versioning_strategy {
+
+    donor_package {
+        package = "bamboo"
+        step = "push-package-to-atlassian-marketplace"
+    }
+}
