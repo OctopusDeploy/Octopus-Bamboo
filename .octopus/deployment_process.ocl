@@ -7,7 +7,7 @@ step "push-package-to-atlassian-marketplace" {
             Octopus.Action.Script.ScriptBody = <<-EOT
                 echo "Uploading new artifact version '#{Octopus.Release.Number}'"
                 
-                uploadedAsset=$(curl --request POST \
+                uploadedAsset=$(curl --request -s -S POST \
                   --url 'https://marketplace.atlassian.com/rest/2/assets/artifact?file=bamboo.jar' \
                   --user "#{ATLASSIAN_MARKETPLACE_USERNAME}:#{ATLASSIAN_MARKETPLACE_APIKEY}" \
                   --header 'Accept: application/json' \
@@ -47,7 +47,7 @@ step "publish-new-app-version-to-atlassian-marketplace" {
         action_type = "Octopus.Script"
         properties = {
             Octopus.Action.Script.ScriptBody = <<-EOT
-                latestAppVersion=$(curl --request GET --url 'https://marketplace.atlassian.com/rest/2/addons/#{addonKey}/versions/latest' --header 'Accept: application/json')
+                latestAppVersion=$(curl --request -s -S GET --url 'https://marketplace.atlassian.com/rest/2/addons/#{addonKey}/versions/latest' --header 'Accept: application/json')
                 
                 newAppVersion=$(echo $latestAppVersion \
                     | jq 'del(._links.self)' \
@@ -66,7 +66,7 @@ step "publish-new-app-version-to-atlassian-marketplace" {
                 echo $newAppVersion | jq '.'
                 echo '##octopus[stdout-default]'
                 
-                curl --request POST \
+                curl --request -s -S POST \
                     --url 'https://marketplace.atlassian.com/rest/2/addons/#{addonKey}/versions' \
                     --user "#{ATLASSIAN_MARKETPLACE_USERNAME}:#{ATLASSIAN_MARKETPLACE_APIKEY}" \
                     --header 'Content-Type: application/json' \
