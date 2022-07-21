@@ -23,7 +23,7 @@ jobs:
       nuGetVersion: ${{ steps.git-version.outputs.nuGetVersion }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0 # all
 

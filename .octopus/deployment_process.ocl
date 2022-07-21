@@ -1,4 +1,5 @@
-step "Push package to Atlassian Marketplace" {
+step "push-package-to-atlassian-marketplace" {
+    name = "Push package to Atlassian Marketplace"
 
     action {
         action_type = "Octopus.Script"
@@ -6,15 +7,15 @@ step "Push package to Atlassian Marketplace" {
             Octopus.Action.Script.ScriptBody = <<-EOT
                 echo "Uploading new artifact version '#{Octopus.Release.Number}'"
                 
-                uploadedAsset=$(curl --request POST \
+                uploadedAsset=$(curl --request POST -sS \
                   --url 'https://marketplace.atlassian.com/rest/2/assets/artifact?file=bamboo.jar' \
                   --user "#{ATLASSIAN_MARKETPLACE_USERNAME}:#{ATLASSIAN_MARKETPLACE_APIKEY}" \
                   --header 'Accept: application/json' \
                   --header 'Content-Type: application/binary' \
-                  --data-binary "@$(get_octopusvariable "Octopus.Action.Package[bamboo].ExtractedPath")/bamboo.jar")
+                  --data-binary "@./bamboo/bamboo.jar")
                 
                 echo '##octopus[stdout-verbose]'
-                echo $uploadedAsset | jq
+                echo $uploadedAsset | jq '.' || (echo $uploadedAsset && exit 1)
                 echo '##octopus[stdout-default]'
                 
                 assetUri=$(echo $uploadedAsset | jq '._links.self.href')
@@ -24,11 +25,11 @@ step "Push package to Atlassian Marketplace" {
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "Bash"
         }
-        worker_pool = "Hosted Ubuntu"
+        worker_pool = "hosted-ubuntu"
 
         packages "bamboo" {
             acquisition_location = "Server"
-            feed = "Octopus Server (built-in)"
+            feed = "octopus-server-built-in"
             package_id = "bamboo"
             properties = {
                 Extract = "True"
@@ -39,13 +40,14 @@ step "Push package to Atlassian Marketplace" {
     }
 }
 
-step "Publish new app version to Atlassian Marketplace" {
+step "publish-new-app-version-to-atlassian-marketplace" {
+    name = "Publish new app version to Atlassian Marketplace"
 
     action {
         action_type = "Octopus.Script"
         properties = {
             Octopus.Action.Script.ScriptBody = <<-EOT
-                latestAppVersion=$(curl --request GET --url 'https://marketplace.atlassian.com/rest/2/addons/#{addonKey}/versions/latest' --header 'Accept: application/json') | jq
+                latestAppVersion=$(curl --request GET -sS --url 'https://marketplace.atlassian.com/rest/2/addons/#{addonKey}/versions/latest' --header 'Accept: application/json')
                 
                 newAppVersion=$(echo $latestAppVersion \
                     | jq 'del(._links.self)' \
@@ -61,10 +63,10 @@ step "Publish new app version to Atlassian Marketplace" {
                 
                 echo "Creating new app version '#{Octopus.Release.Number}'"
                 echo '##octopus[stdout-verbose]'
-                echo $newAppVersion | jq
+                echo $newAppVersion | jq '.'
                 echo '##octopus[stdout-default]'
                 
-                curl --request POST \
+                curl --request POST -sS \
                     --url 'https://marketplace.atlassian.com/rest/2/addons/#{addonKey}/versions' \
                     --user "#{ATLASSIAN_MARKETPLACE_USERNAME}:#{ATLASSIAN_MARKETPLACE_APIKEY}" \
                     --header 'Content-Type: application/json' \
@@ -73,6 +75,6 @@ step "Publish new app version to Atlassian Marketplace" {
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "Bash"
         }
-        worker_pool = "Hosted Ubuntu"
+        worker_pool = "hosted-ubuntu"
     }
 }
