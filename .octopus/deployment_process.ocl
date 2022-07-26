@@ -26,8 +26,14 @@ step "push-package-to-atlassian-marketplace" {
             EOT
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "Bash"
+            OctopusUseBundledTooling = "False"
         }
         worker_pool = "hosted-ubuntu"
+
+        container {
+            feed = "docker-hub"
+            image = "octopusdeploy/worker-tools:3.3.2-ubuntu.18.04"
+        }
 
         packages "bamboo" {
             acquisition_location = "Server"
