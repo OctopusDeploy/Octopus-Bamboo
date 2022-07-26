@@ -56,6 +56,7 @@ step "publish-new-app-version-to-atlassian-marketplace" {
         properties = {
             Octopus.Action.Script.ScriptBody = <<-EOT
                 latestAppVersion=$(curl --request GET -sS --url 'https://marketplace.atlassian.com/rest/2/addons/#{addonKey}/versions/latest' --header 'Accept: application/json')
+                bambooCompatibilityVersion=$(get_octopusvariable "Octopus.Action[Push package to Atlassian Marketplace].Output.BambooCompatibilityVersion")
                 
                 newAppVersion=$(echo $latestAppVersion \
                     | jq 'del(._links.self)' \
@@ -66,8 +67,8 @@ step "publish-new-app-version-to-atlassian-marketplace" {
                     | jq '.name="#{Octopus.Release.Number}"' \
                     | jq '.status="#{appVersionStatus}"' \
                     | jq 'del(.release)' \
-                    | jq 'del(.compatibilities.server.build)' \
-                    | jq '.compatibilities.server.max='$(get_octopusvariable "Octopus.Action[Push package to Atlassian Marketplace].Output.BambooCompatibilityVersion") \
+                    | jq 'del(.compatibilities[0].hosting.server.max.build)' \
+                    | jq '.compatibilities[0].hosting.server.max.version="'$bambooCompatibilityVersion'"' \
                     | jq '.text.releaseSummary="#{Octopus.Release.Number}"' \
                     | jq '.text.releaseNotes="#{Octopus.Release.Notes | MarkdownToHtml | JsonEscape }"')
                 
