@@ -58,6 +58,7 @@ step "publish-new-app-version-to-atlassian-marketplace" {
                     | jq '.name="#{Octopus.Release.Number}"' \
                     | jq '.status="#{appVersionStatus}"' \
                     | jq 'del(.release)' \
+                    | jq 'del(.compatibilities)' \
                     | jq '.text.releaseSummary="#{Octopus.Release.Number}"' \
                     | jq '.text.releaseNotes="#{Octopus.Release.Notes | MarkdownToHtml | JsonEscape }"')
                 
