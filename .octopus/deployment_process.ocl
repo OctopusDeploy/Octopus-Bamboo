@@ -6,6 +6,8 @@ step "push-package-to-atlassian-marketplace" {
         properties = {
             Octopus.Action.Script.ScriptBody = <<-EOT
                 echo "Uploading new artifact version '#{Octopus.Release.Number}'"
+                bambooCompatibilityVersion=$(unzip -p ./bamboo/bamboo.jar '**/com.octopus/**/pom.xml' | sed -n 's:.*<bamboo.version>\(.*\)</bamboo.version>.*:\1:p')
+                set_octopusvariable "BambooCompatibilityVersion" "$bambooCompatibilityVersion"
                 
                 uploadedAsset=$(curl --request POST -sS \
                   --url 'https://marketplace.atlassian.com/rest/2/assets/artifact?file=bamboo.jar' \
@@ -58,7 +60,8 @@ step "publish-new-app-version-to-atlassian-marketplace" {
                     | jq '.name="#{Octopus.Release.Number}"' \
                     | jq '.status="#{appVersionStatus}"' \
                     | jq 'del(.release)' \
-                    | jq 'del(.compatibilities)' \
+                    | jq 'del(.compatibilities.server.build)' \
+                    | jq '.compatibilities.server.max='$(get_octopusvariable "Octopus.Action[Push package to Atlassian Marketplace].Output.BambooCompatibilityVersion") \
                     | jq '.text.releaseSummary="#{Octopus.Release.Number}"' \
                     | jq '.text.releaseNotes="#{Octopus.Release.Notes | MarkdownToHtml | JsonEscape }"')
                 
