@@ -9,7 +9,7 @@ step "push-package-to-atlassian-marketplace" {
                 bambooCompatibilityVersion=$(unzip -p ./bamboo/bamboo.jar '**/com.octopus/**/pom.xml' | sed -n 's:.*<bamboo.version>\(.*\)</bamboo.version>.*:\1:p')
                 set_octopusvariable "BambooCompatibilityVersion" "$bambooCompatibilityVersion"
                 
-                uploadedAsset=$(curl --request POST -ifSs \
+                uploadedAsset=$(curl --request POST -fSs \
                   --url 'https://marketplace.atlassian.com/rest/2/assets/artifact?file=bamboo.jar' \
                   --user "#{ATLASSIAN_MARKETPLACE_USERNAME}:#{ATLASSIAN_MARKETPLACE_APIKEY}" \
                   --header 'Accept: application/json' \
@@ -55,9 +55,9 @@ step "publish-new-app-version-to-atlassian-marketplace" {
         action_type = "Octopus.Script"
         properties = {
             Octopus.Action.Script.ScriptBody = <<-EOT
-                latestAppVersion=$(curl --request GET -ifSs --url 'https://marketplace.atlassian.com/rest/2/addons/#{addonKey}/versions/latest' --header 'Accept: application/json')
+                latestAppVersion=$(curl --request GET -fSs --url 'https://marketplace.atlassian.com/rest/2/addons/#{addonKey}/versions/latest' --header 'Accept: application/json')
                 bambooCompatibilityVersion=$(get_octopusvariable "Octopus.Action[Push package to Atlassian Marketplace].Output.BambooCompatibilityVersion")
-                bambooBuildNumber=$(curl --request GET -ifSs --url "https://marketplace.atlassian.com/rest/2/products/key/bamboo/versions/name/$bambooCompatibilityVersion" | jq '.buildNumber')
+                bambooBuildNumber=$(curl --request GET -fSs --url "https://marketplace.atlassian.com/rest/2/products/key/bamboo/versions/name/$bambooCompatibilityVersion" | jq '.buildNumber')
                 
                 newAppVersion=$(echo $latestAppVersion \
                     | jq 'del(._links.self)' \
