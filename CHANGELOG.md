@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.4.5](https://github.com/OctopusDeploy/Octopus-Bamboo/compare/v2.4.4...v2.4.5) (2022-08-05)
+
+
+### Bug Fixes
+
+* Update compatibilities when publishing a new app version ([#45](https://github.com/OctopusDeploy/Octopus-Bamboo/issues/45)) ([e181668](https://github.com/OctopusDeploy/Octopus-Bamboo/commit/e1816680feb7246d2fb7e53ee7adde6a916c21d6))
+* Update plugin compatibility to Bamboo version 8.2.5 ([#51](https://github.com/OctopusDeploy/Octopus-Bamboo/issues/51)) ([d3ffd7a](https://github.com/OctopusDeploy/Octopus-Bamboo/commit/d3ffd7a529e712ae0880a6f56c00c21ce70568f2))
+
 ## [2.4.4](https://github.com/OctopusDeploy/Octopus-Bamboo/compare/v2.4.4...v2.4.4) (2022-07-21)
 
 
