@@ -58,7 +58,7 @@ step "publish-new-app-version-to-atlassian-marketplace" {
                 latestAppVersion=$(curl --request GET -fSs --url 'https://marketplace.atlassian.com/rest/2/addons/#{addonKey}/versions/latest' --header 'Accept: application/json')
                 bambooCompatibilityVersion=$(get_octopusvariable "Octopus.Action[Push package to Atlassian Marketplace].Output.BambooCompatibilityVersion")
                 bambooBuildNumber=$(curl --request GET -fSs --url "https://marketplace.atlassian.com/rest/2/products/key/bamboo/versions/name/$bambooCompatibilityVersion" | jq '.buildNumber')
-                jsonEscapedReleaseNotes='#{Octopus.Release.Notes | MarkdownToHtml | JsonEscape | Replace "\\n" "\\n" }'
+                jsonEscapedReleaseNotes='#{Octopus.Release.Notes | MarkdownToHtml | JsonEscape | Replace "\\n" "<br/>" }'
                 
                 newAppVersion=$(echo $latestAppVersion \
                     | jq 'del(._links.self)' \
