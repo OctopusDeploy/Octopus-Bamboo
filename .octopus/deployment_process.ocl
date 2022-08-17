@@ -78,11 +78,23 @@ step "publish-new-app-version-to-atlassian-marketplace" {
                 echo $newAppVersion | jq '.'
                 echo '##octopus[stdout-default]'
                 
-                curl --request POST -ifSs \
+                curl --request POST -iSs \
                     --url 'https://marketplace.atlassian.com/rest/2/addons/#{addonKey}/versions' \
                     --user "#{ATLASSIAN_MARKETPLACE_USERNAME}:#{ATLASSIAN_MARKETPLACE_APIKEY}" \
                     --header 'Content-Type: application/json' \
                     --data "$newAppVersion"
+                
+                # check that we've published new app version to the Atlassian Marketplace
+                publishedVersion="$(curl \
+                	--request GET \
+                    -fSs \
+                    --url 'https://marketplace.atlassian.com/rest/2/addons/#{addonKey}/versions/name/#{Octopus.Release.Number}' \
+                    --header 'Accept: application/json' \
+                    | jq -r '.name')"
+                
+                if [[ "$publishedVersion" == "" ]]; then >&2 echo "Failed to create new app version." && exit 1; fi
+                
+                echo "Successfully published app version $publishedVersion to the Atlassian Marketplace"
             EOT
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "Bash"
