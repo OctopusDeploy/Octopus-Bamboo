@@ -89,6 +89,7 @@ step "publish-new-app-version-to-atlassian-marketplace" {
                 	--request GET \
                     -fSs \
                     --url 'https://marketplace.atlassian.com/rest/2/addons/#{addonKey}/versions/name/#{Octopus.Release.Number}' \
+                    --user "#{ATLASSIAN_MARKETPLACE_USERNAME}:#{ATLASSIAN_MARKETPLACE_APIKEY}" \
                     --header 'Accept: application/json' \
                     | jq -r '.name')"
                 
