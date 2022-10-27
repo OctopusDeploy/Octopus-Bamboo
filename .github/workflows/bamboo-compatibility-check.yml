@@ -120,4 +120,4 @@ jobs:
           body="Fixes ${{ needs.create-issue.outputs.gh-issue-url }}"
           head="${{ needs.update-pom.outputs.branch }}"
           
-          gh pr create --title "$title" --body "$body" --base "main" --head "$head" --reviewer "OctopusDeploy/team-integrations-fnm"
+          gh pr create --title "$title" --body "$body" --base "main" --head "$head"
