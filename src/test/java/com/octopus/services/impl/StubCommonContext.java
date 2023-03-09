@@ -155,4 +155,9 @@ public class StubCommonContext implements CommonContext {
     public boolean isVerboseLoggingOn() {
         return false;
     }
+
+    @Override
+    public boolean isExpectingDedicatedEphemeralAgent() {
+        return false;
+    }
 }
