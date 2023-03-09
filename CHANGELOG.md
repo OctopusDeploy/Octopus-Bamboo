@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.4.7](https://github.com/OctopusDeploy/Octopus-Bamboo/compare/v2.4.6...v2.4.7) (2023-03-09)
+
+
+### Bug Fixes
+
+* update compatible bamboo version ([5c7eef0](https://github.com/OctopusDeploy/Octopus-Bamboo/commit/5c7eef056b19813d54f665ee622c775fd849d78e))
+
 ## [2.4.6](https://github.com/OctopusDeploy/Octopus-Bamboo/compare/v2.4.5...v2.4.6) (2022-10-27)
 
 
