@@ -4,23 +4,22 @@ on:
   schedule:
     # Monday 8am AEST (Sunday 10pm UTC)
     - cron: '0 22 * * 0'
-
+  
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 env:
-  GH_TOKEN: ${{ secrets.INTEGRATIONS_FNM_BOT_TOKEN }}
+  GH_TOKEN: ${{ secrets.INTEGRATIONS_FNM_BOT_TOKEN }} # needed for github cli
   GITHUB_TOKEN: ${{ secrets.INTEGRATIONS_FNM_BOT_TOKEN }}
 
 jobs:
   check-for-update:
-    name: 'Check for new version'
+    name: 'Check if new version of Bamboo has been released'
     runs-on: 'ubuntu-latest'
 
     outputs:
-      update-available: ${{ steps.version-check.outputs.update-available }}
-      compatible-version: ${{ steps.version-check.outputs.current-compatible-version }}
-      bamboo-version: ${{ steps.version-check.outputs.latest-bamboo-version }}
-      gh-issue-url: ${{ steps.create-issue.outputs.issue-url }}
+      current-compatible-version: ${{ steps.version-check.outputs.current-compatible-version }}
+      latest-bamboo-version: ${{ steps.version-check.outputs.latest-bamboo-version }}
 
     steps:
       - uses: actions/checkout@v3
@@ -29,45 +28,58 @@ jobs:
         id: version-check
         run: |
           # get the version our plugin is compatible with
-          currentCompatibleVersion=$(curl -sS -X GET https://marketplace.atlassian.com/rest/2/addons/com.octopus.bamboo/versions/latest | jq '.compatibilities[0].hosting.server.max.version')
-          echo $currentCompatibleVersion
+          currentCompatibleVersion=$(curl -sS -X GET https://marketplace.atlassian.com/rest/2/addons/com.octopus.bamboo/versions/latest | jq -r '.compatibilities[0].hosting.server.max.version')
           # get latest available version of Bamboo
-          latestBambooVersion=$(curl -sS -X GET https://marketplace.atlassian.com/rest/2/products/key/bamboo/versions/latest | jq '.name')
-          echo $latestBambooVersion
-          echo "::set-output name=update-available::true"
-          echo "::set-output name=current-compatible-version::$currentCompatibleVersion"
-          echo "::set-output name=latest-bamboo-version::$latestBambooVersion"
+          latestBambooVersion=$(curl -sS -X GET https://marketplace.atlassian.com/rest/2/products/key/bamboo/versions/latest | jq -r '.name')
+
+          if [ "$currentCompatibleVersion" == "$latestBambooVersion" ]
+          then
+            # no update required, bail out of workflow run early
+            echo "No update required, cancelling this run"
+            gh run cancel ${{ github.run_id }}
+          fi
+
+          echo "current-compatible-version=$currentCompatibleVersion" >> $GITHUB_OUTPUT
+          echo "latest-bamboo-version=$latestBambooVersion" >> $GITHUB_OUTPUT
 
   create-issue:
     name: 'Create issue'
     runs-on: 'ubuntu-latest'
 
     needs: check-for-update
-    if: ${{ needs.check-for-update.outputs.update-available }}
 
     outputs:
-      gh-issue-url: ${{ steps.create-issue.outputs.issue-url }}
+      gh-issue-url: ${{ steps.create-or-update-issue.outputs.issue-url }}
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: 'Create Issue for new Bamboo version'
-        id: create-issue
+      - name: 'Create or Update Issue for new Bamboo version'
+        id: create-or-update-issue
         run: |
-          compatibleBambooVersion=${{ needs.check-for-update.outputs.compatible-version }}
-          latestBambooVersion=${{ needs.check-for-update.outputs.bamboo-version }}
+          compatibleBambooVersion=${{ needs.check-for-update.outputs.current-compatible-version }}
+          latestBambooVersion=${{ needs.check-for-update.outputs.latest-bamboo-version }}
           
-          issueTitle="Add-on Update Request: Support for new Bamboo version"
+          issueTitle="Add-on Update Request: Support for Bamboo version $latestBambooVersion"
           issueBody=$(cat << EOF
           ## Add-on compatibility update
           - **Compatible Bamboo version:** \`$compatibleBambooVersion\`
           - **New Bamboo version:** \`$latestBambooVersion\`
           EOF
           )
-          # create issue and assign it to @team-integrations-fnm-bot
-          issueUrl=$(gh issue create --title "$issueTitle" --body "$issueBody" --assignee "@me")
-          echo $issueUrl
-          echo "::set-output name=issue-url::$issueUrl"
+
+          existingIssue=$(gh issue list -q 'map(select(.title | startswith("Add-on Update Request:") ) ) | first' --json title,number | jq '.number')
+
+          # if there's no existing issue
+          if [ -z "$existingIssue" ] 
+          then
+            # create an issue and assign it to @team-integrations-fnm-bot
+            issueUrl=$(gh issue create --title "$issueTitle" --body "$issueBody" --assignee "@me")
+          else
+            # update existing issue with new compatibility details
+            issueUrl=$(gh issue edit $existingIssue --title "$issueTitle" --body "$issueBody")
+          fi
+          echo "issue-url=$issueUrl" >> $GITHUB_OUTPUT
 
   update-pom:
     name: 'Update POM.xml'
@@ -86,7 +98,7 @@ jobs:
       - name: 'Update Bamboo version in POM.xml and commit the changes'
         id: commit-pom-update
         run: |
-          bambooVersion="${{ needs.check-for-update.outputs.bamboo-version }}"
+          bambooVersion="${{ needs.check-for-update.outputs.latest-bamboo-version }}"
           branchName="team-integrations-fnm-bot/bamboo-$bambooVersion"
           
           git config --global user.name "team-integrations-fnm-bot"
@@ -100,9 +112,9 @@ jobs:
           # if no changes were made, just silently exit
           git diff-index --quiet HEAD || (git commit -m "fix: update compatible bamboo version" \
             && git push -u origin $branchName \
-            && echo "::set-output name=changes-committed::true" \
-            && echo "::set-output name=branch-name::$branchName" \
-          )          
+            && echo "changes-committed=true" >> $GITHUB_OUTPUT \
+            && echo "branch-name=$branchName" >> $GITHUB_OUTPUT \
+          )
 
   create-pull-request:
     name: 'Create PR'
@@ -114,10 +126,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: 'Close any existing PR for Bamboo version update'
+        id: existing-pr-check
+        run: |
+          existingPr=$(gh pr list -q 'map(select(.title | startswith("Add compatibility for Bamboo version") ) ) | first' --json title,number | jq '.number')
+
+          if [ "$existingPr" ]
+          then
+            # existing pr is for a different Bamboo version, closing existing pr and a new pr will be created
+            gh pr close $existingPr --comment "Closing PR in favor of new PR for Bamboo version ${{ needs.check-for-update.outputs.bamboo-version }}" --delete-branch
+          fi
+
       - name: 'Create PR to update Bamboo version in POM.xml'
         run: |
-          title="Add compatibility for Bamboo version ${{ needs.check-for-update.outputs.bamboo-version }}"
+          title="Add compatibility for Bamboo version ${{ needs.check-for-update.outputs.latest-bamboo-version }}"
           body="Fixes ${{ needs.create-issue.outputs.gh-issue-url }}"
           head="${{ needs.update-pom.outputs.branch }}"
           
-          gh pr create --title "$title" --body "$body" --base "main" --head "$head"
+          gh pr create --title "$title" --body "$body" --base "${{ github.ref }}" --head "$head"
