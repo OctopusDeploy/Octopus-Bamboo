@@ -10,4 +10,4 @@ jobs:
       - uses: google-github-actions/release-please-action@v3
         with:
           release-type: simple
-          token: ${{ secrets.INTEGRATIONS_FNM_BOT_TOKEN }}
+          token: ${{ secrets.BAMBOO_GITHUB_ACTIONS_TOKEN }}
