@@ -91,7 +91,7 @@ jobs:
     env:
       OCTOPUS_CLI_SERVER: ${{ secrets.OCTOPUS_URL }}
       OCTOPUS_CLI_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
-      OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+      #OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
       OCTOPUS_HOST: ${{ secrets.OCTOPUS_URL }}
       OCTOPUS_SPACE: Integrations
     steps:
@@ -109,6 +109,12 @@ jobs:
         uses: OctopusDeploy/install-octopus-cli-action@v1
         with:
           version: latest
+          
+      - name: Login to Octopus Deploy 
+        uses: OctopusDeploy/login@v1
+        with: 
+          server: https://deploy.octopus.app
+          service_account_id: 9447a9ba-6dbc-417e-bbed-835ec435d648
       
       - name: Push build information 🐙
         uses: OctopusDeploy/push-build-information-action@v1
