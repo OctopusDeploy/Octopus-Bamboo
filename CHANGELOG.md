@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/OctopusDeploy/Octopus-Bamboo/compare/v2.4.7...v2.5.0) (2024-04-19)
+
+
+### Features
+
+* This is the final version of the Octopus Deploy plugin for Bamboo that can be hosted on Atlassian Server due to Atlassian ending support for all Server products. Future versions of this plugin will be approved for Atlassian Data Center instead. Please refer to Atlassian's migration guide (https://www.atlassian.com/migration/plan/upgrade-to-data-center-guide) for more details on how to keep using this plugin. Please also note that  Atlassian Data Center has different product licensing requirements, so a new license may have to be purchased to use future versions of this plugin. ([f1a33db](https://github.com/OctopusDeploy/Octopus-Bamboo/commit/f1a33db97eb284c1d2ec0e8c28830ba6abb7cc38))
+
 ## [2.4.7](https://github.com/OctopusDeploy/Octopus-Bamboo/compare/v2.4.6...v2.4.7) (2023-03-09)
 
 
