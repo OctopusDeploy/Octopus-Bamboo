@@ -93,8 +93,6 @@ jobs:
     if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
     env:
       OCTOPUS_CLI_SERVER: ${{ secrets.OCTOPUS_URL }}
-      OCTOPUS_CLI_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
-      #OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
       OCTOPUS_HOST: ${{ secrets.OCTOPUS_URL }}
       OCTOPUS_SPACE: Integrations
     steps:
