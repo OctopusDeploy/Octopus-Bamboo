@@ -119,12 +119,12 @@ jobs:
           server: https://deploy.octopus.app
           service_account_id: 9447a9ba-6dbc-417e-bbed-835ec435d648
       
-      - name: Push build information 🐙
-        uses: OctopusDeploy/push-build-information-action@v1
-        with:
-          debug: true
-          packages: bamboo
-          version: ${{ needs.build.outputs.nuGetVersion }}
+      #- name: Push build information 🐙
+      #  uses: OctopusDeploy/push-build-information-action@v1
+      #  with:
+      #    debug: true
+      #    packages: bamboo
+      #    version: ${{ needs.build.outputs.nuGetVersion }}
 
       - name: Push package to feed 🐙
         uses: OctopusDeploy/push-package-action@v2
