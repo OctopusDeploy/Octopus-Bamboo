@@ -119,15 +119,15 @@ jobs:
           server: https://deploy.octopus.app
           service_account_id: 9447a9ba-6dbc-417e-bbed-835ec435d648
       
-      #- name: Push build information 🐙
-      #  uses: OctopusDeploy/push-build-information-action@v1
-      #  with:
-      #    debug: true
-      #    packages: bamboo
-      #    version: ${{ needs.build.outputs.nuGetVersion }}
+      - name: Push build information 🐙
+        uses: OctopusDeploy/push-build-information-action@v1
+        with:
+          debug: true
+          packages: bamboo
+          version: ${{ needs.build.outputs.nuGetVersion }3
 
       - name: Push package to feed 🐙
-        uses: OctopusDeploy/push-package-action@v2
+        uses: OctopusDeploy/push-package-action@v3
         with:
           packages: 'artifacts/bamboo.${{ needs.build.outputs.nuGetVersion }}.zip'
 
@@ -141,7 +141,7 @@ jobs:
           echo "::set-output name=release-note-file::$OUTPUT_FILE"
 
       - name: Create a release in Octopus Deploy 🐙
-        uses: OctopusDeploy/create-release-action@v2
+        uses: OctopusDeploy/create-release-action@v3
         with:
           project: 'Bamboo Plugin'
           package_version: ${{ needs.build.outputs.nuGetVersion }}
