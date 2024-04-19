@@ -124,7 +124,7 @@ jobs:
         with:
           debug: true
           packages: bamboo
-          version: ${{ needs.build.outputs.nuGetVersion }
+          version: ${{ needs.build.outputs.nuGetVersion }}
 
       - name: Push package to feed 🐙
         uses: OctopusDeploy/push-package-action@v3
