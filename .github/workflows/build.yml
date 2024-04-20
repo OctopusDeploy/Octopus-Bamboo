@@ -16,6 +16,9 @@ on:
     # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+permissions:
+  id-token: write # This is required for requesting the JWT
+  
 jobs:
   build:
     runs-on: ubuntu-20.04
@@ -90,8 +93,6 @@ jobs:
     if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
     env:
       OCTOPUS_CLI_SERVER: ${{ secrets.OCTOPUS_URL }}
-      OCTOPUS_CLI_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
-      OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
       OCTOPUS_HOST: ${{ secrets.OCTOPUS_URL }}
       OCTOPUS_SPACE: Integrations
     steps:
@@ -109,16 +110,22 @@ jobs:
         uses: OctopusDeploy/install-octopus-cli-action@v1
         with:
           version: latest
+          
+      - name: Login to Octopus Deploy 
+        uses: OctopusDeploy/login@v1
+        with: 
+          server: https://deploy.octopus.app
+          service_account_id: 9447a9ba-6dbc-417e-bbed-835ec435d648
       
       - name: Push build information 🐙
-        uses: OctopusDeploy/push-build-information-action@v1
+        uses: OctopusDeploy/push-build-information-action@v3
         with:
           debug: true
           packages: bamboo
           version: ${{ needs.build.outputs.nuGetVersion }}
 
       - name: Push package to feed 🐙
-        uses: OctopusDeploy/push-package-action@v2
+        uses: OctopusDeploy/push-package-action@v3
         with:
           packages: 'artifacts/bamboo.${{ needs.build.outputs.nuGetVersion }}.zip'
 
@@ -132,7 +139,7 @@ jobs:
           echo "::set-output name=release-note-file::$OUTPUT_FILE"
 
       - name: Create a release in Octopus Deploy 🐙
-        uses: OctopusDeploy/create-release-action@v2
+        uses: OctopusDeploy/create-release-action@v3
         with:
           project: 'Bamboo Plugin'
           package_version: ${{ needs.build.outputs.nuGetVersion }}
