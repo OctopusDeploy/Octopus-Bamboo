@@ -81,7 +81,7 @@ jobs:
         run: |
           atlas-package
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: bamboo.${{ steps.git-version.outputs.nuGetVersion }}
           path: '**/target/*.jar'
@@ -96,7 +96,7 @@ jobs:
       OCTOPUS_HOST: ${{ secrets.OCTOPUS_URL }}
       OCTOPUS_SPACE: Integrations
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: bamboo.${{ needs.build.outputs.nuGetVersion }}
           path: .
