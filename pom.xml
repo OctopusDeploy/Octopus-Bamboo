@@ -45,7 +45,7 @@
     <properties>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
-        <bamboo.version>9.2.1</bamboo.version>
+        <bamboo.version>10.1.1</bamboo.version>
         <bamboo.data.version>9.2.1</bamboo.data.version>
         <amps.version>8.0.2</amps.version>
         <!--
