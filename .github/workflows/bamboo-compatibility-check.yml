@@ -9,8 +9,8 @@ on:
   workflow_dispatch:
 
 env:
-  GH_TOKEN: ${{ secrets.INTEGRATIONS_FNM_BOT_TOKEN }} # needed for github cli
-  GITHUB_TOKEN: ${{ secrets.INTEGRATIONS_FNM_BOT_TOKEN }}
+  GH_TOKEN: ${{ secrets.BAMBOO_GITHUB_ACTIONS_TOKEN }}
+  GITHUB_TOKEN: ${{ secrets.BAMBOO_GITHUB_ACTIONS_TOKEN }}
 
 jobs:
   check-for-update:
