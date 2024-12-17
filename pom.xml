@@ -53,7 +53,7 @@
             https://ecosystem.atlassian.net/browse/AMPS-1358
         -->
         <plugin.testrunner.version>1.2.3-bamboo-5</plugin.testrunner.version>
-        <atlassian.spring.scanner.version>1.2.13</atlassian.spring.scanner.version>
+        <atlassian.spring.scanner.version>5.1.0</atlassian.spring.scanner.version>
         <!-- This key is used to keep the consistency between the key in atlassian-plugin.xml and the key to generate bundle. -->
         <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
         <feign.version>9.5.0</feign.version>
