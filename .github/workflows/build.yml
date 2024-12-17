@@ -107,7 +107,7 @@ jobs:
           zip -j artifacts/bamboo.${{ needs.build.outputs.nuGetVersion }}.zip target/bamboo.jar
 
       - name: Install Octopus CLI 🐙
-        uses: OctopusDeploy/install-octopus-cli-action@v1
+        uses: OctopusDeploy/install-octopus-cli-action@v3
         with:
           version: latest
           
