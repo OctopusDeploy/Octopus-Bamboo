@@ -38,7 +38,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: 4
+      uses: actions/checkout@v4
 
     - name: Cache the Maven packages to speed up build
       uses: actions/cache@v3
