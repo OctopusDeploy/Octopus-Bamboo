@@ -50,12 +50,12 @@ jobs:
           atlas-version
 
       - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.9.13
+        uses: gittools/actions/gitversion/setup@v3.1.1
         with:
           versionSpec: '5.x'
 
       - name: Call GitVersion
-        uses: gittools/actions/gitversion/execute@v0.9.13
+        uses: gittools/actions/gitversion/execute@v3.1.1
 
       - name: Determine Version
         id: git-version
