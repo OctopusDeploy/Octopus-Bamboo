@@ -23,7 +23,7 @@ jobs:
       gh-issue-url: ${{ steps.create-issue.outputs.issue-url }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: 'Check for new version of Bamboo'
         id: version-check
@@ -49,7 +49,7 @@ jobs:
       gh-issue-url: ${{ steps.create-issue.outputs.issue-url }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: 'Create Issue for new Bamboo version'
         id: create-issue
@@ -81,7 +81,7 @@ jobs:
       branch: ${{ steps.commit-pom-update.outputs.branch-name }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: 'Update Bamboo version in POM.xml and commit the changes'
         id: commit-pom-update
@@ -112,7 +112,7 @@ jobs:
     if: ${{ needs.update-pom.outputs.changes-committed }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: 'Create PR to update Bamboo version in POM.xml'
         run: |
