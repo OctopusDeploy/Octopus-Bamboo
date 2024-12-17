@@ -21,7 +21,7 @@ permissions:
   
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     # conditionally skip build on PR merge of release-please, because the release creation is going to trigger the real build
     if: ${{ github.ref_name != 'main' || github.event.head_commit.author.username != 'team-integrations-fnm-bot' }}
     outputs:
