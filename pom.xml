@@ -52,7 +52,7 @@
             The default version has a bug that prevents integration tests from working
             https://ecosystem.atlassian.net/browse/AMPS-1358
         -->
-        <plugin.testrunner.version>1.2.3-bamboo-5</plugin.testrunner.version>
+        <plugin.testrunner.version>2.0.10</plugin.testrunner.version>
         <atlassian.spring.scanner.version>1.2.13</atlassian.spring.scanner.version>
         <!-- This key is used to keep the consistency between the key in atlassian-plugin.xml and the key to generate bundle. -->
         <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
