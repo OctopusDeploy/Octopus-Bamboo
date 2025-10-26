@@ -96,7 +96,7 @@ jobs:
       OCTOPUS_HOST: ${{ secrets.OCTOPUS_URL }}
       OCTOPUS_SPACE: Integrations
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v6
         with:
           name: bamboo.${{ needs.build.outputs.nuGetVersion }}
           path: .
