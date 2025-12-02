@@ -1,3 +1,13 @@
+⚠️ This Repository is Deprecated
+
+Octopus Deploy is marking the Bamboo Plugin as end of life, in line with Atlassian's end of life timeline.
+ - Bamboo Server hit End of Life (EOL) in 2024
+ - Atlassian (Bamboo) Data Center products will reach end of life on [March 28, 2029](https://www.atlassian.com/software/bamboo/download-archives)
+   - If you are a Data Center and Octopus customer and need help reach out to [Octopus Support](https://octopus.com/support)
+
+---
+
+
 # Octopus Deploy Bamboo Plugin
 
 ## Documentation
